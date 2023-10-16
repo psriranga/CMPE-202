@@ -2,7 +2,7 @@ version: '3.9'
 services:
   db:
     image: postgis/postgis:13-3.1
-    platform: linux/amd64
+    platform: linux/fsdamd64
     ports:
       - "5432:5432"
     volumes:
