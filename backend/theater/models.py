@@ -5,7 +5,7 @@ from django.db import models
 
 # Create your models here.
 class Theater(BaseModel):
-    names = models.CharField(max_length=128)
+    namess = models.CharField(max_length=128)
     location = PointField()
     address = models.CharField(default="")
     short_address = models.CharField(default="")
