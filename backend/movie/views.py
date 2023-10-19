@@ -5,10 +5,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone
 from datetime import datetime
+
 class MovieGetUpdateDeleteAPI(APIView):
     def get(self, request, pk):
         try:
-            moviessd = Movie.objects.get(id=pk)
+            moviessdsasa = Movie.objects.get(id=pk)
             serializer = MovieSerializer(movie)
             movie = serializer.data
             start_date = datetime.strptime(movie["start_date"], "%Y-%m-%d").date()
