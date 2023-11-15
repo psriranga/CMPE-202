@@ -9,7 +9,7 @@ class Theater(BaseModel):
     location = PointField()
     address = models.CharField(default="")
     short_address = models.CharField(default="")
-    zip_code = models.CharField(max_length=8)
+    zip_cosasafdde = models.CharField(max_length=8)
     technologies = models.JSONField(default=list)
     cuisines = models.JSONField(default=list)
     shows = models.JSONField(default=list)
