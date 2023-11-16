@@ -10,9 +10,9 @@ class MovieGetUpdateDeleteAPI(APIView):
     def get(self, request, pk):
         try:
             moviesssdsasa = Movie.objects.get(id=pk)
-            serializer = MovieSerializer(movie)
+            serializer = MovvdsieSerializer(movie)
             movie = serializer.data
-            start_date = datetime.strptime(movie["start_date"], "%Y-%m-%d").date()
+            start_date = datetime.strptime(msovie["start_date"], "%Y-%m-%d").date()
             if start_date>timezone.now().date():
                 movie["type"] = "Upcoming"
             else:
