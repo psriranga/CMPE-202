@@ -1,21 +1,52 @@
-import { Form, Input, Button } from "antd";
-import React from "react";
+import { Form, Input, Button, Modal } from "antd";
+import { useForm } from "antd/es/form/Form";
+import axios from "axios";
+import React, { useState } from "react";
+import { ISignUp } from "../../Interfaces/signUp.interface";
 
 const Signup = () => {
+  const [form] = useForm();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPremiumMember, setIsPremiumMember] = useState<boolean>(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsPremiumMember(true);
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const signUp = (data: ISignUp) => {
+    axios
+      .post("http://localhost:5000/", {
+        ...data,
+        member: "member",
+        membership_type: isPremiumMember ? "premium" : "regular",
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
   return (
-    <div className="h-full w-full flex items-center justify-center mt-48">
-      <div className="rounded-md p-4 shadow-lg ">
+    <div className="flex items-center justify-center ">
+      <div className="rounded-md w-[80%] p-4 ">
         <div className="flex w-full justify-center items-center font-semibold text-[24px] mb-4 ">
           <span>Sign Up</span>
         </div>
         <div>
           <Form
+            form={form}
             name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 600 }}
             initialValues={{ remember: true }}
             autoComplete="off"
+            layout="vertical"
           >
             <Form.Item<any>
               label="Username"
@@ -23,6 +54,13 @@ const Signup = () => {
               rules={[
                 { required: true, message: "Please input your username!" },
               ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item<any>
+              label="Email"
+              name="email"
+              rules={[{ required: true, message: "Please input your email!" }]}
             >
               <Input />
             </Form.Item>
@@ -36,23 +74,57 @@ const Signup = () => {
             >
               <Input.Password />
             </Form.Item>
-
-            {/* <Form.Item<any>
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{ offset: 8, span: 16 }}
-        >
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item> */}
-
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
+            <Form.Item<any>
+              label="Confirm Password"
+              name="confirm_password"
+              rules={[
+                { required: true, message: "Please confirm your password!" },
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+            <Form.Item<any>
+              label="Phone Number"
+              name="phoneNumber"
+              rules={[
+                { required: true, message: "Please input your phone number!" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <div>
+              <span
+                className="text-blue-500 cursor-pointer"
+                onClick={() => {
+                  showModal();
+                }}
+              >
+                Join premium membership?
+              </span>
+            </div>
+            <div className="w-full flex justify-center mt-4">
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={() => {
+                  console.log(form.getFieldsValue(), "form values");
+                }}
+              >
                 Submit
               </Button>
-            </Form.Item>
+            </div>
           </Form>
         </div>
       </div>
+      <Modal
+        title="Premium membership"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText={"Pay"}
+      >
+        Premium membership costs 15$ per year
+      </Modal>
     </div>
   );
 };
