@@ -4,4 +4,4 @@ from .models import Show
 class ShowForm(forms.ModelForm):
     class Meta:
         model = Show
-        fields = ['movie', 'theatre', 'show_timings', 'runtime', 'remaining_seats']
+        fields = ['movie', 'theater', 'show_timings', 'runtime', 'remaining_seats']
