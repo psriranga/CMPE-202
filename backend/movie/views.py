@@ -8,7 +8,7 @@ from datetime import datetime
 class MovieGetUpdateDeleteAPI(APIView):
     def get(self, request, pk):
         try:
-            movies = Movie.objects.get(id=pk)
+            moviessd = Movie.objects.get(id=pk)
             serializer = MovieSerializer(movie)
             movie = serializer.data
             start_date = datetime.strptime(movie["start_date"], "%Y-%m-%d").date()
