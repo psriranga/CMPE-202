@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     # Local
     "account",
     "theater",
+    "movie",
+    "show"
 ]
 
 MIDDLEWARE = [
