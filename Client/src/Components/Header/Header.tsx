@@ -10,10 +10,16 @@ import {
 import { Button, Dropdown, Space } from "antd";
 import type { MenuProps } from "antd";
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {
+  setLogOut,
+  setUserInfo,
+} from "../../state/reducers/authReducer/authReducer";
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const items: MenuProps["items"] = [
     {
       label: (
@@ -62,6 +68,12 @@ const Header = () => {
         </span>
       ),
       key: "3",
+      onClick: () => {
+        localStorage.clear();
+        dispatch(setLogOut({}));
+        dispatch(setUserInfo(null));
+        navigate("/");
+      },
     },
   ];
   return (
@@ -106,7 +118,7 @@ const Header = () => {
         <Button
           className="mr-16"
           onClick={() => {
-            navigate("/login");
+            navigate("/");
           }}
         >
           <LoginOutlined />

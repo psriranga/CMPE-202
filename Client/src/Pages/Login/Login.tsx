@@ -1,28 +1,53 @@
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
+import { useForm } from "antd/es/form/Form";
 import React from "react";
+import { IlogIn } from "../../Interfaces/logIn.interface";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  setLogIn,
+  setUserInfo,
+} from "../../state/reducers/authReducer/authReducer";
 
 const Login = () => {
+  const [form] = useForm();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const logIn = (data: IlogIn) => {
+    axios
+      .post("http://localhost:8000/account/login", data)
+      .then((res) => {
+        message.success("Login successful");
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userInfo", JSON.stringify(res));
+        dispatch(setLogIn({}));
+        dispatch(setUserInfo(res));
+        console.log(res);
+      })
+      .catch((e) => {
+        message.error("Login failed");
+        console.log(e);
+      });
+  };
   return (
-    <div className="h-full w-full flex items-center justify-center mt-48 ">
-      <div className="rounded-md p-4 shadow-lg">
+    <div className="flex items-center justify-center ">
+      <div className="rounded-md w-[80%] p-4 ">
         <div className="flex w-full justify-center items-center font-semibold text-[24px] mb-4 ">
           <span>Login</span>
         </div>
         <div>
           <Form
+            form={form}
             name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 600 }}
             initialValues={{ remember: true }}
             autoComplete="off"
+            layout="vertical"
           >
             <Form.Item<any>
-              label="Username"
-              name="username"
-              rules={[
-                { required: true, message: "Please input your username!" },
-              ]}
+              label="Email"
+              name="email"
+              rules={[{ required: true, message: "Please input your email!" }]}
             >
               <Input />
             </Form.Item>
@@ -36,20 +61,31 @@ const Login = () => {
             >
               <Input.Password />
             </Form.Item>
-
-            {/* <Form.Item<any>
-              name="remember"
-              valuePropName="checked"
-              wrapperCol={{ offset: 8, span: 16 }}
+            <div
+              className="text-blue-500 cursor-pointer font-semibold"
+              onClick={() => {
+                navigate("/signup");
+              }}
             >
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item> */}
+              Not a user? Join Us
+            </div>
 
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
-                Submit
+            <div className="w-full flex justify-center mt-4">
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={() => {
+                  console.log(
+                    form.getFieldsValue(),
+
+                    "form values"
+                  );
+                  logIn(form.getFieldsValue());
+                }}
+              >
+                Login
               </Button>
-            </Form.Item>
+            </div>
           </Form>
         </div>
       </div>

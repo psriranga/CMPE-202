@@ -1,11 +1,19 @@
-import { Form, Input, Button, Modal } from "antd";
+import { Form, Input, Button, Modal, message } from "antd";
 import { useForm } from "antd/es/form/Form";
 import axios from "axios";
 import React, { useState } from "react";
 import { ISignUp } from "../../Interfaces/signUp.interface";
+import { useDispatch } from "react-redux";
+import {
+  setLogIn,
+  setUserInfo,
+} from "../../state/reducers/authReducer/authReducer";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [form] = useForm();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPremiumMember, setIsPremiumMember] = useState<boolean>(false);
   const showModal = () => {
@@ -14,23 +22,32 @@ const Signup = () => {
 
   const handleOk = () => {
     setIsPremiumMember(true);
+    message.success("Payment successful");
     setIsModalOpen(false);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
   const signUp = (data: ISignUp) => {
     axios
-      .post("http://localhost:5000/", {
+      .post("http://localhost:8000/account/sign_up", {
         ...data,
-        member: "member",
+        role: "member",
         membership_type: isPremiumMember ? "premium" : "regular",
       })
       .then((res) => {
+        message.success("Signup successful");
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userInfo", JSON.stringify(res));
+        dispatch(setLogIn({}));
+        dispatch(setUserInfo(res));
+        navigate("/");
         console.log(res);
       })
       .catch((e) => {
+        message.error("Signup failed");
         console.log(e);
       });
   };
@@ -107,7 +124,15 @@ const Signup = () => {
                 type="primary"
                 htmlType="submit"
                 onClick={() => {
-                  console.log(form.getFieldsValue(), "form values");
+                  console.log(
+                    {
+                      ...form.getFieldsValue(),
+                      role: "member",
+                      membership_type: isPremiumMember ? "premium" : "regular",
+                    },
+                    "form values"
+                  );
+                  signUp(form.getFieldsValue());
                 }}
               >
                 Submit

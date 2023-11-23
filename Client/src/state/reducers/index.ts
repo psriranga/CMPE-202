@@ -3,8 +3,10 @@ import moviesReducer from "./moviesReducer/moviesReducer";
 import theatreReducer from "./theatreReducer/theatreReducer";
 import cartReducer from "./cartReducer/cartReducer";
 import orderConfirmation from "./orderConfirmation/orderConfirmation";
+import authReducer from "./authReducer/authReducer";
 
 const reducers = combineReducers({
+  auth: authReducer,
   movies: moviesReducer,
   theatres: theatreReducer,
   cart: cartReducer,
