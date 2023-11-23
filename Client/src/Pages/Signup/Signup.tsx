@@ -40,9 +40,9 @@ const Signup = () => {
       .then((res) => {
         message.success("Signup successful");
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userInfo", JSON.stringify(res));
+        localStorage.setItem("userInfo", JSON.stringify(res.data));
         dispatch(setLogIn({}));
-        dispatch(setUserInfo(res));
+        dispatch(setUserInfo(res.data));
         navigate("/");
         console.log(res);
       })

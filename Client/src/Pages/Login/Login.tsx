@@ -20,9 +20,9 @@ const Login = () => {
       .then((res) => {
         message.success("Login successful");
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userInfo", JSON.stringify(res));
+        localStorage.setItem("userInfo", JSON.stringify(res.data));
         dispatch(setLogIn({}));
-        dispatch(setUserInfo(res));
+        dispatch(setUserInfo(res.data));
         console.log(res);
       })
       .catch((e) => {
