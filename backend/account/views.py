@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from account.models import Token
 
 
+
 class UserSignUpAPI(APIView):
     InputSerializer = SignUpSerializer
 
