@@ -3,5 +3,5 @@ from theater.views import TheaterCreateAPI
 
 
 urlpatterns = [
-    path("theater", TheaterCreateAPI.as_view(), name="theater-create-api"),
+    path("theater/create", TheaterCreateAPI.as_view(), name="theater-create-api"),
 ]

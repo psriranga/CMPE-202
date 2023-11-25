@@ -7,7 +7,7 @@ from core.mixins import ApiAuthenticationMixin
 from theater.services import theater_create
 
 
-class TheaterCreateAPI(ApiAuthenticationMixin, APIView):
+class TheaterCreateAPI(APIView):
     Serializer = TheaterSerializer
 
     def post(self, request):

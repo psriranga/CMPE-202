@@ -11,5 +11,8 @@ class Theater(BaseModel):
     technologies = models.JSONField(default=list)
     seatingCategories = models.JSONField(default=list)
     cuisines = models.JSONField(default=list)
+    shows = models.JSONField(default=list)
+    no_of_rows = models.IntegerField(default=0)
+    no_of_cols = models.IntegerField(default=0)
     def __str__(self):
         return f"<Theater {self.name}>"
