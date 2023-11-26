@@ -10,7 +10,6 @@ import axios from "axios";
 const TheatreDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const data: ITheater = location.state;
   const [theater, setTheater] = useState<ITheater>();
 
   const [selectedDate, setSelectedDate] = useState<string>("");

@@ -1,6 +1,5 @@
 import Search from "antd/es/input/Search";
 import React, { useEffect, useState } from "react";
-import { theatres_data } from "../../data/Theatres/theatres_data";
 import { filters } from "../../data/Theatres/filters_data";
 import { ITheater, TheatreFilter } from "../../Interfaces/theatre.interface";
 import { Checkbox, Select, message } from "antd";

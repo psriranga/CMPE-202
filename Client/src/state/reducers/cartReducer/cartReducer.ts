@@ -1,5 +1,4 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { IMovie } from "../../../Interfaces/movie.interface";
 import { ITicket } from "../../../Interfaces/ticket.interface";
 
 type cartState = { cart: Array<ITicket> };
