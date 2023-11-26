@@ -6,6 +6,7 @@ import {
   Drawer,
   Form,
   Input,
+  InputNumber,
   Modal,
   Select,
   theme,
@@ -19,6 +20,7 @@ import { BASE_URL } from "../../env";
 import axios from "axios";
 import { get } from "http";
 import { ITheater } from "../../Interfaces/theatre.interface";
+import { IMovie } from "../../Interfaces/movie.interface";
 
 interface CreateTheater {
   name: string;
@@ -33,6 +35,7 @@ const Configurations = () => {
   const [isMoviesModalOpen, setIsMoviesModalOpen] = useState(false);
   const [isTheatersModalOpen, setIsTheatersModalOpen] = useState(false);
   const [theaters, setTheaters] = useState<Array<ITheater>>();
+  const [movies, setMovies] = useState<Array<IMovie>>();
   const [form] = useForm();
 
   const panelStyle: React.CSSProperties = {
@@ -42,6 +45,20 @@ const Configurations = () => {
     border: "none",
   };
 
+  const getMovies = () => {
+    axios
+      .get(BASE_URL + "movie/movie")
+      .then((res) => {
+        setMovies(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    getMovies();
+  }, []);
   const getTheatres = () => {
     axios
       .get(BASE_URL + "/theater/theater")
@@ -82,7 +99,7 @@ const Configurations = () => {
     {
       key: "1",
       label: "Movies",
-      children: <Movies showModal={showModal} />,
+      children: <Movies showModal={showModal} movies={movies!} />,
       style: panelStyle,
       extra: (
         <PlusCircleOutlined
@@ -122,6 +139,22 @@ const Configurations = () => {
         handleCancel("theaters");
       });
   };
+  const CreateMovie = (data: any) => {
+    axios
+      .post(BASE_URL + "movie/movie", {
+        ...data,
+        image_url: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png",
+      })
+      .then((res) => {
+        console.log(res);
+        handleCancel("movies");
+        getMovies();
+      })
+      .catch((e) => {
+        console.log(e);
+        handleCancel("movies");
+      });
+  };
 
   return (
     <div>
@@ -143,118 +176,51 @@ const Configurations = () => {
       >
         <Form name="basic" autoComplete="off" form={form} layout="vertical">
           <Form.Item
-            label="Theater Name"
+            label="Movie Name"
             name="name"
-            rules={[
-              { required: true, message: "Please input your theater name!" },
-            ]}
+            rules={[{ required: true, message: "Please input movie name!" }]}
           >
-            <Input placeholder="Theater name" />
+            <Input placeholder="Movie name" />
           </Form.Item>
 
           <Form.Item
-            label="Theater Address"
-            name="address"
+            label="Description"
+            name="description"
             rules={[
-              { required: true, message: "Please input theater address!" },
+              { required: true, message: "Please input movie description!" },
             ]}
           >
-            <TextArea placeholder="Theater address" />
+            <TextArea placeholder="Description" />
           </Form.Item>
           <Form.Item
-            label="Technologies"
-            name="technologies"
-            rules={[
-              { required: true, message: "Please input theater technologies!" },
-            ]}
+            label="Genre"
+            name="genre"
+            rules={[{ required: true, message: "Please input movie genre!" }]}
           >
-            <Select
-              mode="multiple"
-              allowClear
-              style={{ width: "100%" }}
-              placeholder="Please select"
-              options={[
-                {
-                  label: "IMAX",
-                  value: "imax",
-                },
-                {
-                  label: "XD",
-                  value: "xd",
-                },
-                {
-                  label: "DOLBY ATMOS",
-                  value: "dolby_atmos",
-                },
-              ]}
-            />
+            <Input placeholder="Movie genre" />
           </Form.Item>
           <Form.Item
-            label="Cuisines"
-            name="cuisines"
-            rules={[
-              { required: true, message: "Please input theater cuisines!" },
-            ]}
+            label="Run time"
+            name="runtime"
+            rules={[{ required: true, message: "Please input movie runtime!" }]}
           >
-            <Select
-              mode="multiple"
-              allowClear
-              style={{ width: "100%" }}
-              placeholder="Please select"
-              options={[
-                {
-                  label: "Restaurant",
-                  value: "restaurant",
-                },
-                {
-                  label: "Bar",
-                  value: "bar",
-                },
-              ]}
-            />
+            <InputNumber placeholder="Movie runtime" className="w-full" />
           </Form.Item>
           <Form.Item
-            label="Shows"
-            name="shows"
-            rules={[
-              { required: true, message: "Please input theater show timings!" },
-            ]}
+            label="Rating"
+            name="rating"
+            rules={[{ required: true, message: "Please input movie rating!" }]}
           >
-            <Select
-              mode="multiple"
-              allowClear
-              style={{ width: "100%" }}
-              placeholder="Please select"
-              options={[
-                {
-                  label: "10:00 AM",
-                  value: "10:00 AM",
-                },
-                {
-                  label: "12:30 PM",
-                  value: "12:30 PM",
-                },
-                {
-                  label: "4:30 PM",
-                  value: "4:30 PM",
-                },
-                {
-                  label: "7:00 PM",
-                  value: "7:00 PM",
-                },
-                {
-                  label: "10:30 PM",
-                  value: "10:30 PM",
-                },
-              ]}
-            />
+            <InputNumber placeholder="Movie rating" className="w-full" />
           </Form.Item>
+
           <div className="w-full">
             <Button
               className="w-full"
               type="primary"
               onClick={() => {
                 console.log(form.getFieldsValue());
+                CreateMovie(form.getFieldsValue());
               }}
             >
               Submit

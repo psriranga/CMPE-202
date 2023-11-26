@@ -10,25 +10,10 @@ import { allMovies } from "../../../state/reducers/moviesReducer/moviesReducer";
 
 interface MovieConfigurations {
   showModal: (type: string) => void;
+  movies: Array<IMovie>;
 }
 
-const Movies = ({ showModal }: MovieConfigurations) => {
-  const [movies, setMovies] = useState<Array<IMovie>>();
-
-  const getMovies = () => {
-    axios
-      .get(BASE_URL + "/movies")
-      .then((res) => {
-        setMovies(res.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
-  useEffect(() => {
-    getMovies();
-  }, []);
+const Movies = ({ showModal, movies }: MovieConfigurations) => {
   useEffect(() => {
     console.log(movies, "movies");
   }, [movies]);
