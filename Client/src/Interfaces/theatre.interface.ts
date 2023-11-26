@@ -7,6 +7,7 @@ export interface ITheater {
   };
   distance: number;
   zip_code: string;
+  short_address: string;
   technologies: Array<string>;
   cuisines: Array<string>;
   shows: Array<string>;

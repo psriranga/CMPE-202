@@ -107,25 +107,6 @@ const Movies = () => {
       <div className="flex">
         <div className="w-[70%] pr-2 mr-2 grid grid-cols-2 gap-4">
           {tempMovies?.map((movie: IMovie) => (
-            // <div className="flex items-start mb-4 ">
-            //   <div className="w-1/3">
-            //     <img
-            //       src={movie.image_url}
-            //       alt=""
-            //       className="w-full max-h-40 object-cover"
-            //     />
-            //   </div>
-            //   <div className="w-2/3 pl-4 py-4">
-            //     <div className="mb-2 font-semibold text-lg">{movie.name}</div>
-            //     <div className="mr-4 mb-2">{movie.description}</div>
-            //     <div className="flex flex-wrap items-start">
-            //       <div className="mr-4 mb-2">{movie.genre}</div>
-
-            //       <div className="mr-4 mb-2">{movie.runtime} min</div>
-            //       <div>{movie.rating}/10</div>
-            //     </div>
-            //   </div>
-            // </div>
             <Card
               hoverable
               style={{ width: 240 }}

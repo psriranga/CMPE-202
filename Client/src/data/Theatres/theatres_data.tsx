@@ -6,6 +6,7 @@ export const theatres_data = [
       latitude: 37.3405074,
       longitude: -121.89838687255096,
     },
+    short_address: "",
     zip_code: "95110",
     technologies: ["imax", "xd", "dolby_atmos"],
     cuisines: ["restaurant"],

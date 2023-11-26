@@ -135,11 +135,11 @@ const Theatres = () => {
         </div>
       </div>
       <div className="flex">
-        <div className="w-[70%] pr-2 mr-2 ">
+        <div className="w-[70%] pr-2 mr-2 grid grid-cols-2 gap-x-2">
           {tempTheatres?.map((theatre: ITheater) => {
             return (
               <div
-                className="mb-2 mr-2 w-full h-fit rounded-md border-[1px] border-l-[4px] border-l-[#6BE9FA] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
+                className="mb-2 mr-2  h-fit rounded-md border-[1px] border-l-[4px] border-l-[#6BE9FA] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
                 onClick={() => {
                   navigate(`/theatres/${theatre.id}`, { state: theatre });
                 }}
@@ -148,6 +148,11 @@ const Theatres = () => {
                   {theatre?.name.length > 30
                     ? theatre.name.substring(0, 25) + "..."
                     : theatre.name}
+                </div>
+                <div className="my-2 text-[gray]">
+                  {theatre?.short_address.length > 34
+                    ? theatre.short_address.substring(0, 30) + "..."
+                    : theatre.short_address}
                 </div>
                 <div className="flex items-center justify-between mt-1">
                   {" "}
