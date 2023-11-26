@@ -11,11 +11,11 @@ class CastMember(models.Model):
 
 class Movie(models.Model):
     name = models.CharField(max_length=255)
-    runtime = models.CharField(max_length=10, default='120 min')
+    runtime = models.IntegerField()
     genre = models.CharField(max_length=255, default='Default Genre')
     rating = models.FloatField()
-    show_timings = models.JSONField(default=list)  # Assuming a list of strings
     description = models.TextField()
+    image_url = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.name
