@@ -14,10 +14,10 @@ const Theaters = ({ showModal }: TheaterConfigurations) => {
   const [theaters, setTheaters] = useState<Array<ITheater>>();
   const getTheatres = () => {
     axios
-      .get(BASE_URL + "/theatres")
+      .get(BASE_URL + "/theater/theater")
       .then((res) => {
         console.log("getting res", res.data);
-        setTheaters(res.data);
+        setTheaters(res.data.theaters);
       })
       .catch((e) => {
         console.log(e);
@@ -53,12 +53,8 @@ const Theaters = ({ showModal }: TheaterConfigurations) => {
                 </div>
               </div>
               <div className="flex items-center justify-between mt-1">
-                {" "}
                 <span className="text-gray-400 text-[12px]">
-                  {theatre.area}
-                </span>
-                <span className="text-gray-400 text-[12px]">
-                  {theatre.distance}
+                  {theatre.zip_code}
                 </span>
               </div>
             </div>

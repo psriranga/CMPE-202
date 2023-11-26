@@ -32,8 +32,8 @@ const TheatreListByMovie = (props: TheatreListByMovie) => {
             className="cursor-pointer"
           >
             <div className="flex items-center justify-between">
-              <span>{theatre.area}</span>
-              <span>{theatre.distance}</span>
+              <span>{theatre.zip_code}</span>
+              <span>{theatre.zip_code}</span>
             </div>
             <div className="flex flex-wrap gap-3 pt-8">
               {timing.map((time: string) => {

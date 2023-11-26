@@ -24,9 +24,11 @@ const Theatres = () => {
   const [longitude, setLongitude] = useState<string>("");
   const [latitude, setLatitude] = useState<string>("");
 
-  const getTheatres = () => {
+  const getTheatres = (params: any) => {
     axios
-      .get(BASE_URL + "/theatres")
+      .get(BASE_URL + "/theatres", {
+        params: params,
+      })
       .then((res) => {
         console.log("getting res", res.data);
         dispatch(allTheatres(res.data));
@@ -36,9 +38,6 @@ const Theatres = () => {
       });
   };
 
-  useEffect(() => {
-    getTheatres();
-  }, []);
   useEffect(() => {
     setTempTheatres(theatres.theatres);
   }, [theatres]);
@@ -86,9 +85,12 @@ const Theatres = () => {
   useEffect(() => {
     console.log(latitude, longitude);
     getZipCode();
+    getTheatres({ latitude: latitude, longitude: longitude });
   }, [latitude, longitude]);
 
-  const onSearch = () => {};
+  const onSearch = (zipCode: string) => {
+    getTheatres({ zip_code: zipCode });
+  };
   return (
     <div>
       <div className="py-4 flex  items-center justify-between">
@@ -99,7 +101,7 @@ const Theatres = () => {
             placeholder="Search by ZIP code"
             optionFilterProp="children"
             // onChange={onChange}
-            onSearch={onSearch}
+            onChange={(e) => getTheatres({ zip_code: e })}
             // filterOption={filterOption}
             bordered={false}
             className="ml-2"
@@ -147,10 +149,10 @@ const Theatres = () => {
                 <div className="flex items-center justify-between mt-1">
                   {" "}
                   <span className="text-gray-400 text-[12px]">
-                    {theatre.area}
+                    {theatre.zip_code}
                   </span>
                   <span className="text-gray-400 text-[12px]">
-                    {theatre.distance}
+                    {theatre.zip_code}
                   </span>
                 </div>
               </div>
