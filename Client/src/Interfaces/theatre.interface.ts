@@ -5,6 +5,7 @@ export interface ITheater {
     latitude: number;
     longitude: number;
   };
+  distance: number;
   zip_code: string;
   technologies: Array<string>;
   cuisines: Array<string>;

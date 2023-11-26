@@ -1,32 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../../../state/hooks";
 import { ITheater } from "../../../Interfaces/theatre.interface";
 import { DeleteTwoTone } from "@ant-design/icons";
-import axios from "axios";
-import { BASE_URL } from "../../../env";
-import { allTheatres } from "../../../state/reducers/theatreReducer/theatreReducer";
 
 interface TheaterConfigurations {
   showModal: (type: string) => void;
+  theaters: Array<ITheater>;
 }
 
-const Theaters = ({ showModal }: TheaterConfigurations) => {
-  const [theaters, setTheaters] = useState<Array<ITheater>>();
-  const getTheatres = () => {
-    axios
-      .get(BASE_URL + "/theater/theater")
-      .then((res) => {
-        console.log("getting res", res.data);
-        setTheaters(res.data.theaters);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
-  useEffect(() => {
-    getTheatres();
-  }, []);
+const Theaters = ({ showModal, theaters }: TheaterConfigurations) => {
   useEffect(() => {
     console.log(theaters, "movies");
   }, [theaters]);

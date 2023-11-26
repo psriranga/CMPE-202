@@ -10,13 +10,15 @@ import {
   Select,
   theme,
 } from "antd";
-import React, { CSSProperties, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import Movies from "./Movies/Movies";
 import Theaters from "./Theaters/Theaters";
 import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import { BASE_URL } from "../../env";
 import axios from "axios";
+import { get } from "http";
+import { ITheater } from "../../Interfaces/theatre.interface";
 
 interface CreateTheater {
   name: string;
@@ -30,6 +32,7 @@ const Configurations = () => {
   const { token } = theme.useToken();
   const [isMoviesModalOpen, setIsMoviesModalOpen] = useState(false);
   const [isTheatersModalOpen, setIsTheatersModalOpen] = useState(false);
+  const [theaters, setTheaters] = useState<Array<ITheater>>();
   const [form] = useForm();
 
   const panelStyle: React.CSSProperties = {
@@ -38,6 +41,22 @@ const Configurations = () => {
     borderRadius: token.borderRadiusLG,
     border: "none",
   };
+
+  const getTheatres = () => {
+    axios
+      .get(BASE_URL + "/theater/theater")
+      .then((res) => {
+        console.log("getting res", res.data);
+        setTheaters(res.data.theaters);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    getTheatres();
+  }, []);
 
   const showModal = (type: string) => {
     if (type === "movies") setIsMoviesModalOpen(true);
@@ -77,7 +96,7 @@ const Configurations = () => {
     {
       key: "2",
       label: "Theaters",
-      children: <Theaters showModal={showModal} />,
+      children: <Theaters showModal={showModal} theaters={theaters!} />,
       style: panelStyle,
       extra: (
         <PlusCircleOutlined
@@ -92,10 +111,11 @@ const Configurations = () => {
 
   const CreateTheater = (data: CreateTheater) => {
     axios
-      .post(BASE_URL + "theater/theater/create", data)
+      .post(BASE_URL + "theater/theater", data)
       .then((res) => {
         console.log(res);
         handleCancel("theaters");
+        getTheatres();
       })
       .catch((e) => {
         console.log(e);

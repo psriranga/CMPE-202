@@ -26,12 +26,12 @@ const Theatres = () => {
 
   const getTheatres = (params: any) => {
     axios
-      .get(BASE_URL + "/theatres", {
+      .get(BASE_URL + "/theater/theater", {
         params: params,
       })
       .then((res) => {
         console.log("getting res", res.data);
-        dispatch(allTheatres(res.data));
+        dispatch(allTheatres(res.data.theaters));
       })
       .catch((e) => {
         console.log(e);
@@ -83,26 +83,29 @@ const Theatres = () => {
         });
   };
   useEffect(() => {
-    console.log(latitude, longitude);
     getZipCode();
-    getTheatres({ latitude: latitude, longitude: longitude });
+    if (latitude && longitude)
+      getTheatres({ latitude: latitude, longitude: longitude });
   }, [latitude, longitude]);
 
-  const onSearch = (zipCode: string) => {
-    getTheatres({ zip_code: zipCode });
-  };
   return (
     <div>
       <div className="py-4 flex  items-center justify-between">
         <div className="font-semibold text-[24px] flex items-center">
           Theaters Near <span className="ml-2">{zipcode}</span>{" "}
           <Select
+            allowClear
             showSearch
             placeholder="Search by ZIP code"
             optionFilterProp="children"
-            // onChange={onChange}
-            onChange={(e) => getTheatres({ zip_code: e })}
-            // filterOption={filterOption}
+            onChange={(e) => {
+              console.log(e, "event");
+              if (e === undefined) {
+                getTheatres({ latitude: latitude, longitude: longitude });
+              } else {
+                getTheatres({ zip_code: e });
+              }
+            }}
             bordered={false}
             className="ml-2"
             options={[
@@ -132,11 +135,11 @@ const Theatres = () => {
         </div>
       </div>
       <div className="flex">
-        <div className="w-[70%] pr-2 mr-2 grid grid-cols-2 gap-6">
+        <div className="w-[70%] pr-2 mr-2 ">
           {tempTheatres?.map((theatre: ITheater) => {
             return (
               <div
-                className="w-full h-fit rounded-md border-[1px] border-l-[4px] border-l-[#6BE9FA] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
+                className="mb-2 mr-2 w-full h-fit rounded-md border-[1px] border-l-[4px] border-l-[#6BE9FA] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
                 onClick={() => {
                   navigate(`/theatres/${theatre.id}`, { state: theatre });
                 }}
@@ -152,7 +155,7 @@ const Theatres = () => {
                     {theatre.zip_code}
                   </span>
                   <span className="text-gray-400 text-[12px]">
-                    {theatre.zip_code}
+                    {theatre.distance} miles
                   </span>
                 </div>
               </div>

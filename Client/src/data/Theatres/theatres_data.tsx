@@ -13,5 +13,6 @@ export const theatres_data = [
     no_of_rows: 0,
     no_of_cols: 0,
     id: 1,
+    distance: 0,
   },
 ];
