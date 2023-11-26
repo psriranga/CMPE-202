@@ -25,7 +25,14 @@ class TheaterListCreateAPI(APIView):
         }
         data["zip_code"] = location.raw['display_name'].split(",")[-2]
         address = geolocator.reverse((location.latitude, location.longitude), language="en").raw["address"]
-        data["short_address"] = address["suburb"]+", "+address["city"]+", "+address["state"]
+        short_address_list = []
+        if address.get("suburb") or address.get("road"):
+            short_address_list.append(address.get("suburb") or address.get("road"))
+        if address.get("city"):
+            short_address_list.append(address.get("city"))
+        if address.get("state"):
+            short_address_list.append(address.get("state"))
+        data["short_address"] = ", ".join(short_address_list)
         serializer = self.Serializer(data=data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
