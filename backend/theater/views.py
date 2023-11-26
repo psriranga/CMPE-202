@@ -1,4 +1,5 @@
 from theater.serializers import TheaterSerializer, TheaterOutputSerializer
+from rest_framework import serializers
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -33,7 +34,10 @@ class TheaterListCreateAPI(APIView):
         query_params = request.query_params
         latitude = query_params.get("latitude", "")
         longitude = query_params.get("longitude", "")
-        theaters = Theater.objects.filter()
+        zip_code = query_params.get("zip_code", "")
+        theaters = Theater.objects.all()
+        if zip_code:
+            theaters = theaters.filter(zip_code=zip_code)
         theaters = TheaterOutputSerializer(theaters, many=True).data
         for theater in theaters:
             if latitude and longitude:
