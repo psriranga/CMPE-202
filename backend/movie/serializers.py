@@ -5,7 +5,7 @@ class MovieSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Movie
-        fields = ['id', 'name', 'runtime', 'genre', 'rating', 'description', 'image_url']
+        fields = ['id', 'name', 'runtime', 'genre', 'rating', 'description', 'image_url', 'start_date']
 
     def create(self, validated_data):
         movie = Movie.objects.create(**validated_data)

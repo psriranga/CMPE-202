@@ -5,12 +5,20 @@ from rest_framework.response import Response
 from rest_framework import status
     
 
-class MovieGetAPI(APIView):
+class MovieGetDeleteAPI(APIView):
     def get(self, request, pk):
         try:
             movie = Movie.objects.get(id=pk)
             serializer = MovieSerializer(movie)
             return Response(serializer.data)
+        except Movie.DoesNotExist:
+            return Response({'message': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    def delete(self, request, pk):
+        try:
+            movie = Movie.objects.get(id=pk)
+            movie.delete()
+            return Response({'message': 'Movie deleted successfully'})
         except Movie.DoesNotExist:
             return Response({'message': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
     
