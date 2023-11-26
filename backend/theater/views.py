@@ -7,6 +7,7 @@ from core.mixins import ApiAuthenticationMixin
 from core.errors import MissingResource
 from theater.services import theater_create
 from geopy.geocoders import Nominatim
+from geopy.distance import geodesic 
 import random
 
 class TheaterListCreateAPI(APIView):
@@ -29,8 +30,18 @@ class TheaterListCreateAPI(APIView):
         return Response({"theater": self.Serializer(instance=theater).data}, status=status.HTTP_201_CREATED)
     
     def get(self, request):
+        query_params = request.query_params
+        latitude = query_params.get("latitude", "")
+        longitude = query_params.get("longitude", "")
         theaters = Theater.objects.filter()
-        return Response({"theaters": TheaterOutputSerializer(theaters, many=True).data}, status=status.HTTP_200_OK)
+        theaters = TheaterOutputSerializer(theaters, many=True).data
+        for theater in theaters:
+            if latitude and longitude:
+                distance = geodesic((theater["location"]["latitude"],theater["location"]["longitude"]), (latitude, longitude)).miles
+            else:
+                distance = 0
+            theater["distance"] = round(distance, 1)
+        return Response({"theaters": theaters}, status=status.HTTP_200_OK)
 
 
 class TheaterGetAPI(APIView):
