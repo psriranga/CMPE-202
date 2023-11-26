@@ -18,11 +18,14 @@ class TheaterListCreateAPI(APIView):
         geolocator = Nominatim(user_agent=f"User agent: {random.randint(1,10000)}")
         data = request.data
         location = geolocator.geocode(data["address"])
+        location
         data["location"] = {
             "latitude": location.latitude,
             "longitude": location.longitude
         }
         data["zip_code"] = location.raw['display_name'].split(",")[-2]
+        address = geolocator.reverse((location.latitude, location.longitude), language="en").raw["address"]
+        data["short_address"] = address["suburb"]+", "+address["city"]+", "+address["state"]
         serializer = self.Serializer(data=data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
@@ -42,6 +45,12 @@ class TheaterListCreateAPI(APIView):
         for theater in theaters:
             if latitude and longitude:
                 distance = geodesic((theater["location"]["latitude"],theater["location"]["longitude"]), (latitude, longitude)).miles
+            elif zip_code:
+                geolocator = Nominatim(user_agent=f"User agent: {random.randint(1,10000)}")
+                location = geolocator.geocode(f"{zip_code}, USA")
+                print(location.raw)
+                coordinates = (location.latitude, location.longitude)
+                distance = geodesic(coordinates, (theater["location"]["latitude"],theater["location"]["longitude"])).miles
             else:
                 distance = 0
             theater["distance"] = round(distance, 1)
