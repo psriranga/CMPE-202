@@ -47,16 +47,12 @@ class CreateShowsView(APIView):
             return Response({'error': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
 
         date_range = [start_date + timedelta(days=x) for x in range((end_date - start_date).days + 1)]
-        print("Hiiiiiii------------------------------")
         for show_date in date_range:
             for theater_id in theater_id_list:
                 try:
                     theater = Theater.objects.get(id=theater_id)
                     movie = Movie.objects.get(id=movie_id)
-                    print("Hello---------------------",theater, movie)
-                    print("Hello Shows --------------", theater.shows)
                     for show_time in theater.shows:
-                        print("Show time is -------------", show_time)
                         show_datetime = datetime.combine(show_date, datetime.strptime(show_time, '%H:%M').time())
                         seat_matrix = [[0 for _ in range(theater.no_of_cols)] for _ in range(theater.no_of_rows)]
                         print(theater, movie)

@@ -17,10 +17,10 @@ class PointFieldSerializer(serializers.Field):
 
 class TheaterSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=128)
+    address = serializers.CharField()
     location = PointFieldSerializer()
     zip_code = serializers.CharField(max_length=8)
     technologies = serializers.JSONField(default=list)
-    seatingCategories = serializers.JSONField(default=list)
     cuisines = serializers.JSONField(default=list)
     shows = serializers.JSONField(default=list)
     no_of_rows = serializers.IntegerField(default=0)
@@ -28,3 +28,6 @@ class TheaterSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Theater.objects.create(**validated_data)
+
+class TheaterOutputSerializer(TheaterSerializer):
+    id = serializers.IntegerField()
