@@ -3,14 +3,20 @@ from .serializers import MovieSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-    
-
+from django.utils import timezone
+from datetime import datetime
 class MovieGetDeleteAPI(APIView):
     def get(self, request, pk):
         try:
             movie = Movie.objects.get(id=pk)
             serializer = MovieSerializer(movie)
-            return Response(serializer.data)
+            movie = serializer.data
+            start_date = datetime.strptime(movie["start_date"], "%Y-%m-%d").date()
+            if start_date>timezone.now().date():
+                movie["type"] = "Upcoming"
+            else:
+                movie["type"] = "Playing Now"
+            return Response({"movie": movie})
         except Movie.DoesNotExist:
             return Response({'message': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
     
@@ -26,11 +32,18 @@ class MovieListCreateAPI(APIView):
     def get(self, request):
         movies = Movie.objects.all()
         serializer = MovieSerializer(movies, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        movies = serializer.data
+        for movie in movies:
+            start_date = datetime.strptime(movie["start_date"], "%Y-%m-%d").date()
+            if start_date>timezone.now().date():
+                movie["type"] = "Upcoming"
+            else:
+                movie["type"] = "Playing Now"
+        return Response({"movies": movies}, status=status.HTTP_200_OK)
     
     def post(self, request):
         serializer = MovieSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({"movie":serializer.data}, status=status.HTTP_201_CREATED)
 

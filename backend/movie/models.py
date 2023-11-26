@@ -14,7 +14,7 @@ class Movie(models.Model):
     name = models.CharField(max_length=255)
     runtime = models.IntegerField()
     genre = models.CharField(max_length=255, default='Default Genre')
-    start_date = models.DateField(default=timezone.now)
+    start_date = models.DateField(default=timezone.now().date)
     rating = models.FloatField()
     description = models.TextField()
     image_url = models.URLField(null=True, blank=True)
