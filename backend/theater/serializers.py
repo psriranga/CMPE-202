@@ -18,6 +18,7 @@ class PointFieldSerializer(serializers.Field):
 class TheaterSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=128)
     address = serializers.CharField()
+    short_address = serializers.CharField()
     location = PointFieldSerializer()
     zip_code = serializers.CharField(max_length=8)
     technologies = serializers.JSONField(default=list)

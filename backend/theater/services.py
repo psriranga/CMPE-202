@@ -5,6 +5,7 @@ def theater_create(
     *,
     name: str,
     address: str,
+    short_address: str,
     location: Point,
     zip_code: str,
     technologies: list,  # New parameter
@@ -16,6 +17,7 @@ def theater_create(
     theater = Theater(
         name=name,
         address=address,
+        short_address=short_address,
         location=location,
         zip_code=zip_code,
         technologies=technologies,
