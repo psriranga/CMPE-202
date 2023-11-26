@@ -64,15 +64,21 @@ class TheaterListCreateAPI(APIView):
         return Response({"theaters": theaters}, status=status.HTTP_200_OK)
 
 
-class TheaterGetAPI(APIView):
+class TheaterGetDeleteAPI(APIView):
     Serializer = TheaterSerializer
-    def get_object_or_not_found(self, request, pk):
-        theatre = Theater.objects.get(id=pk)
-        if not theatre:
-            raise MissingResource(f'No such Theater: {pk}')
-        return Theater
-
+    
     def get(self, request, pk):
-        theater = self.get_object_or_not_found(request, pk)
-        print(theater.location)
-        Response({"theater": TheaterOutputSerializer(instance=theater).data}, status=status.HTTP_200_OK)
+        try:
+            movie = Theater.objects.get(id=pk)
+            serializer = TheaterSerializer(movie)
+            return Response(serializer.data)
+        except Theater.DoesNotExist:
+            return Response({'message': 'Theater not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    def delete(self, request, pk):
+        try:
+            movie = Theater.objects.get(id=pk)
+            movie.delete()
+            return Response({'message': 'Theater deleted successfully'})
+        except Theater.DoesNotExist:
+            return Response({'message': 'Theater not found'}, status=status.HTTP_404_NOT_FOUND)
