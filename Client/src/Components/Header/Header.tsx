@@ -63,7 +63,7 @@ const Header = () => {
           Configurations
         </span>
       ),
-      key: "1",
+      key: "2",
     },
     {
       type: "divider",

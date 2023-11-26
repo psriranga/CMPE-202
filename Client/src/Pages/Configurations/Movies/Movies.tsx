@@ -1,16 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../../state/hooks";
 import { DeleteTwoTone, StarTwoTone } from "@ant-design/icons";
 import { Card } from "antd";
 import Meta from "antd/es/card/Meta";
 import { IMovie } from "../../../Interfaces/movie.interface";
+import axios from "axios";
+import { BASE_URL } from "../../../env";
+import { allMovies } from "../../../state/reducers/moviesReducer/moviesReducer";
 
 interface MovieConfigurations {
   showModal: (type: string) => void;
 }
 
 const Movies = ({ showModal }: MovieConfigurations) => {
-  const movies = useAppSelector((state: any) => state.movies);
+  const [movies, setMovies] = useState<Array<IMovie>>();
+
+  const getMovies = () => {
+    axios
+      .get(BASE_URL + "/movies")
+      .then((res) => {
+        setMovies(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    getMovies();
+  }, []);
   useEffect(() => {
     console.log(movies, "movies");
   }, [movies]);
@@ -19,7 +37,7 @@ const Movies = ({ showModal }: MovieConfigurations) => {
     <div>
       {" "}
       <div className="grid grid-cols-3 gap-4">
-        {movies.movies?.map((movie: IMovie) => {
+        {movies?.map((movie: IMovie) => {
           return (
             <Meta
               title={

@@ -32,7 +32,7 @@ const Signup = () => {
 
   const signUp = (data: ISignUp) => {
     axios
-      .post("http://localhost:8000/account/sign_up", {
+      .post("http://127.0.0.1:8000/account/sign_up", {
         ...data,
         role: "member",
         membership_type: isPremiumMember ? "premium" : "regular",

@@ -1,22 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../../state/hooks";
 import { ITheater } from "../../../Interfaces/theatre.interface";
 import { DeleteTwoTone } from "@ant-design/icons";
+import axios from "axios";
+import { BASE_URL } from "../../../env";
+import { allTheatres } from "../../../state/reducers/theatreReducer/theatreReducer";
 
 interface TheaterConfigurations {
   showModal: (type: string) => void;
 }
 
 const Theaters = ({ showModal }: TheaterConfigurations) => {
-  const theatres = useAppSelector((state: any) => state.theatres);
+  const [theaters, setTheaters] = useState<Array<ITheater>>();
+  const getTheatres = () => {
+    axios
+      .get(BASE_URL + "/theatres")
+      .then((res) => {
+        console.log("getting res", res.data);
+        setTheaters(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   useEffect(() => {
-    console.log(theatres, "movies");
-  }, [theatres]);
+    getTheatres();
+  }, []);
+  useEffect(() => {
+    console.log(theaters, "movies");
+  }, [theaters]);
   return (
     <div>
       {" "}
       <div className="grid grid-cols-2 gap-4">
-        {theatres.theatres?.map((theatre: ITheater) => {
+        {theaters?.map((theatre: ITheater) => {
           return (
             <div
               className="rounded-md border-[1px] border-l-[4px] border-l-[#6BE9FA] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
