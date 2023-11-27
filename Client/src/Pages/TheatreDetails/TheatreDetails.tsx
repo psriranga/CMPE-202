@@ -12,13 +12,16 @@ const TheatreDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const today = new Date();
   const [theater, setTheater] = useState<ITheater>();
-
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [dateItems, setDateItems] = useState<any>();
+  const [theatersData, setTheatersData] = useState<any>();
 
   useEffect(() => {
-    if (id) getTheaterById(parseInt(id));
-  }, [id]);
+    if (id && selectedDate) getTheaterById(parseInt(id));
+    console.log(id);
+  }, [id, selectedDate]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -29,7 +32,7 @@ const TheatreDetails = () => {
     if (showDateParam) {
       setSelectedDate(showDateParam);
     } else {
-      setSelectedDate(dayjs(new Date()).format("DD-MM-YYYY"));
+      setSelectedDate(dayjs(new Date()).format("YYYY-MM-DD"));
     }
   }, [selectedDate]);
 
@@ -40,9 +43,12 @@ const TheatreDetails = () => {
       key: "loading_msg",
     });
     axios
-      .get(BASE_URL + "theater/theater/" + id)
+      .get(BASE_URL + "shows/get-movies/" + id, {
+        params: { date: selectedDate },
+      })
       .then((res) => {
-        setTheater(res.data);
+        setTheatersData(res.data);
+        console.log("movies data", res.data);
         message.destroy("loading_msg");
       })
       .catch((e) => {
@@ -68,36 +74,48 @@ const TheatreDetails = () => {
     },
   ];
 
-  const today = new Date();
-  const initialDates = [];
-  const initialDateItems = [];
+  const getFormattedDates = () => {
+    const initialDateItems = [];
+    for (let i = 0; i < 15; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
 
-  for (let i = 0; i < 20; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
-
-    if (i === 0) {
-      initialDates.push("Today");
-      initialDateItems.push({
-        key: dayjs(date).format("DD-MM-YYYY"),
-        label: <span className="font-semibold">Today</span>,
-        children: <MoviesListByDate date={dayjs(date).format("DD-MM-YYYY")} />,
-      });
-    } else {
-      const formattedDate = date.toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-      });
-      initialDates.push(formattedDate);
-      initialDateItems.push({
-        key: dayjs(date).format("DD-MM-YYYY"),
-        label: <span className="font-semibold">{formattedDate}</span>,
-        children: <MoviesListByDate date={dayjs(date).format("DD-MM-YYYY")} />,
-      });
+      if (i === 0) {
+        // initialDates.push("Today");
+        initialDateItems.push({
+          key: dayjs(date).format("YYYY-MM-DD"),
+          label: <span className="font-semibold">Today</span>,
+          children: (
+            <MoviesListByDate
+              date={dayjs(date).format("YYYY-MM-DD")}
+              movies={theatersData?.movies}
+            />
+          ),
+        });
+      } else {
+        const formattedDate = date.toLocaleDateString("en-US", {
+          month: "2-digit",
+          day: "2-digit",
+        });
+        // initialDates.push(formattedDate);
+        initialDateItems.push({
+          key: dayjs(date).format("YYYY-MM-DD"),
+          label: <span className="font-semibold">{formattedDate}</span>,
+          children: (
+            <MoviesListByDate
+              date={dayjs(date).format("YYYY-MM-DD")}
+              movies={theatersData?.movies}
+            />
+          ),
+        });
+      }
     }
-  }
+    setDateItems(initialDateItems);
+  };
 
-  const [dateItems, setDateItems] = useState(initialDateItems);
+  useEffect(() => {
+    if (theatersData) getFormattedDates();
+  }, [theatersData]);
 
   const handleTabChange = (activeKey: string) => {
     setSelectedDate(activeKey);
