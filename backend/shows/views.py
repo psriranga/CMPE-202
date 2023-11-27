@@ -93,7 +93,7 @@ class ShowGetDeleteAPI(APIView):
 class ShowsGetByMovieAPI(APIView):
     def get(self, request, movie_id):
         query_params = request.query_params
-        date_str = query_params.get("date", "")
+        date_str = query_params.get("date", str(datetime.now().date()))
         date = datetime.strptime(date_str, "%Y-%m-%d")
         shows = Show.objects.filter(show_timing__date=date, movie__id=movie_id).order_by('theater', 'show_timing')
         shows = Show.objects.filter(
