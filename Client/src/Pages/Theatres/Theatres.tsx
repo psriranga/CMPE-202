@@ -1,37 +1,37 @@
 import Search from "antd/es/input/Search";
 import React, { useEffect, useState } from "react";
-import { filters } from "../../data/Theatres/filters_data";
-import { ITheater, TheatreFilter } from "../../Interfaces/theatre.interface";
 import { Checkbox, Select, message } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { allTheatres } from "../../state/reducers/theatreReducer/theatreReducer";
 import { BASE_URL } from "../../env";
 import { useAppSelector } from "../../state/hooks";
+import { ITheater, TheaterFilter } from "../../Interfaces/theater.interface";
+import { allTheaters } from "../../state/reducers/theatreReducer/theatreReducer";
+import { filters } from "../../data/Theatres/filters_data";
 
-const Theatres = () => {
+const Theaters = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const theatres = useAppSelector((state: any) => state.theatres);
-  const [tempTheatres, setTempTheatres] = useState<Array<ITheater>>();
-  const getFilteredTheatres = (data: Array<ITheater>, searchString: string) => {
+  const theaters = useAppSelector((state: any) => state.theaters);
+  const [tempTheaters, setTemptheaters] = useState<Array<ITheater>>();
+  const getFilteredtheaters = (data: Array<ITheater>, searchString: string) => {
     const regex = new RegExp(searchString, "i");
-    console.log(data.filter((theatre) => regex.test(theatre.name)));
-    setTempTheatres(data.filter((theatre) => regex.test(theatre.name)));
+    console.log(data.filter((theater) => regex.test(theater.name)));
+    setTemptheaters(data.filter((theater) => regex.test(theater.name)));
   };
   const [zipcode, setZipcode] = useState("");
   const [longitude, setLongitude] = useState<string>("");
   const [latitude, setLatitude] = useState<string>("");
 
-  const getTheatres = (params: any) => {
+  const gettheaters = (params: any) => {
     axios
       .get(BASE_URL + "/theater/theater", {
         params: params,
       })
       .then((res) => {
         console.log("getting res", res.data);
-        dispatch(allTheatres(res.data.theaters));
+        dispatch(allTheaters(res.data.theaters));
       })
       .catch((e) => {
         console.log(e);
@@ -39,8 +39,8 @@ const Theatres = () => {
   };
 
   useEffect(() => {
-    setTempTheatres(theatres.theatres);
-  }, [theatres]);
+    setTemptheaters(theaters.theaters);
+  }, [theaters]);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position: any) => {
@@ -85,7 +85,7 @@ const Theatres = () => {
   useEffect(() => {
     getZipCode();
     if (latitude && longitude)
-      getTheatres({ latitude: latitude, longitude: longitude });
+      gettheaters({ latitude: latitude, longitude: longitude });
   }, [latitude, longitude]);
 
   return (
@@ -101,9 +101,9 @@ const Theatres = () => {
             onChange={(e) => {
               console.log(e, "event");
               if (e === undefined) {
-                getTheatres({ latitude: latitude, longitude: longitude });
+                gettheaters({ latitude: latitude, longitude: longitude });
               } else {
-                getTheatres({ zip_code: e });
+                gettheaters({ zip_code: e });
               }
             }}
             bordered={false}
@@ -126,41 +126,41 @@ const Theatres = () => {
         </div>
         <div>
           <Search
-            placeholder="Search for theatre"
+            placeholder="Search for theater"
             enterButton
             onChange={(e) => {
-              getFilteredTheatres(theatres.theatres, e.target.value);
+              getFilteredtheaters(theaters.theaters, e.target.value);
             }}
           />
         </div>
       </div>
       <div className="flex">
         <div className="w-[70%] pr-2 mr-2 grid grid-cols-2 gap-x-2">
-          {tempTheatres?.map((theatre: ITheater) => {
+          {tempTheaters?.map((theater: ITheater) => {
             return (
               <div
                 className="mb-2 mr-2  h-fit rounded-md border-[1px] border-l-[4px] border-l-[#6BE9FA] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
                 onClick={() => {
-                  navigate(`/theatres/${theatre.id}`, { state: theatre });
+                  navigate(`/theaters/${theater.id}`, { state: theater });
                 }}
               >
                 <div>
-                  {theatre?.name.length > 30
-                    ? theatre.name.substring(0, 25) + "..."
-                    : theatre.name}
+                  {theater?.name.length > 30
+                    ? theater.name.substring(0, 25) + "..."
+                    : theater.name}
                 </div>
                 <div className="my-2 text-[gray]">
-                  {theatre?.short_address.length > 34
-                    ? theatre.short_address.substring(0, 30) + "..."
-                    : theatre.short_address}
+                  {theater?.short_address.length > 34
+                    ? theater.short_address.substring(0, 30) + "..."
+                    : theater.short_address}
                 </div>
                 <div className="flex items-center justify-between mt-1">
                   {" "}
                   <span className="text-gray-400 text-[12px]">
-                    {theatre.zip_code}
+                    {theater.zip_code}
                   </span>
                   <span className="text-gray-400 text-[12px]">
-                    {theatre.distance} miles
+                    {theater.distance} miles
                   </span>
                 </div>
               </div>
@@ -170,7 +170,7 @@ const Theatres = () => {
         <div className="w-[30%]  pl-2 ml-2">
           <div className="font-semibold text-[18px]">Narrow Your Selection</div>
           <div className="mt-2">
-            {filters.map((filter: TheatreFilter) => {
+            {filters.map((filter: TheaterFilter) => {
               return (
                 <div className="mb-2">
                   <span className="font-semibold">{filter.title}</span>
@@ -193,4 +193,4 @@ const Theatres = () => {
   );
 };
 
-export default Theatres;
+export default Theaters;

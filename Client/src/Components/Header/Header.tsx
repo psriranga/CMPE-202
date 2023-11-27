@@ -109,7 +109,7 @@ const Header = () => {
         <div
           className="mr-4 font-semibold hover:text-white cursor-pointer"
           onClick={() => {
-            navigate("/theatres");
+            navigate("/theaters");
           }}
         >
           Theatres

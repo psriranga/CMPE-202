@@ -124,6 +124,9 @@ const Movies = () => {
                   src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
                 />
               }
+              onClick={() => {
+                navigate(`${movie.id}`);
+              }}
             >
               <Meta
                 title={movie.name}

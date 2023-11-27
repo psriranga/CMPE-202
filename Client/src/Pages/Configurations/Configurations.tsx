@@ -21,9 +21,10 @@ import TextArea from "antd/es/input/TextArea";
 import { BASE_URL } from "../../env";
 import axios from "axios";
 import { get } from "http";
-import { ITheater } from "../../Interfaces/theatre.interface";
+import { ITheater } from "../../Interfaces/theater.interface";
 import { IMovie } from "../../Interfaces/movie.interface";
 import dayjs from "dayjs";
+import Shows from "./Shows/Shows";
 
 interface CreateTheater {
   name: string;
@@ -37,9 +38,18 @@ const Configurations = () => {
   const { token } = theme.useToken();
   const [isMoviesModalOpen, setIsMoviesModalOpen] = useState(false);
   const [isTheatersModalOpen, setIsTheatersModalOpen] = useState(false);
+  const [isShowsModalOpen, setIsShowsModalOpen] = useState(false);
   const [theaters, setTheaters] = useState<Array<ITheater>>();
   const [movies, setMovies] = useState<Array<IMovie>>();
+  const [moviesOptions, setMoviesOptions] =
+    useState<Array<{ label: string; value: number }>>();
+  const [theaterOptions, setTheaterOptions] =
+    useState<Array<{ label: string; value: number }>>();
   const [form] = useForm();
+
+  useEffect(() => {
+    console.log(isShowsModalOpen);
+  }, [isShowsModalOpen]);
 
   const panelStyle: React.CSSProperties = {
     marginBottom: 24,
@@ -48,11 +58,27 @@ const Configurations = () => {
     border: "none",
   };
 
+  const getTheaterOptions = (theaters: Array<ITheater>) => {
+    let tempOptions: any = [];
+    theaters.map((theater: ITheater) => {
+      tempOptions.push({ label: theater.name, value: theater.id });
+    });
+    setTheaterOptions(tempOptions);
+  };
+  const getMovieOptions = (movies: Array<IMovie>) => {
+    let tempOptions: any = [];
+    movies.map((movie: IMovie) => {
+      tempOptions.push({ label: movie.name, value: movie.id });
+    });
+    setMoviesOptions(tempOptions);
+  };
+
   const getMovies = () => {
     axios
       .get(BASE_URL + "movie/movie")
       .then((res) => {
         setMovies(res.data.movies);
+        getMovieOptions(res.data.movies);
       })
       .catch((e) => {
         message.error(e.message);
@@ -69,6 +95,7 @@ const Configurations = () => {
       .then((res) => {
         console.log("getting res", res.data);
         setTheaters(res.data.theaters);
+        getTheaterOptions(res.data.theaters);
       })
       .catch((e) => {
         message.error(e.message);
@@ -81,20 +108,18 @@ const Configurations = () => {
   }, []);
 
   const showModal = (type: string) => {
+    console.log(type);
     if (type === "movies") setIsMoviesModalOpen(true);
-    else setIsTheatersModalOpen(true);
-  };
-
-  const handleOk = (type: string) => {
-    if (type === "movies") {
-      setIsMoviesModalOpen(false);
-    } else setIsTheatersModalOpen(false);
+    else if (type === "shows") {
+      setIsShowsModalOpen(true);
+    } else setIsTheatersModalOpen(true);
   };
 
   const handleCancel = (type: string) => {
     if (type === "movies") {
       setIsMoviesModalOpen(false);
-    } else setIsTheatersModalOpen(false);
+    } else if (type === "shows") setIsShowsModalOpen(false);
+    else setIsTheatersModalOpen(false);
 
     form.resetFields();
   };
@@ -137,6 +162,20 @@ const Configurations = () => {
         />
       ),
     },
+    {
+      key: "3",
+      label: "Shows",
+      children: <Shows />,
+      style: panelStyle,
+      extra: (
+        <PlusCircleOutlined
+          onClick={(e) => {
+            e.stopPropagation();
+            showModal("shows");
+          }}
+        />
+      ),
+    },
   ];
 
   const CreateTheater = (data: CreateTheater) => {
@@ -167,6 +206,26 @@ const Configurations = () => {
       .catch((e) => {
         console.log(e);
         handleCancel("movies");
+      });
+  };
+
+  const CreateShow = (data: any) => {
+    console.log({
+      ...data,
+      start_date: dayjs(data.start_date).format("YYYY-MM-DD"),
+      end_date: dayjs(data.end_date).format("YYYY-MM-DD"),
+    });
+    axios
+      .post(BASE_URL + "shows/create/shows", {
+        ...data,
+        start_date: dayjs(data.start_date).format("YYYY-MM-DD"),
+        end_date: dayjs(data.end_date).format("YYYY-MM-DD"),
+      })
+      .then((res) => {
+        handleCancel("shows");
+      })
+      .catch((e) => {
+        message.error(e.message);
       });
   };
 
@@ -403,6 +462,79 @@ const Configurations = () => {
               onClick={() => {
                 console.log(form.getFieldsValue());
                 CreateTheater(form.getFieldsValue());
+              }}
+            >
+              Submit
+            </Button>
+          </div>
+        </Form>
+      </Drawer>
+      <Drawer
+        title="Configure Shows"
+        placement="right"
+        onClose={() => handleCancel("shows")}
+        open={isShowsModalOpen}
+        width={500}
+      >
+        <Form name="basic" form={form} layout="vertical">
+          <Form.Item
+            label="Movie"
+            name="movie_id"
+            rules={[{ required: true, message: "Please input movie name!" }]}
+          >
+            <Select
+              allowClear
+              style={{ width: "100%" }}
+              placeholder="Please select"
+              options={moviesOptions}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Theaters"
+            name="theater_id_list"
+            rules={[
+              { required: true, message: "Please input theater technologies!" },
+            ]}
+          >
+            <Select
+              mode="multiple"
+              allowClear
+              style={{ width: "100%" }}
+              placeholder="Please select"
+              options={theaterOptions}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Start date"
+            name="start_date"
+            rules={[{ required: true, message: "Please input start date!" }]}
+          >
+            <DatePicker
+              placeholder="Select date"
+              className="w-full"
+              format={"YYYY-MM-DD"}
+            />
+          </Form.Item>
+          <Form.Item
+            label="End date"
+            name="end_date"
+            rules={[{ required: true, message: "Please input end date!" }]}
+          >
+            <DatePicker
+              placeholder="Select date"
+              className="w-full"
+              format={"YYYY/MM/DD"}
+            />
+          </Form.Item>
+
+          <div className="w-full">
+            <Button
+              className="w-full"
+              type="primary"
+              onClick={() => {
+                console.log(form.getFieldsValue());
+                CreateShow(form.getFieldsValue());
               }}
             >
               Submit

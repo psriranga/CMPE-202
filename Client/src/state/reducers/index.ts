@@ -8,7 +8,7 @@ import authReducer from "./authReducer/authReducer";
 const reducers = combineReducers({
   auth: authReducer,
   movies: moviesReducer,
-  theatres: theatreReducer,
+  theaters: theatreReducer,
   cart: cartReducer,
   orderConfirmation: orderConfirmation,
 });

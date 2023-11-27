@@ -4,7 +4,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { featured_movies } from "../../../data/FeaturedMovies/FeaturedMovies";
 import { IMovie } from "../../../Interfaces/movie.interface";
-import { ITheater } from "../../../Interfaces/theatre.interface";
+import { ITheater } from "../../../Interfaces/theater.interface";
 export interface MoviesListByDateInterface {
   date: string;
 }

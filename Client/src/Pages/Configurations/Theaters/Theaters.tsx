@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { DeleteTwoTone } from "@ant-design/icons";
 import axios from "axios";
 import { BASE_URL } from "../../../env";
-import { ITheater } from "../../../Interfaces/theatre.interface";
+import { ITheater } from "../../../Interfaces/theater.interface";
 
 interface TheaterConfigurations {
   showModal: (type: string) => void;

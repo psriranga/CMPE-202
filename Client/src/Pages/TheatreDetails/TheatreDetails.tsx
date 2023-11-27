@@ -1,22 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ITheater } from "../../Interfaces/theatre.interface";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { ITheater } from "../../Interfaces/theater.interface";
 import { Tabs, TabsProps, message } from "antd";
 import FeaturedMovies from "./Tabs/FeaturedMovies";
 import MoviesListByDate from "./Tabs/MoviesListByDate";
 import dayjs from "dayjs";
 import axios from "axios";
+import { BASE_URL } from "../../env";
 
 const TheatreDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [theater, setTheater] = useState<ITheater>();
 
   const [selectedDate, setSelectedDate] = useState<string>("");
 
   useEffect(() => {
+    if (id) getTheaterById(parseInt(id));
+  }, [id]);
+
+  useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const showDateParam = searchParams.get("showDate");
+
+    console.log(searchParams, "search params");
 
     if (showDateParam) {
       setSelectedDate(showDateParam);
@@ -25,16 +33,14 @@ const TheatreDetails = () => {
     }
   }, [selectedDate]);
 
-  const getTheaterById = () => {
+  const getTheaterById = (id: number) => {
     message.loading({
       type: "loading",
       content: "Loading...",
       key: "loading_msg",
     });
     axios
-      .get(
-        "https://ac5576e0-fe23-471d-b8dd-f07120c3cd38.mock.pstmn.io/theaters/6b6ccaae-3a9d-4c14-9b8d-3652ab3f28ed"
-      )
+      .get(BASE_URL + "theater/theater/" + id)
       .then((res) => {
         setTheater(res.data);
         message.destroy("loading_msg");
@@ -45,9 +51,9 @@ const TheatreDetails = () => {
       });
   };
 
-  useEffect(() => {
-    getTheaterById();
-  }, []);
+  // useEffect(() => {
+  //   getTheaterById();
+  // }, []);
 
   const items: TabsProps["items"] = [
     {

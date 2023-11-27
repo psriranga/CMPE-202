@@ -16,7 +16,7 @@ export interface ITheater {
   id: number;
 }
 
-export interface TheatreFilter {
+export interface TheaterFilter {
   title: string;
   options: Array<string>;
 }

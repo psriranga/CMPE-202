@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../state/reducers/cartReducer/cartReducer";
 import { IMovie } from "../../Interfaces/movie.interface";
-import { ITheater } from "../../Interfaces/theatre.interface";
+import { ITheater } from "../../Interfaces/theater.interface";
 import { useAppSelector } from "../../state/hooks";
 import { setOrderConfirmation } from "../../state/reducers/orderConfirmation/orderConfirmation";
 
@@ -20,7 +20,7 @@ const MovieSeatmap = () => {
   const movieId = searchParams.get("movieId");
   const showDate = searchParams.get("showDate");
   const showTime = searchParams.get("showTime");
-  const theaters = useAppSelector((state: any) => state.theatres);
+  const theaters = useAppSelector((state: any) => state.theaters);
   const movies = useAppSelector((state: any) => state.movies);
   const [selectedMovie, setSelectedMovie] = useState<IMovie>();
   const [selectedTheater, setSelectedTheater] = useState<ITheater>();

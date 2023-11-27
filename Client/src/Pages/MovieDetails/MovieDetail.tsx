@@ -1,59 +1,79 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { Tabs, message } from "antd";
 import TheatreListByMovie from "./Tabs/TheatreListByMovie";
 import dayjs from "dayjs";
 import axios from "axios";
 import { IMovie } from "../../Interfaces/movie.interface";
+import { BASE_URL } from "../../env";
 
 const MovieDetail = () => {
+  const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const [movie, setMovie] = useState<IMovie>();
+  const [movieData, setMovieData] = useState<any>();
   const today = new Date();
-  const initialDates = [];
-  const initialDateItems = [];
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [dateItems, setDateItems] = useState<any>();
+
   useEffect(() => {
+    if (id && selectedDate) getMovieById(parseInt(id));
+    console.log(id);
+  }, [id, selectedDate]);
+  useEffect(() => {
+    console.log(selectedDate, "selected date");
     const searchParams = new URLSearchParams(location.search);
     const showDateParam = searchParams.get("showDate");
 
     if (showDateParam) {
       setSelectedDate(showDateParam);
     } else {
-      setSelectedDate(dayjs(new Date()).format("DD-MM-YYYY"));
+      setSelectedDate(dayjs(new Date()).format("YYYY-MM-DD"));
     }
   }, [selectedDate]);
 
-  for (let i = 0; i < 20; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
+  const getFormattedDates = () => {
+    const initialDateItems = [];
+    for (let i = 0; i < 15; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
 
-    if (i === 0) {
-      initialDates.push("Today");
-      initialDateItems.push({
-        key: dayjs(date).format("DD-MM-YYYY"),
-        label: <span className="font-semibold">Today</span>,
-        children: (
-          <TheatreListByMovie date={dayjs(date).format("DD-MM-YYYY")} />
-        ),
-      });
-    } else {
-      const formattedDate = date.toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-      });
-      initialDates.push(formattedDate);
-      initialDateItems.push({
-        key: dayjs(date).format("DD-MM-YYYY"),
-        label: <span className="font-semibold">{formattedDate}</span>,
-        children: (
-          <TheatreListByMovie date={dayjs(date).format("DD-MM-YYYY")} />
-        ),
-      });
+      if (i === 0) {
+        // initialDates.push("Today");
+        initialDateItems.push({
+          key: dayjs(date).format("YYYY-MM-DD"),
+          label: <span className="font-semibold">Today</span>,
+          children: (
+            <TheatreListByMovie
+              date={dayjs(date).format("YYYY-MM-DD")}
+              theaters={movieData?.theaters}
+            />
+          ),
+        });
+      } else {
+        const formattedDate = date.toLocaleDateString("en-US", {
+          month: "2-digit",
+          day: "2-digit",
+        });
+        // initialDates.push(formattedDate);
+        initialDateItems.push({
+          key: dayjs(date).format("YYYY-MM-DD"),
+          label: <span className="font-semibold">{formattedDate}</span>,
+          children: (
+            <TheatreListByMovie
+              date={dayjs(date).format("YYYY-MM-DD")}
+              theaters={movieData?.theaters}
+            />
+          ),
+        });
+      }
     }
-  }
-  const [dateItems, setDateItems] = useState(initialDateItems);
+    setDateItems(initialDateItems);
+  };
+
+  useEffect(() => {
+    if (movieData) getFormattedDates();
+  }, [movieData]);
 
   const handleTabChange = (activeKey: string) => {
     setSelectedDate(activeKey);
@@ -62,18 +82,19 @@ const MovieDetail = () => {
     navigate({ search: `?${newQueryParams.toString()}` });
   };
 
-  const getMovieById = () => {
+  const getMovieById = (id: number) => {
     message.loading({
       type: "loading",
       content: "Loading...",
       key: "loading_msg",
     });
     axios
-      .get(
-        "https://ac5576e0-fe23-471d-b8dd-f07120c3cd38.mock.pstmn.io/movies/e6215582-51d0-4f3e-b16e-0db7f27d7aa9"
-      )
+      .get(BASE_URL + "shows/get-shows/" + id, {
+        params: { date: selectedDate },
+      })
       .then((res) => {
-        setMovie(res.data);
+        setMovieData(res.data);
+        console.log(res.data, "movie data");
         message.destroy("loading_msg");
       })
       .catch((e) => {
@@ -81,10 +102,6 @@ const MovieDetail = () => {
         console.log(e);
       });
   };
-
-  useEffect(() => {
-    getMovieById();
-  }, []);
 
   return (
     <>
@@ -97,10 +114,11 @@ const MovieDetail = () => {
               alt="image description"
             />
           </figure>
-          <div>
+          <div className="flex flex-col items-center">
             <span className="text-center text-3xl font-bold mx-2 p-2">
-              {movie?.name}
+              {movieData?.movie?.name}
             </span>
+            <div className="text-gray-500">{movieData?.movie?.description}</div>
           </div>
         </div>
         <Tabs

@@ -1,5 +1,5 @@
 import { IMovie } from "./movie.interface";
-import { ITheater } from "./theatre.interface";
+import { ITheater } from "./theater.interface";
 
 export interface ISeatmap {
   movie: IMovie;

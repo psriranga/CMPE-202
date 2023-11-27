@@ -1,18 +1,18 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { ITheater } from "../../../Interfaces/theatre.interface";
+import { ITheater } from "../../../Interfaces/theater.interface";
 
-type theatresState = { theatres: Array<ITheater> };
-const initialState = { theatres: [] };
+type theatresState = { theaters: Array<ITheater> };
+const initialState = { theaters: [] };
 
 const theatreSlice = createSlice({
   name: "movies",
   initialState,
   reducers: {
-    allTheatres: (state: theatresState, action: PayloadAction<any>) => {
+    allTheaters: (state: theatresState, action: PayloadAction<any>) => {
       console.log("calling!", action.payload);
-      state.theatres = action.payload;
+      state.theaters = action.payload;
     },
   },
 });
-export const { allTheatres } = theatreSlice.actions;
+export const { allTheaters } = theatreSlice.actions;
 export default theatreSlice.reducer;
