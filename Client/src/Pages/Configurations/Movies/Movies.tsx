@@ -11,12 +11,25 @@ import { allMovies } from "../../../state/reducers/moviesReducer/moviesReducer";
 interface MovieConfigurations {
   showModal: (type: string) => void;
   movies: Array<IMovie>;
+  getMovies: () => void;
 }
 
-const Movies = ({ showModal, movies }: MovieConfigurations) => {
+const Movies = ({ showModal, movies, getMovies }: MovieConfigurations) => {
   useEffect(() => {
     console.log(movies, "movies");
   }, [movies]);
+
+  const DeleteMovie = (id: number) => {
+    axios
+      .delete(BASE_URL + "movie/movie/" + id)
+      .then((res) => {
+        console.log(res);
+        getMovies();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   return (
     <div>
@@ -37,7 +50,14 @@ const Movies = ({ showModal, movies }: MovieConfigurations) => {
                       ? movie.name.substring(0, 25) + "..."
                       : movie.name}
                   </div>
-                  <div className="cursor-pointer">
+                  <div
+                    className="cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      DeleteMovie(movie.id);
+                    }}
+                  >
                     <DeleteTwoTone />
                   </div>
                 </div>

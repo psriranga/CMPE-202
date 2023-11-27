@@ -24,7 +24,7 @@ const Movies = () => {
     axios
       .get(BASE_URL + "movie/movie")
       .then((res) => {
-        dispatch(allMovies(res.data));
+        dispatch(allMovies(res.data.movies));
       })
       .catch((e) => {
         console.log(e);
@@ -40,13 +40,21 @@ const Movies = () => {
     setTempMovies(movies.movies);
   }, [movies]);
 
+  const filterMoviesByType = (movies: Array<IMovie>, targetType: string) => {
+    if (targetType == "") return movies;
+    return movies.filter((movie) => movie.type === targetType);
+  };
+
   useEffect(() => {
     console.log("hash", location.hash);
     if (location.hash === "") {
       setTab("featured");
+      setTempMovies(filterMoviesByType(movies.movies, ""));
     } else if (location.hash === "#now-playing") {
       setTab("now-playing");
+      setTempMovies(filterMoviesByType(movies.movies, "Playing Now"));
     } else if (location.hash === "#coming-soon") {
+      setTempMovies(filterMoviesByType(movies.movies, "Upcoming"));
       setTab("coming-soon");
     }
   }, [location]);

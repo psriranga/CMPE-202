@@ -3,12 +3,14 @@ import {
   Button,
   Collapse,
   CollapseProps,
+  DatePicker,
   Drawer,
   Form,
   Input,
   InputNumber,
   Modal,
   Select,
+  message,
   theme,
 } from "antd";
 import React, { CSSProperties, useEffect, useState } from "react";
@@ -21,6 +23,7 @@ import axios from "axios";
 import { get } from "http";
 import { ITheater } from "../../Interfaces/theatre.interface";
 import { IMovie } from "../../Interfaces/movie.interface";
+import dayjs from "dayjs";
 
 interface CreateTheater {
   name: string;
@@ -49,9 +52,10 @@ const Configurations = () => {
     axios
       .get(BASE_URL + "movie/movie")
       .then((res) => {
-        setMovies(res.data);
+        setMovies(res.data.movies);
       })
       .catch((e) => {
+        message.error(e.message);
         console.log(e);
       });
   };
@@ -67,6 +71,7 @@ const Configurations = () => {
         setTheaters(res.data.theaters);
       })
       .catch((e) => {
+        message.error(e.message);
         console.log(e);
       });
   };
@@ -99,7 +104,9 @@ const Configurations = () => {
     {
       key: "1",
       label: "Movies",
-      children: <Movies showModal={showModal} movies={movies!} />,
+      children: (
+        <Movies showModal={showModal} movies={movies!} getMovies={getMovies} />
+      ),
       style: panelStyle,
       extra: (
         <PlusCircleOutlined
@@ -113,7 +120,13 @@ const Configurations = () => {
     {
       key: "2",
       label: "Theaters",
-      children: <Theaters showModal={showModal} theaters={theaters!} />,
+      children: (
+        <Theaters
+          showModal={showModal}
+          theaters={theaters!}
+          getTheaters={getTheatres}
+        />
+      ),
       style: panelStyle,
       extra: (
         <PlusCircleOutlined
@@ -143,6 +156,7 @@ const Configurations = () => {
     axios
       .post(BASE_URL + "movie/movie", {
         ...data,
+        start_date: dayjs(data?.start_date).format("YYYY-MM-DD"),
         image_url: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png",
       })
       .then((res) => {
@@ -200,6 +214,17 @@ const Configurations = () => {
             <Input placeholder="Movie genre" />
           </Form.Item>
           <Form.Item
+            label="Release date"
+            name="start_date"
+            rules={[{ required: true, message: "Please input movie genre!" }]}
+          >
+            <DatePicker
+              placeholder="Select date"
+              className="w-full"
+              format={"YYYY-MM-DD"}
+            />
+          </Form.Item>
+          <Form.Item
             label="Run time"
             name="runtime"
             rules={[{ required: true, message: "Please input movie runtime!" }]}
@@ -255,6 +280,34 @@ const Configurations = () => {
           >
             <TextArea placeholder="Theater address" />
           </Form.Item>
+          <div className="flex items-center w-full">
+            <Form.Item
+              label="No of rows"
+              name="no_of_rows"
+              className="w-full mr-2"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input theater seating rows!",
+                },
+              ]}
+            >
+              <InputNumber placeholder="No of rows" className="w-full" />
+            </Form.Item>
+            <Form.Item
+              label="No of columns"
+              name="no_of_cols"
+              className="w-full"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input theater seating columns!",
+                },
+              ]}
+            >
+              <InputNumber placeholder="No of columns" className="w-full" />
+            </Form.Item>
+          </div>
           <Form.Item
             label="Technologies"
             name="technologies"
