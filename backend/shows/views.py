@@ -121,7 +121,7 @@ class ShowsGetByMovieAPI(APIView):
 
         # Convert the dictionary values to a list
         theaters_with_shows_list = list(theaters_with_shows.values())
-        return Response({"movie": MovieSerializer(show.movie), "theaters": theaters_with_shows_list})
+        return Response({"movie": MovieSerializer(show.movie).data, "theaters": theaters_with_shows_list})
 
 class MoviesGetByTheaterAPI(APIView):
     def get(self, request, theater_id):
@@ -153,4 +153,4 @@ class MoviesGetByTheaterAPI(APIView):
 
         # Convert the dictionary values to a list
         movie_with_shows_list = list(movie_with_shows.values())
-        return Response({"theater": TheaterOutputSerializer(show.theater), "movies": movie_with_shows_list})
+        return Response({"theater": TheaterOutputSerializer(show.theater).data, "movies": movie_with_shows_list})
