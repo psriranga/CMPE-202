@@ -33,7 +33,7 @@ from rest_framework import status
 from datetime import datetime, timedelta
 from .models import Show, Movie, Theater
 from movie.serializers import MovieSerializer
-from theater.serializers import TheaterSerializer
+from theater.serializers import TheaterSerializer, TheaterOutputSerializer
 from django.forms.models import model_to_dict
 
 class CreateShowsView(APIView):
@@ -89,3 +89,37 @@ class ShowGetDeleteAPI(APIView):
             return Response({'message': 'Show deleted successfully'})
         except Show.DoesNotExist:
             return Response({'message': 'Show not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class ShowsGetByMovieAPI(APIView):
+    def get(self, request, movie_id):
+        query_params = request.query_params
+        date_str = query_params.get("date", str(datetime.now().date()))
+        date = datetime.strptime(date_str, "%Y-%m-%d")
+        shows = Show.objects.filter(show_timing__date=date, movie__id=movie_id).order_by('theater', 'show_timing')
+        shows = Show.objects.filter(
+            movie_id=movie_id,
+            show_timing__date=date
+        ).select_related(
+            'theater'
+        ).order_by('show_timing')
+
+        # Organize shows by theater
+        theaters_with_shows = {}
+        for show in shows:
+            theater_id = show.theater.id
+
+            if theater_id not in theaters_with_shows:
+                theaters_with_shows[theater_id] = {
+                    'theater': TheaterOutputSerializer(show.theater).data,
+                    'shows': []
+                }
+
+            theaters_with_shows[theater_id]['shows'].append({
+                'id': show.id,
+                'show_timing': show.show_timing,
+            })
+
+        # Convert the dictionary values to a list
+        theaters_with_shows_list = list(theaters_with_shows.values())
+        return Response(theaters_with_shows_list)
+
