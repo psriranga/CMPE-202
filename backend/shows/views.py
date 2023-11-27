@@ -55,7 +55,10 @@ class CreateShowsView(APIView):
                     theater = Theater.objects.get(id=theater_id)
                     movie = Movie.objects.get(id=movie_id)
                     for show_time in theater.shows:
-                        show_datetime = datetime.combine(show_date, datetime.strptime(show_time, '%H:%M').time())
+                        time_parts = show_time.split(' ')
+                        show_time_12hr = datetime.strptime(time_parts[0] + ' ' + time_parts[1], '%I:%M %p').strftime('%I:%M %p')
+
+                        show_datetime = datetime.combine(show_date, datetime.strptime(show_time_12hr, '%I:%M %p').time())
                         seat_matrix = [[0 for _ in range(theater.no_of_cols)] for _ in range(theater.no_of_rows)]
                         print(theater, movie)
                         shows.append(model_to_dict(Show.objects.create(movie=movie, theater=theater, show_timing=show_datetime, seat_matrix=seat_matrix, no_of_rows=theater.no_of_rows, no_of_cols=theater.no_of_cols)))
