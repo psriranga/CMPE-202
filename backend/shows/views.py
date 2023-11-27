@@ -121,5 +121,36 @@ class ShowsGetByMovieAPI(APIView):
 
         # Convert the dictionary values to a list
         theaters_with_shows_list = list(theaters_with_shows.values())
-        return Response(theaters_with_shows_list)
+        return Response({"movie": MovieSerializer(show.movie).data, "theaters": theaters_with_shows_list})
 
+class MoviesGetByTheaterAPI(APIView):
+    def get(self, request, theater_id):
+        query_params = request.query_params
+        date_str = query_params.get("date", str(datetime.now().date()))
+        date = datetime.strptime(date_str, "%Y-%m-%d")
+        shows = Show.objects.filter(
+            theater_id=theater_id,
+            show_timing__date=date
+        ).select_related(
+            'movie'
+        ).order_by('show_timing')
+
+        # Organize shows by theater
+        movie_with_shows = {}
+        for show in shows:
+            movie_id = show.movie.id
+
+            if movie_id not in movie_with_shows:
+                movie_with_shows[movie_id] = {
+                    'movie': MovieSerializer(show.movie).data,
+                    'shows': []
+                }
+
+            movie_with_shows[movie_id]['shows'].append({
+                'id': show.id,
+                'show_timing': show.show_timing,
+            })
+
+        # Convert the dictionary values to a list
+        movie_with_shows_list = list(movie_with_shows.values())
+        return Response({"theater": TheaterOutputSerializer(show.theater).data, "movies": movie_with_shows_list})
