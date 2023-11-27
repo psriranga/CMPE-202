@@ -34,6 +34,7 @@ from datetime import datetime, timedelta
 from .models import Show, Movie, Theater
 from movie.serializers import MovieSerializer
 from theater.serializers import TheaterSerializer
+from django.forms.models import model_to_dict
 
 class CreateShowsView(APIView):
     def post(self, request, format=None):
@@ -47,21 +48,25 @@ class CreateShowsView(APIView):
             return Response({'error': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
 
         date_range = [start_date + timedelta(days=x) for x in range((end_date - start_date).days + 1)]
+        shows = []
         for show_date in date_range:
             for theater_id in theater_id_list:
                 try:
                     theater = Theater.objects.get(id=theater_id)
                     movie = Movie.objects.get(id=movie_id)
                     for show_time in theater.shows:
-                        show_datetime = datetime.combine(show_date, datetime.strptime(show_time, '%H:%M').time())
+                        time_parts = show_time.split(' ')
+                        show_time_12hr = datetime.strptime(time_parts[0] + ' ' + time_parts[1], '%I:%M %p').strftime('%I:%M %p')
+
+                        show_datetime = datetime.combine(show_date, datetime.strptime(show_time_12hr, '%I:%M %p').time())
                         seat_matrix = [[0 for _ in range(theater.no_of_cols)] for _ in range(theater.no_of_rows)]
                         print(theater, movie)
-                        Show.objects.create(movie=movie, theater=theater, show_timing=show_datetime, seat_matrix=seat_matrix, no_of_rows=theater.no_of_rows, no_of_cols=theater.no_of_cols)
+                        shows.append(model_to_dict(Show.objects.create(movie=movie, theater=theater, show_timing=show_datetime, seat_matrix=seat_matrix, no_of_rows=theater.no_of_rows, no_of_cols=theater.no_of_cols)))
                 except (Movie.DoesNotExist, Theater.DoesNotExist):
                     return Response({'error': f'Movie or Theater with provided ID not found'}, status=status.HTTP_404_NOT_FOUND)
-        return Response({'message': 'Shows created successfully'}, status=status.HTTP_201_CREATED)
+        return Response({'message': 'Shows created successfully', "shows": shows}, status=status.HTTP_201_CREATED)
 
-class GetShowByIdView(APIView):
+class ShowGetDeleteAPI(APIView):
     def get(self, request, id, format=None):
         try:
             show = Show.objects.get(id=id)
@@ -73,6 +78,14 @@ class GetShowByIdView(APIView):
                 "seat_matrix": show.seat_matrix,
                 "runtime": show.movie.runtime  # Assuming runtime is part of the Movie model
             }
-            return Response(response_data)
+            return Response({"show":response_data})
         except Show.DoesNotExist:
             return Response({'error': 'Show not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    def delete(self, request, id):
+        try:
+            show = Show.objects.get(id=id)
+            show.delete()
+            return Response({'message': 'Show deleted successfully'})
+        except Show.DoesNotExist:
+            return Response({'message': 'Show not found'}, status=status.HTTP_404_NOT_FOUND)
