@@ -1,4 +1,4 @@
-from theater.serializers import TheaterSerializer, TheaterOutputSerializer
+from theater.serializers import TheaterSerializer, TheaterOutputSerializer, TheaterUpdateSerializer
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework.response import Response
@@ -64,17 +64,27 @@ class TheaterListCreateAPI(APIView):
         return Response({"theaters": theaters}, status=status.HTTP_200_OK)
 
 
-class TheaterGetDeleteAPI(APIView):
+class TheaterGetUpdateDeleteAPI(APIView):
     Serializer = TheaterSerializer
     
     def get(self, request, pk):
         try:
-            movie = Theater.objects.get(id=pk)
-            serializer = TheaterSerializer(movie)
+            theater = Theater.objects.get(id=pk)
+            serializer = TheaterSerializer(theater)
             return Response(serializer.data)
         except Theater.DoesNotExist:
             return Response({'message': 'Theater not found'}, status=status.HTTP_404_NOT_FOUND)
     
+    def patch(self, request, pk):
+        try:
+            theater = Theater.objects.get(id=pk)
+            serializer = TheaterUpdateSerializer(theater, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response({'theater': serializer.data}, status=status.HTTP_200_OK)
+        except Theater.DoesNotExist:
+            return Response({'message': 'Theater not found'}, status=status.HTTP_404_NOT_FOUND)
+
     def delete(self, request, pk):
         try:
             movie = Theater.objects.get(id=pk)

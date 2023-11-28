@@ -1,10 +1,12 @@
-from account.serializers import SignUpSerializer, LoginSerializer
+from account.serializers import SignUpSerializer, LoginSerializer, UserSerializer
 from account.auth import APIAccessAuthentication
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from account.models import Token
-
+from account.models import Token, User
+from booking.models import Ticket
+from booking.serializers import TicketSerializer
+from django.utils import timezone
 
 
 class UserSignUpAPI(APIView):
@@ -46,3 +48,32 @@ class UserLoginAPI(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+class UserGetUpdateAPI(APIView):
+    def get(self, request, id):
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return Response({'error': 'Invalid User ID'}, status=status.HTTP_404_NOT_FOUND)
+        thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
+        tickets = Ticket.objects.filter(user=user).filter(show__show_timing__gte=thirty_days_ago).filter(show__show_timing__lte=timezone.now())
+        data = {
+            "user": UserSerializer(user).data,
+            "tickets": TicketSerializer(tickets, many=True).data,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+    def patch(self, request, id):
+        data = request.data
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return Response({'error': 'Invalid User ID'}, status=status.HTTP_404_NOT_FOUND)
+        user.membership_type = data.get("membership_type", user.membership_type)
+        user.save()
+        thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
+        tickets = Ticket.objects.filter(user=user).filter(show__show_timing__gte=thirty_days_ago).filter(show__show_timing__lte=timezone.now())
+        data = {
+            "user": UserSerializer(user).data,
+            "tickets": TicketSerializer(tickets, many=True).data,
+        }
+        return Response(data, status=status.HTTP_200_OK)
