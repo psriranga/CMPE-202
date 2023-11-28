@@ -72,7 +72,7 @@ class ShowGetDeleteAPI(APIView):
         try:
             show = Show.objects.get(id=id)
             movie_serializer = MovieSerializer(show.movie)
-            theater_serializer = TheaterSerializer(show.theater)
+            theater_serializer = TheaterOutputSerializer(show.theater)
             response_data = {
                 "show_timing": show.show_timing,
                 "no_of_rows": show.no_of_rows,
