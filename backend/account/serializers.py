@@ -12,6 +12,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     confirm_password = serializers.CharField(write_only=True, required=True)
+    is_admin = serializers.BooleanField()
 
     role = serializers.ChoiceField(choices=User.ROLE_CHOICES, required=True)
     username = serializers.CharField(max_length=24, required=False)
@@ -19,11 +20,13 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "email", "password", "confirm_password", "username", "phoneNumber", "role")
+        fields = ("id", "email", "password", "confirm_password", "username", "phoneNumber", "role", "is_admin")
 
     def validate(self, attrs):
         if attrs["password"] != attrs["confirm_password"]:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
+        if attrs["email"].endswith("@cinesquare.com"):
+            attrs["is_admin"] = True
         return attrs
 
     def create(self, validated_data):
@@ -33,6 +36,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             validated_data["username"],
             validated_data["phoneNumber"],
             validated_data["role"],
+            validated_data["is_admin"]
         )
         return user
 
@@ -59,3 +63,12 @@ class LoginSerializer(serializers.Serializer):
             raise AuthenticationFailed(INVALID_CRED_TXT)
 
         return attrs
+
+class UserSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    role = serializers.ChoiceField(choices=User.ROLE_CHOICES)
+    username = serializers.CharField(max_length=24, required=False)
+    phoneNumber = PhoneNumberField()
+    membership_type = serializers.ChoiceField(choices=User.MEMBERSHIP_CHOICES)
+    rewardPoints = serializers.IntegerField()
+    is_admin = serializers.BooleanField()

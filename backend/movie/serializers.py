@@ -13,3 +13,16 @@ class MovieSerializer(serializers.ModelSerializer):
         #     cast_member, created = CastMember.objects.get_or_create(**cast_member_data)
         #     movie.cast.add(cast_member)
         return movie
+
+
+class MovieUpdateSerializer(MovieSerializer):
+    def update(self, instance, validated_data):
+        instance.name = validated_data["name"]
+        instance.runtime = validated_data["runtime"]
+        instance.genre = validated_data["genre"]
+        instance.rating = validated_data["rating"]
+        instance.description = validated_data["description"]
+        instance.image_url = validated_data["image_url"]
+        instance.start_date = validated_data["start_date"]
+        instance.save()
+        return instance

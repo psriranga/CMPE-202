@@ -1,11 +1,11 @@
 from .models import Movie
-from .serializers import MovieSerializer
+from .serializers import MovieSerializer, MovieUpdateSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone
 from datetime import datetime
-class MovieGetDeleteAPI(APIView):
+class MovieGetUpdateDeleteAPI(APIView):
     def get(self, request, pk):
         try:
             movie = Movie.objects.get(id=pk)
@@ -16,10 +16,20 @@ class MovieGetDeleteAPI(APIView):
                 movie["type"] = "Upcoming"
             else:
                 movie["type"] = "Playing Now"
-            return Response({"movie": movie})
+            return Response({"movie": movie}, status=status.HTTP_200_OK)
         except Movie.DoesNotExist:
             return Response({'message': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
     
+    def patch(self, request, pk):
+        try:
+            movie = Movie.objects.get(id=pk)
+            serializer = MovieUpdateSerializer(movie, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response({'movie': serializer.data}, status=status.HTTP_200_OK)
+        except Movie.DoesNotExist:
+            return Response({'message': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
+
     def delete(self, request, pk):
         try:
             movie = Movie.objects.get(id=pk)

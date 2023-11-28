@@ -30,7 +30,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from .models import Show, Movie, Theater
 from movie.serializers import MovieSerializer
 from theater.serializers import TheaterSerializer, TheaterOutputSerializer
@@ -73,11 +73,17 @@ class ShowGetDeleteAPI(APIView):
             show = Show.objects.get(id=id)
             movie_serializer = MovieSerializer(show.movie)
             theater_serializer = TheaterOutputSerializer(show.theater)
+            if show.show_timing.day.lower()=="tuesday" or show.show_timing.time()<time(18,00):
+                discounted_price = show.theater.discounted_price
+            else:
+                discounted_price = show.theater.price
             response_data = {
+                "id": show.id,
                 "show_timing": show.show_timing,
                 "no_of_rows": show.no_of_rows,
                 "no_of_cols": show.no_of_cols,
                 "price": show.price,
+                "discounted_price": discounted_price,
                 "movie": movie_serializer.data,
                 "theater": theater_serializer.data,
                 "seat_matrix": show.seat_matrix,
@@ -97,6 +103,10 @@ class ShowGetDeleteAPI(APIView):
 
 class ShowsGetByMovieAPI(APIView):
     def get(self, request, movie_id):
+        try:
+            movie = Movie.objects.get(id=movie_id)
+        except Movie.DoesNotExist:
+            return Response({'message': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
         query_params = request.query_params
         date_str = query_params.get("date", str(datetime.now().date()))
         date = datetime.strptime(date_str, "%Y-%m-%d")
@@ -126,10 +136,14 @@ class ShowsGetByMovieAPI(APIView):
 
         # Convert the dictionary values to a list
         theaters_with_shows_list = list(theaters_with_shows.values())
-        return Response({"movie": MovieSerializer(show.movie).data, "theaters": theaters_with_shows_list})
+        return Response({"movie": MovieSerializer(movie).data, "theaters": theaters_with_shows_list})
 
 class MoviesGetByTheaterAPI(APIView):
     def get(self, request, theater_id):
+        try:
+            theater = Theater.objects.get(id=theater_id)
+        except Theater.DoesNotExist:
+            return Response({'message': 'Theater not found'}, status=status.HTTP_404_NOT_FOUND)
         query_params = request.query_params
         date_str = query_params.get("date", str(datetime.now().date()))
         date = datetime.strptime(date_str, "%Y-%m-%d")
@@ -158,4 +172,4 @@ class MoviesGetByTheaterAPI(APIView):
 
         # Convert the dictionary values to a list
         movie_with_shows_list = list(movie_with_shows.values())
-        return Response({"theater": TheaterOutputSerializer(show.theater).data, "movies": movie_with_shows_list})
+        return Response({"theater": TheaterOutputSerializer(theater).data, "movies": movie_with_shows_list})
