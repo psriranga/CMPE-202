@@ -43,7 +43,8 @@ class User(AbstractBaseUser):
     rewardPoints = models.FloatField(default=0)
     membership_type = models.CharField(choices=MEMBERSHIP_CHOICES, blank=True, null=True)
     password = models.CharField(max_length=128, blank=True, null=True)
-
+    is_admin = models.BooleanField(default=False)
+    
     objects = UserManager()
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

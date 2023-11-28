@@ -30,5 +30,22 @@ class TheaterSerializer(serializers.Serializer):
     def create(self, validated_data):
         return Theater.objects.create(**validated_data)
 
+
 class TheaterOutputSerializer(TheaterSerializer):
     id = serializers.IntegerField()
+
+
+class TheaterUpdateSerializer(TheaterSerializer):
+    def update(self, instance, validated_data):
+        instance.name = validated_data["name"]
+        instance.address = validated_data["address"]
+        instance.short_address = validated_data["short_address"]
+        instance.location = validated_data["location"]
+        instance.zip_code = validated_data["zip_code"]
+        instance.technologies = validated_data["technologies"]
+        instance.cuisines = validated_data["cuisines"]
+        instance.shows = validated_data["shows"]
+        instance.no_of_rows = validated_data["no_of_rows"]
+        instance.no_of_cols = validated_data["no_of_cols"]
+        instance.save()
+        return instance
