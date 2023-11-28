@@ -43,6 +43,7 @@ class CreateShowsView(APIView):
         theater_id_list = data.get('theater_id_list')
         start_date = datetime.fromisoformat(data.get('start_date'))
         end_date = datetime.fromisoformat(data.get('end_date'))
+        price = data.get("price", 10)
 
         if not movie_id or not theater_id_list or not start_date or not end_date:
             return Response({'error': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
@@ -59,9 +60,9 @@ class CreateShowsView(APIView):
                         show_time_12hr = datetime.strptime(time_parts[0] + ' ' + time_parts[1], '%I:%M %p').strftime('%I:%M %p')
 
                         show_datetime = datetime.combine(show_date, datetime.strptime(show_time_12hr, '%I:%M %p').time())
-                        seat_matrix = [[0 for _ in range(theater.no_of_cols)] for _ in range(theater.no_of_rows)]
+                        seat_matrix = []
                         print(theater, movie)
-                        shows.append(model_to_dict(Show.objects.create(movie=movie, theater=theater, show_timing=show_datetime, seat_matrix=seat_matrix, no_of_rows=theater.no_of_rows, no_of_cols=theater.no_of_cols)))
+                        shows.append(model_to_dict(Show.objects.create(movie=movie, theater=theater, show_timing=show_datetime, seat_matrix=seat_matrix, no_of_rows=theater.no_of_rows, no_of_cols=theater.no_of_cols, price=price)))
                 except (Movie.DoesNotExist, Theater.DoesNotExist):
                     return Response({'error': f'Movie or Theater with provided ID not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'message': 'Shows created successfully', "shows": shows}, status=status.HTTP_201_CREATED)

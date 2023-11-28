@@ -41,6 +41,7 @@ class UserLoginAPI(APIView):
                 "email": serializer.validated_data["user"].email,
                 "role": serializer.validated_data["user"].role,
                 "username": serializer.validated_data["user"].username,
+                "user": SignUpSerializer(instance=serializer.validated_data["user"]).data,
                 "phoneNumber": str(serializer.validated_data["user"].phoneNumber),
             },
             status=status.HTTP_200_OK,

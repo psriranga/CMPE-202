@@ -10,5 +10,6 @@ class Show(models.Model):
     seat_matrix = models.JSONField(default=list)  # Assuming a list of strings
     no_of_rows = models.IntegerField()
     no_of_cols = models.IntegerField()
+    price = models.FloatField(blank=True, null=True, default=10)
     def __str__(self):
         return f"{self.movie} at {self.theater} - {self.show_timing}"
