@@ -9,7 +9,7 @@ from django.forms.models import model_to_dict
 from backend.settings import SERVICE_FEE
 from account.models import User
 # Create your views here.
-class TicketGetCreateAPI(APIView):
+class TicketCreateAPI(APIView):
     def post(self, request):
         data = request.data
         try:
@@ -33,3 +33,12 @@ class TicketGetCreateAPI(APIView):
         ticket = Ticket.objects.create(**data)
         return Response({"ticket": TicketSerializer(ticket).data})
 
+class TicketGetAPI(APIView):
+    def get(self, request, ticket_id):
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+            serializer = TicketSerializer(ticket)
+            ticket = serializer.data
+            return Response({"ticket": ticket})
+        except Ticket.DoesNotExist:
+            return Response({'message': 'Ticket not found'}, status=status.HTTP_404_NOT_FOUND)
