@@ -4,11 +4,35 @@ import dayjs from "dayjs";
 import { useAppSelector } from "../../state/hooks";
 import { ITicket } from "../../Interfaces/ticket.interface";
 import { useEffect } from "react";
+import { ISeatmap } from "../../Interfaces/seatmap.interface";
+import axios from "axios";
+import { BASE_URL } from "../../env";
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const data: ITicket = location.state;
+  const userInfo = useAppSelector((state) => state.auth.userInfo);
+  const data: { seatmapData: ISeatmap; selectedSeats: Array<string> } =
+    location.state;
+
+  useEffect(() => {
+    console.log(data, "page data");
+  }, [data]);
+
+  const BookTicket = () => {
+    axios
+      .post(BASE_URL + "booking/ticket", {
+        user: 1,
+        show: parseInt(data.seatmapData.id),
+        seats: data.selectedSeats,
+      })
+      .then((res) => {
+        navigate("/ticket", { state: data });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   return (
     <div className="flex pt-10 justify-between">
@@ -17,18 +41,36 @@ const OrderConfirmation = () => {
       </div>
       <div className="w-[50%] flex flex-col p-3">
         <div>
-          <div className="font-semibold text-[24px]">{data?.movie.name}</div>
-          <div className="mt-2">{data?.theater.name}</div>
+          <div className="font-semibold text-[24px]">
+            {data?.seatmapData?.movie.name}
+          </div>
+          <div className="mt-2">{data?.seatmapData?.theater?.name}</div>
           <div className="mt-2">
-            {dayjs(data?.show_date).format("MMMM D, YYYY")} at {data?.show_time}
+            {dayjs(data?.seatmapData?.show_timing).format("MMMM D, YYYY")} at{" "}
+            {dayjs(data?.seatmapData?.show_timing).format("h:mm A")}
           </div>
         </div>
         <Divider />
         <div className="flex flex-col">
+          <div className="mb-2">
+            <div className="w-full flex items-center">
+              {" "}
+              <div className="font-semibold mr-2 text-xl">Selected Seats </div>
+              <div>
+                {data.selectedSeats.map((seat: string) => {
+                  return seat + " ";
+                })}
+              </div>
+            </div>
+          </div>
           <span className="font-bold text-xl">Summary</span>
           <div className="flex pt-4 gap-x-20">
-            <div className="w-[50%]">Tickets({data?.seats.length})</div>
-            <div className="w-[50%]">${data?.seats.length * 15}</div>
+            <div className="w-[50%]">
+              Tickets({data?.selectedSeats?.length})
+            </div>
+            <div className="w-[50%]">
+              ${data?.selectedSeats?.length * data.seatmapData.price}
+            </div>
           </div>
           <div className="flex pt-4 gap-x-20">
             <div className="w-[50%] flex flex-col">
@@ -39,8 +81,8 @@ const OrderConfirmation = () => {
         </div>
         <Divider />
         <div className="flex gap-x-20">
-          <div className="w-[50%] font-bold text-xl">Total</div>
-          <div className="w-[50%]">${data?.seats.length * 15}</div>
+          <div className="w-[50%] font-bold text-xl">Total</div>$
+          {data?.selectedSeats?.length * data.seatmapData.price}
         </div>
         <Divider />
         <div>
@@ -48,11 +90,11 @@ const OrderConfirmation = () => {
             type="primary"
             size="large"
             onClick={() => {
-              navigate("/checkout");
+              BookTicket();
             }}
             className="w-full"
           >
-            Continue to Checkout
+            Pay now
           </Button>
         </div>
       </div>

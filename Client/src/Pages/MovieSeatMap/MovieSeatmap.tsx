@@ -5,7 +5,7 @@ import axios from "axios";
 import { BASE_URL } from "../../env";
 import { ISeatmap } from "../../Interfaces/seatmap.interface";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../state/reducers/cartReducer/cartReducer";
 import { IMovie } from "../../Interfaces/movie.interface";
@@ -15,15 +15,8 @@ import { setOrderConfirmation } from "../../state/reducers/orderConfirmation/ord
 
 const MovieSeatmap = () => {
   const dispatch = useDispatch();
-  const searchParams = new URLSearchParams(window.location.search);
-  const theaterId = searchParams.get("theaterId");
-  const movieId = searchParams.get("movieId");
-  const showDate = searchParams.get("showDate");
-  const showTime = searchParams.get("showTime");
-  const theaters = useAppSelector((state: any) => state.theaters);
-  const movies = useAppSelector((state: any) => state.movies);
-  const [selectedMovie, setSelectedMovie] = useState<IMovie>();
-  const [selectedTheater, setSelectedTheater] = useState<ITheater>();
+  const { id } = useParams();
+
   const [selectedSeats, setSelectedSeats] = useState<Array<string>>([]);
   const [preBookedSeats, setPreBookedSeats] = useState<Array<string>>([]);
   const [seatmapData, setSeatmapData] = useState<ISeatmap>();
@@ -36,9 +29,10 @@ const MovieSeatmap = () => {
       key: "loading_msg",
     });
     axios
-      .get(BASE_URL + "/seatmap")
+      .get(BASE_URL + "/shows/show/" + id)
       .then((res) => {
-        setSeatmapData(res.data);
+        console.log("show data", res.data);
+        setSeatmapData(res.data.show);
         message.destroy("loading_msg");
       })
       .catch((e) => {
@@ -47,20 +41,20 @@ const MovieSeatmap = () => {
   };
 
   useEffect(() => {
-    getSeatmap();
-  }, []);
+    if (id) getSeatmap();
+  }, [id]);
 
   return (
     <div>
       <div className="mb-8">
         <div className="w-full flex mb-4">
           <span className="text-[32px] font-semibold m-auto">
-            {seatmapData?.movie.name}
+            {seatmapData?.movie?.name}
           </span>
         </div>
         <div className="w-full flex mb-4">
           <span className="text-[16px] font-semibold m-auto">
-            {seatmapData?.theatre.name}
+            {seatmapData?.theater.name}
           </span>
         </div>
         <div className="w-full flex mb-4">
@@ -99,7 +93,7 @@ const MovieSeatmap = () => {
                 </div>
                 <div>
                   <span className="font-semibold">Price : </span>
-                  {selectedSeats.length * 15} $
+                  {selectedSeats.length * seatmapData?.price!} $
                 </div>
               </div>
               <div className="w-full flex justify-center h-[20%]">
@@ -124,10 +118,15 @@ const MovieSeatmap = () => {
                     //     theater: seatmapData?.theatre!,
                     //   })
                     // );
-                    navigate("/order-confirmation");
+                    navigate("/order-confirmation", {
+                      state: {
+                        seatmapData: { ...seatmapData, id: id },
+                        selectedSeats: selectedSeats,
+                      },
+                    });
                   }}
                 >
-                  Add to cart
+                  Checkout
                 </Button>
               </div>
             </div>

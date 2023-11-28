@@ -1,5 +1,6 @@
 import { message } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 interface ISeatMap {
   selectedSeats: Array<string>;
@@ -14,7 +15,6 @@ const SeatMap = ({
 }: ISeatMap) => {
   const rows: Array<string> = ["A", "B", "C", "D", "E", "F", "G", "H"];
   const columns: Array<string> = ["1", "2", "3", "4", "5", "6", "7", "8"];
-
   const handleSelectSeats = (seat: string) => {
     let tempSelectedSeats: Array<string> = [...selectedSeats];
     if (tempSelectedSeats.includes(seat)) {

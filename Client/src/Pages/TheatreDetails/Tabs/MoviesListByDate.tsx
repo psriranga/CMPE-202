@@ -59,6 +59,7 @@ const MoviesListByDate = (props: MoviesListByDateInterface) => {
                           //     state: data,
                           //   }
                           // );
+                          navigate(`/seatmap/${show.id}`);
                         }}
                       >
                         {dayjs(show.show_timing).format("h:mm A")}

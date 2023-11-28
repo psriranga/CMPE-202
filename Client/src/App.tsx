@@ -18,12 +18,12 @@ import MovieSeatmap from "./Pages/MovieSeatMap/MovieSeatmap";
 import TheatreDetails from "./Pages/TheatreDetails/TheatreDetails";
 import MovieDetail from "./Pages/MovieDetails/MovieDetail";
 import Configurations from "./Pages/Configurations/Configurations";
-import Checkout from "./Pages/Checkout/Checkout";
 import OrderConfirmation from "./Pages/OrderConfirmation/OrderConfirmation";
 import { useAppSelector } from "./state/hooks";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setLogIn, setLogOut } from "./state/reducers/authReducer/authReducer";
+import TicketDisplay from "./Pages/TicketDisplay/TicketDisplay";
 
 function App() {
   const dispatch = useDispatch();
@@ -63,11 +63,11 @@ function App() {
           <Route path="/contact" element={<ContactUs />}></Route>
           <Route path="/movies" element={<Movies />}></Route>
           <Route path="/movies/:id" element={<MovieDetail />}></Route>
-          <Route path="/seatmap" element={<MovieSeatmap />}></Route>
+          <Route path="/seatmap/:id" element={<MovieSeatmap />}></Route>
           <Route path="/theaters" element={<Theatres />}></Route>
           <Route path="/theaters/:id" element={<TheatreDetails />}></Route>
           <Route path="/configurations" element={<Configurations />}></Route>
-          <Route path="/checkout" element={<Checkout />}></Route>
+          <Route path="/ticket" element={<TicketDisplay />}></Route>
           <Route
             path="/order-confirmation"
             element={<OrderConfirmation />}

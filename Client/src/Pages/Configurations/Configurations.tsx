@@ -222,6 +222,7 @@ const Configurations = () => {
         end_date: dayjs(data.end_date).format("YYYY-MM-DD"),
       })
       .then((res) => {
+        message.success("Show created successfully");
         handleCancel("shows");
       })
       .catch((e) => {
@@ -254,6 +255,13 @@ const Configurations = () => {
             rules={[{ required: true, message: "Please input movie name!" }]}
           >
             <Input placeholder="Movie name" />
+          </Form.Item>
+          <Form.Item
+            label="Movie Image URL"
+            name="image_url"
+            rules={[{ required: true, message: "Please input movie image!" }]}
+          >
+            <Input placeholder="Movie image url" />
           </Form.Item>
 
           <Form.Item
@@ -526,6 +534,13 @@ const Configurations = () => {
               className="w-full"
               format={"YYYY/MM/DD"}
             />
+          </Form.Item>
+          <Form.Item
+            label="Ticket Price"
+            name="price"
+            rules={[{ required: true, message: "Please input end date!" }]}
+          >
+            <InputNumber placeholder="Ticket Price" className="w-full" />
           </Form.Item>
 
           <div className="w-full">
