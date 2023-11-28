@@ -74,6 +74,10 @@ class ShowGetDeleteAPI(APIView):
             movie_serializer = MovieSerializer(show.movie)
             theater_serializer = TheaterSerializer(show.theater)
             response_data = {
+                "show_timing": show.show_timing,
+                "no_of_rows": show.no_of_rows,
+                "no_of_cols": show.no_of_cols,
+                "price": show.price,
                 "movie": movie_serializer.data,
                 "theater": theater_serializer.data,
                 "seat_matrix": show.seat_matrix,
