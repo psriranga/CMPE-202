@@ -1,4 +1,4 @@
-from theater.serializers import TheaterSerializer, TheaterOutputSerializer, TheaterUpdateSerializer
+from theater.serializers import TheaterSerializer, TheaterOutputSerializer, TheaterUpdateSerializer, TheaterFilterSerializer
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework.response import Response
@@ -46,6 +46,13 @@ class TheaterListCreateAPI(APIView):
         longitude = query_params.get("longitude", "")
         zip_code = query_params.get("zip_code", "")
         theaters = Theater.objects.all()
+        serializer = TheaterFilterSerializer(data=query_params)
+        serializer.is_valid(raise_exception=True)
+        filters = serializer.data
+        if "technologies" in filters:
+            theaters = theaters.filter(technologies__contains=filters["technologies"])
+        if "food" in filters:
+            theaters = theaters.filter(cuisines__contains=filters["food"])
         if zip_code:
             theaters = theaters.filter(zip_code=zip_code)
         theaters = TheaterOutputSerializer(theaters, many=True).data
