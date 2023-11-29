@@ -4,6 +4,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.validators import UniqueValidator
 from account.models import User
 from phonenumber_field.serializerfields import PhoneNumberField
+from core.errors import InvalidRequestError
 
 INVALID_CRED_TXT = "Invalid Credentials"
 
@@ -21,6 +22,15 @@ class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("id", "email", "password", "confirm_password", "username", "phoneNumber", "role", "is_admin")
+
+    def validate_email(self, value):
+        try:
+            user = User.objects.get(email=value)
+            if user:
+                raise serializers.ValidationError(f"User with email: {value} already exists")
+        except User.DoesNotExist:
+            pass
+        return value
 
     def validate(self, attrs):
         if attrs["password"] != attrs["confirm_password"]:
