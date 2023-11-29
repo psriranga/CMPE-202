@@ -77,6 +77,9 @@ class TicketCancelAPI(APIView):
             user.save()
             ticket.status=Ticket.CANCELLED
             ticket.save()
+            show = ticket.show
+            show.seat_matrix = [item for item in show.seat_matrix if item not in ticket.seats]
+            show.save()
             ticket = TicketSerializer(ticket).data
             ticket["movie"] = movie_serializer.data
             ticket["theater"] = theater_serializer.data
