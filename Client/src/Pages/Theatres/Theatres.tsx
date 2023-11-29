@@ -132,6 +132,27 @@ const Theatres = () => {
         </div>
       </div>
       <div className="flex">
+      <div className="w-[30%]  pr-2 mr-2">
+          <div className="font-semibold text-[18px]">Narrow Your Selection</div>
+          <div className="mt-2">
+            {filters.map((filter: TheatreFilter) => {
+              return (
+                <div className="mb-2">
+                  <span className="font-semibold">{filter.title}</span>
+                  <div className="mt-2">
+                    {filter.options.map((option: string) => {
+                      return (
+                        <div className="ml-2">
+                          <Checkbox>{option}</Checkbox>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
         <div className="w-[70%] pr-2 mr-2 grid grid-cols-2 gap-6">
           {tempTheatres?.map((theatre: ITheater) => {
             return (
@@ -158,27 +179,6 @@ const Theatres = () => {
               </div>
             );
           })}
-        </div>
-        <div className="w-[30%]  pl-2 ml-2">
-          <div className="font-semibold text-[18px]">Narrow Your Selection</div>
-          <div className="mt-2">
-            {filters.map((filter: TheatreFilter) => {
-              return (
-                <div className="mb-2">
-                  <span className="font-semibold">{filter.title}</span>
-                  <div className="mt-2">
-                    {filter.options.map((option: string) => {
-                      return (
-                        <div className="ml-2">
-                          <Checkbox>{option}</Checkbox>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
       </div>
     </div>

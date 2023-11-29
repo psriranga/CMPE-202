@@ -105,44 +105,7 @@ const Movies = () => {
         </div>
       </div>
       <div className="flex">
-        <div className="w-[70%] pr-2 mr-2  grid grid-cols-3 gap-4">
-          {tempMovies?.map((movie: IMovie) => {
-            return (
-              <Card
-                hoverable
-                size="small"
-                style={{ width: 170 }}
-                cover={
-                  <img
-                    alt="example"
-                    src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                  />
-                }
-                onClick={() => {
-                  navigate(`/movies/${movie.id}`, { state: movie });
-                }}
-              >
-                <Meta
-                  title={movie.name}
-                  description={
-                    <div className="flex items-center justify-between">
-                      <span>
-                        {movie.genre.length > 10
-                          ? movie.genre.substring(0, 10) + "..."
-                          : movie.genre}
-                      </span>
-                      <span>
-                        <StarTwoTone className="mr-1" />
-                        {movie.rating}
-                      </span>
-                    </div>
-                  }
-                />
-              </Card>
-            );
-          })}
-        </div>
-        <div className="w-[30%]  pl-2 ml-2 ">
+      <div className="w-[30%]  pr-2 mr-2 ">
           <div className="font-semibold text-[18px]">Sort By</div>
           <Select
             className="w-full my-2"
@@ -198,6 +161,44 @@ const Movies = () => {
             ]}
           />
         </div>
+        <div className="w-[70%] pr-2 mr-2  grid grid-cols-3 gap-4">
+          {tempMovies?.map((movie: IMovie) => {
+            return (
+              <Card
+                hoverable
+                size="small"
+                style={{ width: 170 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+                  />
+                }
+                onClick={() => {
+                  navigate(`/movies/${movie.id}`, { state: movie });
+                }}
+              >
+                <Meta
+                  title={movie.name}
+                  description={
+                    <div className="flex items-center justify-between">
+                      <span>
+                        {movie.genre.length > 10
+                          ? movie.genre.substring(0, 10) + "..."
+                          : movie.genre}
+                      </span>
+                      <span>
+                        <StarTwoTone className="mr-1" />
+                        {movie.rating}
+                      </span>
+                    </div>
+                  }
+                />
+              </Card>
+            );
+          })}
+        </div>
+       
       </div>
     </div>
   );

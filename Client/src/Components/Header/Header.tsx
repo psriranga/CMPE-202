@@ -17,6 +17,7 @@ import {
   setUserInfo,
 } from "../../state/reducers/authReducer/authReducer";
 import { useAppSelector } from "../../state/hooks";
+import logo from "../../assets/images/logo.jpg";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -88,38 +89,41 @@ const Header = () => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
   return (
-    <div className="py-4 bg-[#6BE9FA] flex justify-between items-center px-60 z-40 sticky top-0 shadow-lg">
-      <div className="flex items-center">
+    <div className="py-4 bg-[#3597c4] flex justify-between items-center px-10 z-40 sticky top-0 shadow-lg">
+      <div className="flex items-center justify-between w-[90%]">
         <div
           className="text-[32px] font-semibold cursor-pointer"
           onClick={() => {
             navigate("/movies");
           }}
         >
-          CineSquare
+        <img width={40} height={40} src={logo} alt={"logo"} className="mr-2"/>
+          Movieflix
         </div>{" "}
-        <div
-          className="ml-14 mr-4 font-semibold hover:text-white cursor-pointer"
-          onClick={() => {
-            navigate("/movies");
-          }}
-        >
-          Movies
-        </div>
-        <div
-          className="mr-4 font-semibold hover:text-white cursor-pointer"
-          onClick={() => {
-            navigate("/theatres");
-          }}
-        >
-          Theatres
+        <div className="flex items-center">
+          <div
+            className="ml-14 mr-4 font-semibold hover:text-white cursor-pointer"
+            onClick={() => {
+              navigate("/movies");
+            }}
+          >
+            Movies
+          </div>
+          <div
+            className="mr-4 font-semibold hover:text-white cursor-pointer"
+            onClick={() => {
+              navigate("/theatres");
+            }}
+          >
+            Theatres
+          </div>
         </div>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center ">
         {!isLoggedIn && (
           <div className="flex items-center">
             <Button
-              className="mr-4"
+              className="mr-2"
               onClick={() => {
                 navigate("/signup");
               }}
@@ -128,7 +132,7 @@ const Header = () => {
             </Button>
 
             <Button
-              className="mr-16"
+              
               onClick={() => {
                 navigate("/");
               }}
@@ -139,15 +143,15 @@ const Header = () => {
           </div>
         )}
         {isLoggedIn == true && (
-          <Dropdown menu={{ items }} trigger={["click"]}>
+          <Dropdown menu={{ items }} trigger={["click"]} className="w-full">
             <div className="flex items-center mr-2 font-semibold cursor-pointer">
               <Avatar className="mr-2 uppercase">
                 {userInfo?.username[0]}
               </Avatar>{" "}
-              <span>
+              <div className="w-full">
                 Hi,&nbsp;{" "}
                 <span> {capitalizeFirstLetter(userInfo.username)}</span>
-              </span>
+              </div>
             </div>
           </Dropdown>
         )}

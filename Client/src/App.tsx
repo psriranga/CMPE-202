@@ -44,7 +44,7 @@ function App() {
   return (
     <div>
       <Header />
-      <div className="w-[60%] m-auto p-4">
+      <div className="w-[80%] m-auto p-4">
         <Routes>
           <Route
             path="/"
