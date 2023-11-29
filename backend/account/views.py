@@ -20,7 +20,7 @@ class UserSignUpAPI(APIView):
         if "password" not in data:
             user_data = {}
             user_data["email"] = data["email"]
-            user_data["phoneNumber"] = data["phone_number"]
+            user_data["phoneNumber"] = data["phoneNumber"]
             user_data["name"] = data["name"]
             user_data["role"] = User.GUEST_USER
             user_data["rewardPoints"] = 0
