@@ -17,6 +17,7 @@ import {
   setUserInfo,
 } from "../../state/reducers/authReducer/authReducer";
 import { useAppSelector } from "../../state/hooks";
+import { ISignUp } from "../../Interfaces/signUp.interface";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -51,20 +52,30 @@ const Header = () => {
       ),
       key: "1",
     },
-    {
-      label: (
-        <span
-          className="text-blue-600"
-          onClick={() => {
-            navigate("/configurations");
-          }}
-        >
-          <SettingOutlined className="mr-1" />
-          Configurations
-        </span>
-      ),
-      key: "2",
-    },
+    userInfo?.is_admin === true
+      ? {
+          label: (
+            <span
+              className="text-blue-600"
+              onClick={() => {
+                navigate("/configurations");
+              }}
+            >
+              <SettingOutlined className="mr-1" />
+              Configurations
+            </span>
+          ),
+          key: "2",
+        }
+      : {
+          label: (
+            <span className="text-blue-600" onClick={() => {}}>
+              <SettingOutlined className="mr-1" />
+              Profile
+            </span>
+          ),
+          key: "2",
+        },
     {
       type: "divider",
     },

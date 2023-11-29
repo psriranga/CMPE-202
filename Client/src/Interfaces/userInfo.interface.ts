@@ -5,4 +5,5 @@ export interface IUserInfo {
   success: boolean;
   token: string;
   username: string;
+  is_admin: boolean;
 }

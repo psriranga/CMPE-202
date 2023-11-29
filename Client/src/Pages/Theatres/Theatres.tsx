@@ -128,7 +128,7 @@ const Theaters = () => {
           <Search
             placeholder="Search for theater"
             enterButton
-            onChange={(e) => {
+            onChange={(e: any) => {
               getFilteredtheaters(theaters.theaters, e.target.value);
             }}
           />
