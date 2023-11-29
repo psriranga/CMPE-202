@@ -44,6 +44,7 @@ class CreateShowsView(APIView):
         start_date = datetime.fromisoformat(data.get('start_date'))
         end_date = datetime.fromisoformat(data.get('end_date'))
         price = data.get("price", 10)
+        discounted_price = data.get("discounted_price", price)
 
         if not movie_id or not theater_id_list or not start_date or not end_date:
             return Response({'error': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
@@ -62,7 +63,7 @@ class CreateShowsView(APIView):
                         show_datetime = datetime.combine(show_date, datetime.strptime(show_time_12hr, '%I:%M %p').time())
                         seat_matrix = []
                         print(theater, movie)
-                        shows.append(model_to_dict(Show.objects.create(movie=movie, theater=theater, show_timing=show_datetime, seat_matrix=seat_matrix, no_of_rows=theater.no_of_rows, no_of_cols=theater.no_of_cols, price=price)))
+                        shows.append(model_to_dict(Show.objects.create(movie=movie, theater=theater, show_timing=show_datetime, seat_matrix=seat_matrix, no_of_rows=theater.no_of_rows, no_of_cols=theater.no_of_cols, price=price, discounted_price=discounted_price)))
                 except (Movie.DoesNotExist, Theater.DoesNotExist):
                     return Response({'error': f'Movie or Theater with provided ID not found'}, status=status.HTTP_404_NOT_FOUND)
         return Response({'message': 'Shows created successfully', "shows": shows}, status=status.HTTP_201_CREATED)
@@ -73,10 +74,11 @@ class ShowGetDeleteAPI(APIView):
             show = Show.objects.get(id=id)
             movie_serializer = MovieSerializer(show.movie)
             theater_serializer = TheaterOutputSerializer(show.theater)
-            if show.show_timing.day.lower()=="tuesday" or show.show_timing.time()<time(18,00):
-                discounted_price = show.theater.discounted_price
+            print("day: ",show.show_timing.weekday())
+            if show.show_timing.weekday()==1 or show.show_timing.time()<time(18,00):
+                discounted_price = show.discounted_price
             else:
-                discounted_price = show.theater.price
+                discounted_price = show.price
             response_data = {
                 "id": show.id,
                 "show_timing": show.show_timing,
