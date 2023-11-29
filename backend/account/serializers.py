@@ -12,7 +12,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     confirm_password = serializers.CharField(write_only=True, required=True)
-    is_admin = serializers.BooleanField()
+    is_admin = serializers.BooleanField(required=False)
 
     role = serializers.ChoiceField(choices=User.ROLE_CHOICES, required=True)
     username = serializers.CharField(max_length=24, required=False)
