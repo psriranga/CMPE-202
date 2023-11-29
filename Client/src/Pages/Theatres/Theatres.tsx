@@ -1,6 +1,6 @@
 import Search from "antd/es/input/Search";
 import React, { useEffect, useState } from "react";
-import { Checkbox, Select, message } from "antd";
+import { Checkbox, Divider, Select, message } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -13,6 +13,10 @@ import { filters } from "../../data/Theatres/filters_data";
 const Theaters = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [filters, setFilters] = useState<any>({});
+  const [selectedFilters, setSelectedFilters] = useState<{
+    [key: string]: string[];
+  }>({});
   const theaters = useAppSelector((state: any) => state.theaters);
   const [tempTheaters, setTemptheaters] = useState<Array<ITheater>>();
   const getFilteredtheaters = (data: Array<ITheater>, searchString: string) => {
@@ -24,10 +28,11 @@ const Theaters = () => {
   const [longitude, setLongitude] = useState<string>("");
   const [latitude, setLatitude] = useState<string>("");
 
-  const gettheaters = (params: any) => {
+  const getTheaters = (params: any) => {
+    let tmpParams = removeUndefined(params);
     axios
       .get(BASE_URL + "/theater/theater", {
-        params: params,
+        params: tmpParams,
       })
       .then((res) => {
         console.log("getting res", res.data);
@@ -85,8 +90,24 @@ const Theaters = () => {
   useEffect(() => {
     getZipCode();
     if (latitude && longitude)
-      gettheaters({ latitude: latitude, longitude: longitude });
+      getTheaters({
+        latitude: latitude,
+        longitude: longitude,
+      });
   }, [latitude, longitude]);
+
+  useEffect(() => {
+    getTheaters({ ...filters, zip_code: zipcode });
+  }, [filters]);
+
+  function removeUndefined(obj: any) {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key) && obj[key] === undefined) {
+        delete obj[key];
+      }
+    }
+    return obj;
+  }
 
   return (
     <div>
@@ -101,9 +122,9 @@ const Theaters = () => {
             onChange={(e) => {
               console.log(e, "event");
               if (e === undefined) {
-                gettheaters({ latitude: latitude, longitude: longitude });
+                getTheaters({ latitude: latitude, longitude: longitude });
               } else {
-                gettheaters({ zip_code: e });
+                getTheaters({ zip_code: e });
               }
             }}
             bordered={false}
@@ -167,26 +188,38 @@ const Theaters = () => {
             );
           })}
         </div>
-        <div className="w-[30%]  pl-2 ml-2">
-          <div className="font-semibold text-[18px]">Narrow Your Selection</div>
-          <div className="mt-2">
-            {filters.map((filter: TheaterFilter) => {
-              return (
-                <div className="mb-2">
-                  <span className="font-semibold">{filter.title}</span>
-                  <div className="mt-2">
-                    {filter.options.map((option: string) => {
-                      return (
-                        <div className="ml-2">
-                          <Checkbox>{option}</Checkbox>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
+        <div className="w-[30%]  pl-2 ml-2 ">
+          <div className="font-semibold text-[18px] mt-4">
+            Narrow Your Selection
           </div>
+          <Divider className="my-2" />
+          <div>Technologies</div>
+          <Select
+            allowClear
+            className="w-full my-2"
+            placeholder="Select technology"
+            options={[
+              { label: "Cinemark XD", value: "xd" },
+              { label: "ScreenX", value: "screenx" },
+              { label: "IMAX", value: "imax" },
+            ]}
+            onChange={(e) => {
+              setFilters({ ...filters, technologies: e });
+            }}
+          />
+          <div>Food & Drinks</div>
+          <Select
+            allowClear
+            className="w-full my-2"
+            placeholder="Select Rating"
+            options={[
+              { label: "Expanded Menu", value: "restuarant" },
+              { label: "Bar", value: "bar" },
+            ]}
+            onChange={(e) => {
+              setFilters({ ...filters, food: e });
+            }}
+          />
         </div>
       </div>
     </div>

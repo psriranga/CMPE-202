@@ -76,10 +76,6 @@ const Movies = () => {
     return obj;
   }
 
-  useEffect(() => {
-    console.log(filters, "filters");
-  }, [filters]);
-
   return (
     <div>
       <div className="py-4 flex  items-center justify-between">
@@ -200,16 +196,6 @@ const Movies = () => {
               setFilters({ ...filters, rating: e });
             }}
           />
-          {/* <div>Release Month</div>
-          <Select
-            className="w-full my-2"
-            placeholder="Select Release Month"
-            options={[
-              { value: "recent", label: "Most Recent" },
-              { value: "popular", label: "Most Popular" },
-              { value: "alphabetical", label: "Alphabetical Order" },
-            ]}
-          /> */}
         </div>
       </div>
     </div>
