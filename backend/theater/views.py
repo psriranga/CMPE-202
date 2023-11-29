@@ -90,7 +90,6 @@ class TheaterGetUpdateDeleteAPI(APIView):
             "longitude": location.longitude
         }
         address = geolocator.reverse((location.latitude, location.longitude), language="en").raw["address"]
-        print(address)
         data["zip_code"] = address.get("postcode", location.raw['display_name'].split(",")[-2])
         short_address_list = []
         if address.get("suburb") or address.get("road"):
