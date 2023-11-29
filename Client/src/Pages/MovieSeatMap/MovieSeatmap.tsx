@@ -1,21 +1,41 @@
 import React, { useEffect, useRef, useState } from "react";
 import SeatMap from "./SeatMap";
-import { Button, message } from "antd";
+import { Button, Form, Input, Modal, message } from "antd";
 import axios from "axios";
 import { BASE_URL } from "../../env";
 import { ISeatmap } from "../../Interfaces/seatmap.interface";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAppSelector } from "../../state/hooks";
+import { useForm } from "antd/es/form/Form";
 import { useDispatch } from "react-redux";
+import {
+  setLogIn,
+  setUserInfo,
+} from "../../state/reducers/authReducer/authReducer";
 
 const MovieSeatmap = () => {
   const dispatch = useDispatch();
+  const [form] = useForm();
+  const userInfo = useAppSelector((state) => state.auth.userInfo);
   const { id } = useParams();
-
   const [selectedSeats, setSelectedSeats] = useState<Array<string>>([]);
-  const [preBookedSeats, setPreBookedSeats] = useState<Array<string>>([]);
   const [seatmapData, setSeatmapData] = useState<ISeatmap>();
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    GuestSignUp();
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const getSeatmap = () => {
     message.loading({
@@ -40,6 +60,42 @@ const MovieSeatmap = () => {
     if (id) getSeatmap();
   }, [id]);
 
+  const NavigateFunc = () => {
+    if (userInfo !== null && userInfo.role !== "guestUser") {
+      navigate("/order-confirmation", {
+        state: {
+          seatmapData: { ...seatmapData, id: id },
+          selectedSeats: selectedSeats,
+        },
+      });
+    } else {
+      showModal();
+    }
+  };
+
+  const GuestSignUp = () => {
+    axios
+      .post("http://127.0.0.1:8000/account/sign_up", {
+        ...form.getFieldsValue(),
+      })
+      .then((res) => {
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userInfo", JSON.stringify(res.data));
+        dispatch(setLogIn({}));
+        dispatch(setUserInfo(res.data));
+        navigate("/order-confirmation", {
+          state: {
+            seatmapData: { ...seatmapData, id: id },
+            selectedSeats: selectedSeats,
+          },
+        });
+        console.log(res);
+      })
+      .catch((e) => {
+        message.error("Signup failed");
+        console.log(e);
+      });
+  };
   return (
     <div>
       <div className="mb-8">
@@ -80,7 +136,7 @@ const MovieSeatmap = () => {
           </div>
           {selectedSeats.length > 0 && (
             <div className="h-full">
-              <div className="h-[80%] text-[16px]">
+              <div className="mb-6 text-[16px]">
                 <div className="mb-4">
                   <span className="font-semibold">Seats :</span>
                   {selectedSeats.map((selectedSeat) => {
@@ -92,43 +148,62 @@ const MovieSeatmap = () => {
                   {selectedSeats.length * seatmapData?.discounted_price!} $
                 </div>
               </div>
-              <div className="w-full flex justify-center h-[20%]">
+              <div className="w-full flex justify-center">
                 <Button
                   type="primary"
                   onClick={() => {
-                    // dispatch(
-                    //   addToCart({
-                    //     seats: selectedSeats,
-                    //     show_time: seatmapData?.show_time,
-                    //     show_date: seatmapData?.show_date,
-                    //     movie: seatmapData?.movie,
-                    //     theater: seatmapData?.theatre,
-                    //   })
-                    // );
-                    // dispatch(
-                    //   setOrderConfirmation({
-                    //     seats: selectedSeats,
-                    //     show_time: seatmapData?.show_time!,
-                    //     show_date: seatmapData?.show_date!,
-                    //     movie: seatmapData?.movie!,
-                    //     theater: seatmapData?.theatre!,
-                    //   })
-                    // );
-                    navigate("/order-confirmation", {
-                      state: {
-                        seatmapData: { ...seatmapData, id: id },
-                        selectedSeats: selectedSeats,
-                      },
-                    });
+                    NavigateFunc();
                   }}
                 >
-                  Checkout
+                  {userInfo !== null && userInfo.role !== "guestUser"
+                    ? "Checkout"
+                    : "Guest Checkout"}
                 </Button>
               </div>
             </div>
           )}
         </div>
       </div>
+      <Modal
+        title="User Info"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText={"Checkout"}
+      >
+        <Form
+          form={form}
+          name="basic"
+          initialValues={{ remember: true }}
+          autoComplete="off"
+          layout="vertical"
+        >
+          <Form.Item<any>
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item<any>
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item<any>
+            label="Phone Number"
+            name="phoneNumber"
+            rules={[
+              { required: true, message: "Please input your phone number!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

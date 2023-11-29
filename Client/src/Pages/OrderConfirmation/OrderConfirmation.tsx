@@ -8,7 +8,10 @@ import { ISeatmap } from "../../Interfaces/seatmap.interface";
 import axios from "axios";
 import { BASE_URL } from "../../env";
 import { useDispatch } from "react-redux";
-import { setUserInfo } from "../../state/reducers/authReducer/authReducer";
+import {
+  setLogOut,
+  setUserInfo,
+} from "../../state/reducers/authReducer/authReducer";
 
 const OrderConfirmation = () => {
   const dispatch = useDispatch();
@@ -38,7 +41,7 @@ const OrderConfirmation = () => {
   };
 
   useEffect(() => {
-    if (userInfo.membership_type === "premium")
+    if (userInfo !== null && userInfo.membership_type === "premium")
       setFinalPrice(
         data?.selectedSeats?.length * data?.seatmapData.discounted_price!
       );
@@ -62,6 +65,11 @@ const OrderConfirmation = () => {
         dollars: finalPrice,
       })
       .then((res) => {
+        if (userInfo.role === "guestUser") {
+          dispatch(setLogOut({}));
+          // dispatch(setUserInfo(null));
+        }
+        dispatch(setUserInfo(res.data?.ticket?.user));
         navigate("/ticket", { state: data });
       })
       .catch((e) => {
@@ -162,16 +170,18 @@ const OrderConfirmation = () => {
               <span>reward points</span>
             </Checkbox>
           </div>
-          <div className="my-2">
-            <span
-              className="text-blue-500 cursor-pointer"
-              onClick={() => {
-                showModal();
-              }}
-            >
-              Join premium membership?
-            </span>
-          </div>
+          {userInfo.role !== "guestUser" && (
+            <div className="my-2">
+              <span
+                className="text-blue-500 cursor-pointer"
+                onClick={() => {
+                  showModal();
+                }}
+              >
+                Join premium membership?
+              </span>
+            </div>
+          )}
         </div>
         <Divider />
         <div className="flex gap-x-20">

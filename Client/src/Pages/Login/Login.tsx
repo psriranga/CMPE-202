@@ -23,6 +23,7 @@ const Login = () => {
         localStorage.setItem("userInfo", JSON.stringify(res.data));
         dispatch(setLogIn({}));
         dispatch(setUserInfo(res.data));
+        navigate("/movies");
         console.log(res);
       })
       .catch((e) => {

@@ -7,7 +7,7 @@ import {
   SettingOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
-import { Avatar, Button, Dropdown, Space } from "antd";
+import { Avatar, Button, Dropdown, Space, message } from "antd";
 import type { MenuProps } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -73,7 +73,11 @@ const Header = () => {
               className="text-blue-600"
               onClick={() => {
                 console.log("test");
-                navigate("/profile");
+                if (userInfo.role === "guestUser") {
+                  message.warning("Signup to get user profile");
+                } else {
+                  navigate("/profile");
+                }
               }}
             >
               <SettingOutlined className="mr-1" />

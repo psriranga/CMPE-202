@@ -3,8 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ISeatmap } from "../../Interfaces/seatmap.interface";
 import dayjs from "dayjs";
 import { Button } from "antd";
+import { useAppSelector } from "../../state/hooks";
 
 const TicketDisplay = () => {
+  const userInfo = useAppSelector((state) => state.auth.userInfo);
   const navigate = useNavigate();
   const location = useLocation();
   const data: { seatmapData: ISeatmap; selectedSeats: Array<string> } =
@@ -44,10 +46,16 @@ const TicketDisplay = () => {
         <Button
           type="primary"
           onClick={() => {
-            navigate("/profile");
+            userInfo.role !== "guestUser"
+              ? navigate("/profile")
+              : navigate("/");
           }}
         >
-          Go to my bookings
+          {userInfo.role !== "guestUser" ? (
+            <span>Go to my bookings</span>
+          ) : (
+            <span>Book more tickets!</span>
+          )}
         </Button>
       </div>
     </div>

@@ -17,12 +17,13 @@ const Movies = () => {
   const location = useLocation();
   const movies = useAppSelector((state: any) => state.movies);
   const [tab, setTab] = useState<string>("");
+  const [filters, setFilters] = useState<any>();
 
   const [tempMovies, setTempMovies] = useState<Array<IMovie>>();
 
-  const getMovies = () => {
+  const getMovies = (params: any) => {
     axios
-      .get(BASE_URL + "movie/movie")
+      .get(BASE_URL + "movie/movie", { params: params })
       .then((res) => {
         dispatch(allMovies(res.data.movies));
       })
@@ -32,7 +33,7 @@ const Movies = () => {
   };
 
   useEffect(() => {
-    getMovies();
+    getMovies({});
   }, []);
 
   useEffect(() => {
@@ -106,7 +107,7 @@ const Movies = () => {
           <Search
             placeholder="Search for movie"
             enterButton
-            onChange={(e) => {
+            onChange={(e: any) => {
               getFilteredMovies(movies.movies, e.target.value);
             }}
           />
@@ -151,16 +152,6 @@ const Movies = () => {
             Narrow Your Selection
           </div>
           <Divider className="my-2" />
-          <div>Movie type</div>
-          <Select
-            className="w-full my-2"
-            placeholder="Select Movie Type"
-            options={[
-              { value: "recent", label: "Most Recent" },
-              { value: "popular", label: "Most Popular" },
-              { value: "alphabetical", label: "Alphabetical Order" },
-            ]}
-          />
           <div>Genre</div>
           <Select
             className="w-full my-2"
@@ -181,7 +172,7 @@ const Movies = () => {
               { value: "alphabetical", label: "Alphabetical Order" },
             ]}
           />
-          <div>Release Month</div>
+          {/* <div>Release Month</div>
           <Select
             className="w-full my-2"
             placeholder="Select Release Month"
@@ -190,7 +181,7 @@ const Movies = () => {
               { value: "popular", label: "Most Popular" },
               { value: "alphabetical", label: "Alphabetical Order" },
             ]}
-          />
+          /> */}
         </div>
       </div>
     </div>
