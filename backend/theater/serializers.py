@@ -16,6 +16,7 @@ class PointFieldSerializer(serializers.Field):
             raise serializers.ValidationError("Longitude and latitude fields must be included.")
 
 class TheaterSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
     name = serializers.CharField(max_length=128)
     address = serializers.CharField()
     short_address = serializers.CharField()

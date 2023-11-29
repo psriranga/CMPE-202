@@ -1,5 +1,7 @@
 from account.serializers import SignUpSerializer, LoginSerializer, UserSerializer
 from account.auth import APIAccessAuthentication
+from theater.serializers import TheaterOutputSerializer
+from movie.serializers import MovieSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -60,10 +62,14 @@ class UserGetUpdateAPI(APIView):
         except User.DoesNotExist:
             return Response({'error': 'Invalid User ID'}, status=status.HTTP_404_NOT_FOUND)
         thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
-        tickets = Ticket.objects.filter(user=user).filter(show__show_timing__gte=thirty_days_ago).filter(show__show_timing__lte=timezone.now())
+        tickets = Ticket.objects.filter(user=user).filter(show__show_timing__gte=thirty_days_ago).filter(show__show_timing__lte=timezone.now()).select_related('show')
+        tickets_data = TicketSerializer(tickets, many=True).data
+        for i, ticket in enumerate(tickets):
+            tickets_data[i]["theater"] = TheaterOutputSerializer(ticket.show.theater).data
+            tickets_data[i]["movie"] = MovieSerializer(ticket.show.movie).data
         data = {
             "user": UserSerializer(user).data,
-            "tickets": TicketSerializer(tickets, many=True).data,
+            "tickets": tickets_data,
         }
         return Response(data, status=status.HTTP_200_OK)
     def patch(self, request, id):
@@ -76,8 +82,12 @@ class UserGetUpdateAPI(APIView):
         user.save()
         thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
         tickets = Ticket.objects.filter(user=user).filter(show__show_timing__gte=thirty_days_ago).filter(show__show_timing__lte=timezone.now())
+        tickets_data = TicketSerializer(tickets, many=True).data
+        for i, ticket in enumerate(tickets):
+            tickets_data[i]["theater"] = TheaterOutputSerializer(ticket.show.theater).data
+            tickets_data[i]["movie"] = MovieSerializer(ticket.show.movie).data
         data = {
             "user": UserSerializer(user).data,
-            "tickets": TicketSerializer(tickets, many=True).data,
+            "tickets": tickets_data,
         }
         return Response(data, status=status.HTTP_200_OK)
