@@ -8,12 +8,12 @@ import uuid
 
 # Create your models here.
 class UserManager(BaseUserManager):
-    def create_user(self, email, password, username, phoneNumber, role, **extra_fields):
+    def create_user(self, email, password, username, phoneNumber, role, is_admin, **extra_fields):
         if not email:
             raise ValueError("The Email must be set")
         email = self.normalize_email(email)
         extra_fields.setdefault("user_id", uuid.uuid4())
-        user = self.model(email=email, username=username, phoneNumber=phoneNumber, role=role, **extra_fields)
+        user = self.model(email=email, username=username, phoneNumber=phoneNumber, role=role, is_admin=is_admin, **extra_fields)
         user.set_password(password)
         user.save()
         return user
