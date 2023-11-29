@@ -47,18 +47,14 @@ function App() {
       <Header />
       <div className="w-[60%] m-auto p-4">
         <Routes>
-          <Route
-            path="/"
-            element={
-              isLoggedIn === false ? <Login /> : <Navigate to="/movies" />
-            }
-          ></Route>
+          <Route path="/" element={<Navigate to="/movies" />}></Route>
           {/* <Route
             path="/login"
             element={
               isLoggedIn === "true" ? <Login /> : <Navigate to="/movies" />
             }
           ></Route> */}
+          <Route path="/login" element={<Login />}></Route>
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/about" element={<About />}></Route>
           <Route path="/contact" element={<ContactUs />}></Route>

@@ -147,7 +147,7 @@ const Header = () => {
             <Button
               className="mr-16"
               onClick={() => {
-                navigate("/");
+                navigate("/login");
               }}
             >
               <LoginOutlined />
