@@ -26,3 +26,8 @@ class MovieUpdateSerializer(MovieSerializer):
         instance.start_date = validated_data["start_date"]
         instance.save()
         return instance
+    
+class MovieFilterSerializer(serializers.Serializer):
+        sort_by = serializers.ChoiceField(choices=['recent', 'popular', 'alphabetical'], required=False)
+        genre = serializers.ChoiceField(choices=['thriller', 'horror', 'rom_com', 'feel_good', 'action'], required=False)
+        rating = serializers.IntegerField(required=False)

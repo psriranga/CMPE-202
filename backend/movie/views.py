@@ -1,5 +1,5 @@
 from .models import Movie
-from .serializers import MovieSerializer, MovieUpdateSerializer
+from .serializers import MovieSerializer, MovieUpdateSerializer, MovieFilterSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -41,6 +41,21 @@ class MovieGetUpdateDeleteAPI(APIView):
 class MovieListCreateAPI(APIView):
     def get(self, request):
         movies = Movie.objects.all()
+        query_params = request.query_params
+        serializer = MovieFilterSerializer(data=query_params)
+        serializer.is_valid(raise_exception=True)
+        filters = serializer.data
+        if "genre" in filters:
+            movies = movies.filter(genre=filters["genre"])
+        if "rating" in filters:
+            movies = movies.filter(rating__gte=filters["rating"])
+        if "sort_by" in filters:
+            if filters["sort_by"]=="recent":
+                movies = movies.order_by('start_date')
+            if filters["sort_by"]=="popular":
+                movies = movies.order_by('-rating')
+            if filters["sort_by"]=="alphabetical":
+                movies = movies.order_by('name')
         serializer = MovieSerializer(movies, many=True)
         movies = serializer.data
         for movie in movies:
