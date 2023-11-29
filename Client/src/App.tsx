@@ -24,6 +24,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setLogIn, setLogOut } from "./state/reducers/authReducer/authReducer";
 import TicketDisplay from "./Pages/TicketDisplay/TicketDisplay";
+import UserProfile from "./Pages/UserProfile/UserProfile";
 
 function App() {
   const dispatch = useDispatch();
@@ -72,6 +73,7 @@ function App() {
             path="/order-confirmation"
             element={<OrderConfirmation />}
           ></Route>
+          <Route path="/profile" element={<UserProfile />}></Route>
         </Routes>
       </div>
     </div>

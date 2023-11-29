@@ -69,12 +69,18 @@ const Header = () => {
         }
       : {
           label: (
-            <span className="text-blue-600" onClick={() => {}}>
+            <span
+              className="text-blue-600"
+              onClick={() => {
+                console.log("test");
+                navigate("/profile");
+              }}
+            >
               <SettingOutlined className="mr-1" />
               Profile
             </span>
           ),
-          key: "2",
+          key: "5",
         },
     {
       type: "divider",

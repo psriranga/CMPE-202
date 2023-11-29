@@ -7,11 +7,6 @@ import { ISeatmap } from "../../Interfaces/seatmap.interface";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../state/reducers/cartReducer/cartReducer";
-import { IMovie } from "../../Interfaces/movie.interface";
-import { ITheater } from "../../Interfaces/theater.interface";
-import { useAppSelector } from "../../state/hooks";
-import { setOrderConfirmation } from "../../state/reducers/orderConfirmation/orderConfirmation";
 
 const MovieSeatmap = () => {
   const dispatch = useDispatch();
@@ -36,6 +31,7 @@ const MovieSeatmap = () => {
         message.destroy("loading_msg");
       })
       .catch((e) => {
+        message.error("Something gone wrong!");
         console.log(e);
       });
   };
@@ -73,7 +69,7 @@ const MovieSeatmap = () => {
           <SeatMap
             selectedSeats={selectedSeats}
             setSelectedSeats={setSelectedSeats}
-            preBookedSeats={seatmapData?.preoccupied_seats || []}
+            preBookedSeats={seatmapData?.seat_matrix || []}
           />
         </div>
         <div className="rounded-md shadow-lg w-[30%] p-3">
@@ -93,7 +89,7 @@ const MovieSeatmap = () => {
                 </div>
                 <div>
                   <span className="font-semibold">Price : </span>
-                  {selectedSeats.length * seatmapData?.price!} $
+                  {selectedSeats.length * seatmapData?.discounted_price!} $
                 </div>
               </div>
               <div className="w-full flex justify-center h-[20%]">

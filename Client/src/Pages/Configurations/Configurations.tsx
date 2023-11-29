@@ -196,7 +196,6 @@ const Configurations = () => {
       .post(BASE_URL + "movie/movie", {
         ...data,
         start_date: dayjs(data?.start_date).format("YYYY-MM-DD"),
-        image_url: "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png",
       })
       .then((res) => {
         console.log(res);
@@ -541,6 +540,16 @@ const Configurations = () => {
             rules={[{ required: true, message: "Please input end date!" }]}
           >
             <InputNumber placeholder="Ticket Price" className="w-full" />
+          </Form.Item>
+          <Form.Item
+            label="Discounted Ticket Price"
+            name="discounted_price"
+            rules={[{ required: true, message: "Please input end date!" }]}
+          >
+            <InputNumber
+              placeholder="Discounted Ticket Price"
+              className="w-full"
+            />
           </Form.Item>
 
           <div className="w-full">

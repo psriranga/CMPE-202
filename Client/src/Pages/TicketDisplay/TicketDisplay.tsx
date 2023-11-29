@@ -41,7 +41,14 @@ const TicketDisplay = () => {
         </div>
       </div>{" "}
       <div className="w-full mt-10 flex justify-center">
-        <Button type="primary">Go to my bookings</Button>
+        <Button
+          type="primary"
+          onClick={() => {
+            navigate("/profile");
+          }}
+        >
+          Go to my bookings
+        </Button>
       </div>
     </div>
   );

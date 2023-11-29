@@ -42,7 +42,7 @@ const SeatMap = ({
                 <div
                   className={`${
                     preBookedSeats.includes(tempSeat)
-                      ? "bg-[#e0e0e0] text-white pointer-none"
+                      ? "bg-gray-300 text-white pointer-none"
                       : ""
                   } ${
                     selectedSeats.includes(tempSeat)

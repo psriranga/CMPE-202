@@ -3,11 +3,12 @@ import { ITheater } from "./theater.interface";
 
 export interface ISeatmap {
   id?: any;
+  discounted_price: number;
   price: number;
   movie: IMovie;
   theater: ITheater;
   show_time: string;
   show_date: string;
   show_timing: string;
-  preoccupied_seats: Array<string>;
+  seat_matrix: Array<string>;
 }
