@@ -20,6 +20,7 @@ class UserSignUpAPI(APIView):
         return Response(
             {
                 "success": True,
+                "id": user.id,
                 "token": APIAccessAuthentication.generate_jwt_token(user),
                 "email": user.email,
                 "role": user.role,
@@ -40,12 +41,14 @@ class UserLoginAPI(APIView):
         return Response(
             {
                 "success": True,
+                "id": serializer.validated_data["user"].id,
                 "token": APIAccessAuthentication.generate_jwt_token(serializer.validated_data["user"]),
                 "email": serializer.validated_data["user"].email,
                 "role": serializer.validated_data["user"].role,
                 "username": serializer.validated_data["user"].username,
                 "user": SignUpSerializer(instance=serializer.validated_data["user"]).data,
                 "phoneNumber": str(serializer.validated_data["user"].phoneNumber),
+                "is_admin": serializer.validated_data["user"].is_admin,
             },
             status=status.HTTP_200_OK,
         )
