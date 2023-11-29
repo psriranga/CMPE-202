@@ -52,8 +52,8 @@ class TheaterListCreateAPI(APIView):
             theaters = theaters.filter(technologies__contains=filters["technologies"])
         if "food" in filters:
             theaters = theaters.filter(cuisines__contains=filters["food"])
-        if zip_code:
-            theaters = theaters.filter(zip_code=zip_code)
+        # if zip_code:
+        #     theaters = theaters.filter(zip_code=zip_code)
         theaters = TheaterOutputSerializer(theaters, many=True).data
         for theater in theaters:
             if latitude and longitude:
@@ -64,6 +64,8 @@ class TheaterListCreateAPI(APIView):
                 print(location.raw)
                 coordinates = (location.latitude, location.longitude)
                 distance = geodesic(coordinates, (theater["location"]["latitude"],theater["location"]["longitude"])).miles
+                if distance>10:
+                    continue
             else:
                 distance = 0
             theater["distance"] = round(distance, 1)
@@ -90,7 +92,6 @@ class TheaterGetUpdateDeleteAPI(APIView):
             "longitude": location.longitude
         }
         address = geolocator.reverse((location.latitude, location.longitude), language="en").raw["address"]
-        print(address)
         data["zip_code"] = address.get("postcode", location.raw['display_name'].split(",")[-2])
         short_address_list = []
         if address.get("suburb") or address.get("road"):

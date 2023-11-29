@@ -53,5 +53,5 @@ class TheaterUpdateSerializer(TheaterSerializer):
 
 
 class TheaterFilterSerializer(serializers.Serializer):
-        technologies = serializers.ChoiceField(choices=['xd', 'imax', 'screenx'], required=False)
-        food = serializers.ChoiceField(choices=['restaurant', 'bar'], required=False)
+        technologies = serializers.ListField(child=serializers.ChoiceField(choices=['xd', 'imax', 'screenx']), required=False)
+        food = serializers.ListField(child=serializers.ChoiceField(choices=['restaurant', 'bar']), required=False)
