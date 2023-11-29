@@ -27,6 +27,8 @@ class SignUpSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"password": "Password fields didn't match."})
         if attrs["email"].endswith("@cinesquare.com"):
             attrs["is_admin"] = True
+        else:
+            attrs["is_admin"] = False
         return attrs
 
     def create(self, validated_data):

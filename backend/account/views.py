@@ -25,6 +25,7 @@ class UserSignUpAPI(APIView):
                 "role": user.role,
                 "username": user.username,
                 "phoneNumber": str(user.phoneNumber),
+                "is_admin": user.is_admin
             },
             status=status.HTTP_201_CREATED,
         )
