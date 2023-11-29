@@ -4,6 +4,7 @@ from rest_framework import status
 from datetime import datetime, timedelta
 from booking.models import Ticket
 from shows.models import Show
+from account.serializers import SignUpSerializer
 from booking.serializers import TicketSerializer
 from theater.serializers import TheaterOutputSerializer
 from movie.serializers import MovieSerializer
@@ -19,10 +20,28 @@ class TicketCreateAPI(APIView):
             show = Show.objects.get(id=data["show"])
         except Show.DoesNotExist:
             return Response({'error': 'Invalid Show ID'}, status=status.HTTP_404_NOT_FOUND)
-        try:
-            user = User.objects.get(id=data["user"])
-        except User.DoesNotExist:
-            return Response({'error': 'Invalid User ID'}, status=status.HTTP_404_NOT_FOUND)
+        if "user" in data:
+            try:
+                user = User.objects.get(id=data["user"])
+            except User.DoesNotExist:
+                return Response({'error': 'Invalid User ID'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            user_data = {}
+            user_data["email"] = data["email"]
+            user_data["phoneNumber"] = data["phone_number"]
+            user_data["name"] = data["name"]
+            user_data["role"] = User.GUEST_USER
+            user_data["rewardPoints"] = 0
+            user_data["is_admin"] = False
+            user_data["password"] = "cmpe2020GuestUser"
+            user_data["confirm_password"] = "cmpe2020GuestUser"
+            serializer = SignUpSerializer(data=user_data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            data.pop("email")
+            data.pop("phone_number")
+            data.pop("name")
+            
         dollars = data.get("dollars", 0)
         reward_points = data.get("reward_points", 0)/100
         if dollars+reward_points!=data.get("ticket_price",0)+data.get("service_fee", 0):
