@@ -29,6 +29,7 @@ class UserSignUpAPI(APIView):
                 "username": user.username,
                 "phoneNumber": str(user.phoneNumber),
                 "is_admin": user.is_admin
+                **UserSerializer(instance=user).data,
             },
             status=status.HTTP_201_CREATED,
         )
@@ -48,9 +49,9 @@ class UserLoginAPI(APIView):
                 "email": serializer.validated_data["user"].email,
                 "role": serializer.validated_data["user"].role,
                 "username": serializer.validated_data["user"].username,
-                "user": SignUpSerializer(instance=serializer.validated_data["user"]).data,
                 "phoneNumber": str(serializer.validated_data["user"].phoneNumber),
                 "is_admin": serializer.validated_data["user"].is_admin,
+                **(UserSerializer(instance=serializer.validated_data["user"]).data),
             },
             status=status.HTTP_200_OK,
         )
