@@ -35,7 +35,7 @@ class User(AbstractBaseUser):
     PREMIUM = "premium"
     MEMBERSHIP_CHOICES = [(REGULAR, "Regular"), (PREMIUM, "Premium")]
     id = models.AutoField(primary_key=True)
-    user_id = models.UUIDField()
+    user_id = models.UUIDField(blank=True, null=True)
     username = models.CharField(max_length=24, blank=True, null=True)
     email = models.EmailField(max_length=254, unique=True)
     role = models.CharField(choices=ROLE_CHOICES, max_length=24)
