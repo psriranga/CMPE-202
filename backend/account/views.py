@@ -21,7 +21,7 @@ class UserSignUpAPI(APIView):
             user_data = {}
             user_data["email"] = data["email"]
             user_data["phoneNumber"] = data["phoneNumber"]
-            user_data["name"] = data["name"]
+            user_data["username"] = data["username"]
             user_data["role"] = User.GUEST_USER
             user_data["rewardPoints"] = 0
             user_data["is_admin"] = False
