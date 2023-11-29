@@ -15,7 +15,19 @@ class UserSignUpAPI(APIView):
     InputSerializer = SignUpSerializer
 
     def post(self, request):
-        serializer = self.InputSerializer(data=request.data)
+        data = request.data
+        user_data = data
+        if "password" not in data:
+            user_data = {}
+            user_data["email"] = data["email"]
+            user_data["phoneNumber"] = data["phone_number"]
+            user_data["name"] = data["name"]
+            user_data["role"] = User.GUEST_USER
+            user_data["rewardPoints"] = 0
+            user_data["is_admin"] = False
+            user_data["password"] = "cmpe2020GuestUser"
+            user_data["confirm_password"] = "cmpe2020GuestUser"
+        serializer = self.InputSerializer(data=user_data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         Token.objects.get_or_create(user=user)
@@ -28,7 +40,7 @@ class UserSignUpAPI(APIView):
                 "role": user.role,
                 "username": user.username,
                 "phoneNumber": str(user.phoneNumber),
-                "is_admin": user.is_admin
+                "is_admin": user.is_admin,
                 **UserSerializer(instance=user).data,
             },
             status=status.HTTP_201_CREATED,
