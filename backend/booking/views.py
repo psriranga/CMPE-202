@@ -4,13 +4,14 @@ from rest_framework import status
 from datetime import datetime, timedelta
 from booking.models import Ticket
 from shows.models import Show
-from account.serializers import SignUpSerializer
+from account.serializers import SignUpSerializer, UserSerializer
 from booking.serializers import TicketSerializer
 from theater.serializers import TheaterOutputSerializer
 from movie.serializers import MovieSerializer
 from backend.settings import SERVICE_FEE
 from account.models import User
 from django.utils import timezone
+from account.auth import APIAccessAuthentication
 
 
 class TicketCreateAPI(APIView):
@@ -48,6 +49,17 @@ class TicketCreateAPI(APIView):
         ticket["theater"] = theater_serializer.data
         user.rewardPoints += int(ticket["dollars"])
         user.save()
+        ticket["user"] = {
+                "success": True,
+                "id": user.id,
+                "token": APIAccessAuthentication.generate_jwt_token(user),
+                "email": user.email,
+                "role": user.role,
+                "username": user.username,
+                "phoneNumber": str(user.phoneNumber),
+                "is_admin": user.is_admin,
+                **UserSerializer(instance=user).data,
+            }
         return Response({"ticket": ticket})
 
 
