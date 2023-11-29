@@ -88,20 +88,17 @@ class UserGetUpdateAPI(APIView):
             return Response({'error': 'Invalid User ID'}, status=status.HTTP_404_NOT_FOUND)
         user.membership_type = data.get("membership_type", user.membership_type)
         user.save()
-        thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
-        tickets = Ticket.objects.filter(user=user).filter(show__show_timing__gte=thirty_days_ago).filter(show__show_timing__lte=timezone.now())
-        tickets_data = TicketSerializer(tickets, many=True).data
-        for i, ticket in enumerate(tickets):
-            show_data = {
-                "id": ticket.show.id,
-                "show_timing": ticket.show.show_timing,
-                "runtime": ticket.show.movie.runtime  # Assuming runtime is part of the Movie model
-            }
-            tickets_data[i]["theater"] = TheaterOutputSerializer(ticket.show.theater).data
-            tickets_data[i]["movie"] = MovieSerializer(ticket.show.movie).data
-            tickets_data[i]["show"] = show_data
-        data = {
-            "user": UserSerializer(user).data,
-            "tickets": tickets_data,
-        }
-        return Response(data, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "success": True,
+                "id": user.id,
+                "token": APIAccessAuthentication.generate_jwt_token(user),
+                "email": user.email,
+                "role": user.role,
+                "username": user.username,
+                "phoneNumber": str(user.phoneNumber),
+                "is_admin": user.is_admin,
+                **(UserSerializer(instance=user).data),
+            },
+            status=status.HTTP_200_OK,
+        )
