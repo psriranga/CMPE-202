@@ -8,7 +8,6 @@ import {
   Form,
   Input,
   InputNumber,
-  Modal,
   Select,
   message,
   theme,
@@ -42,6 +41,7 @@ const Configurations = () => {
   const [theaters, setTheaters] = useState<Array<ITheater>>();
   const [movies, setMovies] = useState<Array<IMovie>>();
   const [selectedMovie, setSelectedMovie] = useState<IMovie>();
+  const [selectedTheater, setSelectedTheater] = useState<ITheater>();
   const [moviesOptions, setMoviesOptions] =
     useState<Array<{ label: string; value: number }>>();
   const [theaterOptions, setTheaterOptions] =
@@ -157,6 +157,8 @@ const Configurations = () => {
           showModal={showModal}
           theaters={theaters!}
           getTheaters={getTheatres}
+          setSelectedTheater={setSelectedTheater}
+          form={form}
         />
       ),
       style: panelStyle,
@@ -186,17 +188,32 @@ const Configurations = () => {
   ];
 
   const CreateTheater = (data: CreateTheater) => {
-    axios
-      .post(BASE_URL + "theater/theater", data)
-      .then((res) => {
-        console.log(res);
-        handleCancel("theaters");
-        getTheatres();
-      })
-      .catch((e) => {
-        console.log(e);
-        handleCancel("theaters");
-      });
+    console.log(selectedTheater);
+    if (selectedTheater?.id === undefined) {
+      axios
+        .post(BASE_URL + "theater/theater", data)
+        .then((res) => {
+          console.log(res);
+          handleCancel("theaters");
+          getTheatres();
+        })
+        .catch((e) => {
+          console.log(e);
+          handleCancel("theaters");
+        });
+    } else {
+      axios
+        .patch(BASE_URL + "theater/theater/" + selectedTheater.id, data)
+        .then((res) => {
+          console.log(res);
+          handleCancel("theaters");
+          getTheatres();
+        })
+        .catch((e) => {
+          console.log(e);
+          handleCancel("theaters");
+        });
+    }
   };
   const CreateMovie = (data: any) => {
     console.log(data, "create movie");
@@ -224,6 +241,7 @@ const Configurations = () => {
         .then((res) => {
           console.log(res);
           handleCancel("movies");
+          setSelectedMovie({} as IMovie);
           getMovies();
         })
         .catch((e) => {
