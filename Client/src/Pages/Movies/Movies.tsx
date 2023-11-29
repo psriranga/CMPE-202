@@ -17,13 +17,14 @@ const Movies = () => {
   const location = useLocation();
   const movies = useAppSelector((state: any) => state.movies);
   const [tab, setTab] = useState<string>("");
-  const [filters, setFilters] = useState<any>();
+  const [filters, setFilters] = useState<any>({});
 
   const [tempMovies, setTempMovies] = useState<Array<IMovie>>();
 
   const getMovies = (params: any) => {
+    let tmpParams = removeUndefined(params);
     axios
-      .get(BASE_URL + "movie/movie", { params: params })
+      .get(BASE_URL + "movie/movie", { params: tmpParams })
       .then((res) => {
         dispatch(allMovies(res.data.movies));
       })
@@ -33,8 +34,8 @@ const Movies = () => {
   };
 
   useEffect(() => {
-    getMovies({});
-  }, []);
+    getMovies(filters);
+  }, [filters]);
 
   useEffect(() => {
     console.log(movies, "movies");
@@ -65,6 +66,19 @@ const Movies = () => {
     console.log(data.filter((movie) => regex.test(movie.name)));
     setTempMovies(data.filter((movie) => regex.test(movie.name)));
   };
+
+  function removeUndefined(obj: any) {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key) && obj[key] === undefined) {
+        delete obj[key];
+      }
+    }
+    return obj;
+  }
+
+  useEffect(() => {
+    console.log(filters, "filters");
+  }, [filters]);
 
   return (
     <div>
@@ -140,8 +154,12 @@ const Movies = () => {
         <div className="w-[30%]  pl-2 ml-2 ">
           <div className="font-semibold text-[18px]">Sort By</div>
           <Select
+            allowClear
             className="w-full my-2"
             placeholder="Sort By"
+            onChange={(e) => {
+              setFilters({ ...filters, sort_by: e });
+            }}
             options={[
               { value: "recent", label: "Most Recent" },
               { value: "popular", label: "Most Popular" },
@@ -154,16 +172,23 @@ const Movies = () => {
           <Divider className="my-2" />
           <div>Genre</div>
           <Select
+            allowClear
             className="w-full my-2"
             placeholder="Select Genre"
             options={[
-              { value: "recent", label: "Most Recent" },
-              { value: "popular", label: "Most Popular" },
-              { value: "alphabetical", label: "Alphabetical Order" },
+              { value: "action", label: "Action" },
+              { value: "thriller", label: "Thriller" },
+              { value: "rom_com", label: "Rom Com" },
+              { value: "horror", label: "Horror" },
+              { value: "feel_good", label: "Feel Good" },
             ]}
+            onChange={(e) => {
+              setFilters({ ...filters, genre: e });
+            }}
           />
           <div>Rating</div>
           <Select
+            allowClear
             className="w-full my-2"
             placeholder="Select Rating"
             options={[
@@ -171,6 +196,9 @@ const Movies = () => {
               { value: "popular", label: "Most Popular" },
               { value: "alphabetical", label: "Alphabetical Order" },
             ]}
+            onChange={(e) => {
+              setFilters({ ...filters, rating: e });
+            }}
           />
           {/* <div>Release Month</div>
           <Select

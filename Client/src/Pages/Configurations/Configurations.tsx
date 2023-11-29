@@ -20,7 +20,6 @@ import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import { BASE_URL } from "../../env";
 import axios from "axios";
-import { get } from "http";
 import { ITheater } from "../../Interfaces/theater.interface";
 import { IMovie } from "../../Interfaces/movie.interface";
 import dayjs from "dayjs";
@@ -36,11 +35,13 @@ interface CreateTheater {
 
 const Configurations = () => {
   const { token } = theme.useToken();
-  const [isMoviesModalOpen, setIsMoviesModalOpen] = useState(false);
-  const [isTheatersModalOpen, setIsTheatersModalOpen] = useState(false);
-  const [isShowsModalOpen, setIsShowsModalOpen] = useState(false);
+  const [isMoviesModalOpen, setIsMoviesModalOpen] = useState<boolean>(false);
+  const [isTheatersModalOpen, setIsTheatersModalOpen] =
+    useState<boolean>(false);
+  const [isShowsModalOpen, setIsShowsModalOpen] = useState<boolean>(false);
   const [theaters, setTheaters] = useState<Array<ITheater>>();
   const [movies, setMovies] = useState<Array<IMovie>>();
+  const [selectedMovie, setSelectedMovie] = useState<IMovie>();
   const [moviesOptions, setMoviesOptions] =
     useState<Array<{ label: string; value: number }>>();
   const [theaterOptions, setTheaterOptions] =
@@ -130,7 +131,13 @@ const Configurations = () => {
       key: "1",
       label: "Movies",
       children: (
-        <Movies showModal={showModal} movies={movies!} getMovies={getMovies} />
+        <Movies
+          showModal={showModal}
+          movies={movies!}
+          getMovies={getMovies}
+          form={form}
+          setSelectedMovie={setSelectedMovie}
+        />
       ),
       style: panelStyle,
       extra: (
@@ -192,20 +199,38 @@ const Configurations = () => {
       });
   };
   const CreateMovie = (data: any) => {
-    axios
-      .post(BASE_URL + "movie/movie", {
-        ...data,
-        start_date: dayjs(data?.start_date).format("YYYY-MM-DD"),
-      })
-      .then((res) => {
-        console.log(res);
-        handleCancel("movies");
-        getMovies();
-      })
-      .catch((e) => {
-        console.log(e);
-        handleCancel("movies");
-      });
+    console.log(data, "create movie");
+    if (selectedMovie?.id === undefined) {
+      axios
+        .post(BASE_URL + "movie/movie", {
+          ...data,
+          start_date: dayjs(data?.start_date).format("YYYY-MM-DD"),
+        })
+        .then((res) => {
+          console.log(res);
+          handleCancel("movies");
+          getMovies();
+        })
+        .catch((e) => {
+          console.log(e);
+          handleCancel("movies");
+        });
+    } else {
+      axios
+        .patch(BASE_URL + "movie/movie/" + selectedMovie.id, {
+          ...data,
+          start_date: dayjs(data?.start_date).format("YYYY-MM-DD"),
+        })
+        .then((res) => {
+          console.log(res);
+          handleCancel("movies");
+          getMovies();
+        })
+        .catch((e) => {
+          console.log(e);
+          handleCancel("movies");
+        });
+    }
   };
 
   const CreateShow = (data: any) => {
@@ -233,7 +258,7 @@ const Configurations = () => {
     <div>
       <Collapse
         bordered={false}
-        defaultActiveKey={["1", "2"]}
+        defaultActiveKey={["1", "2", "3"]}
         expandIcon={({ isActive }) => (
           <CaretRightOutlined rotate={isActive ? 90 : 0} />
         )}
@@ -277,12 +302,25 @@ const Configurations = () => {
             name="genre"
             rules={[{ required: true, message: "Please input movie genre!" }]}
           >
-            <Input placeholder="Movie genre" />
+            <Select
+              allowClear
+              className="w-full my-2"
+              placeholder="Select Genre"
+              options={[
+                { value: "action", label: "Action" },
+                { value: "thriller", label: "Thriller" },
+                { value: "rom_com", label: "Rom Com" },
+                { value: "horror", label: "Horror" },
+                { value: "feel_good", label: "Feel Good" },
+              ]}
+            />
           </Form.Item>
           <Form.Item
             label="Release date"
             name="start_date"
-            rules={[{ required: true, message: "Please input movie genre!" }]}
+            rules={[
+              { required: true, message: "Please input movie release date!" },
+            ]}
           >
             <DatePicker
               placeholder="Select date"
@@ -531,7 +569,7 @@ const Configurations = () => {
             <DatePicker
               placeholder="Select date"
               className="w-full"
-              format={"YYYY/MM/DD"}
+              format={"YYYY-MM-DD"}
             />
           </Form.Item>
           <Form.Item
