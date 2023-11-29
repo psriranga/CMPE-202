@@ -18,7 +18,6 @@ class TheaterListCreateAPI(APIView):
         geolocator = Nominatim(user_agent=f"User agent: {random.randint(1,10000)}")
         data = request.data
         location = geolocator.geocode(data["address"])
-        location
         data["location"] = {
             "latitude": location.latitude,
             "longitude": location.longitude
@@ -83,9 +82,27 @@ class TheaterGetUpdateDeleteAPI(APIView):
             return Response({'message': 'Theater not found'}, status=status.HTTP_404_NOT_FOUND)
     
     def patch(self, request, pk):
+        geolocator = Nominatim(user_agent=f"User agent: {random.randint(1,10000)}")
+        data = request.data
+        location = geolocator.geocode(data["address"])
+        data["location"] = {
+            "latitude": location.latitude,
+            "longitude": location.longitude
+        }
+        address = geolocator.reverse((location.latitude, location.longitude), language="en").raw["address"]
+        print(address)
+        data["zip_code"] = address.get("postcode", location.raw['display_name'].split(",")[-2])
+        short_address_list = []
+        if address.get("suburb") or address.get("road"):
+            short_address_list.append(address.get("suburb") or address.get("road"))
+        if address.get("city"):
+            short_address_list.append(address.get("city"))
+        if address.get("state"):
+            short_address_list.append(address.get("state"))
+        data["short_address"] = ", ".join(short_address_list)
         try:
             theater = Theater.objects.get(id=pk)
-            serializer = TheaterUpdateSerializer(theater, data=request.data)
+            serializer = TheaterUpdateSerializer(theater, data=data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response({'theater': serializer.data}, status=status.HTTP_200_OK)
