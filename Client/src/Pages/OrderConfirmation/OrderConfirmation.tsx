@@ -1,4 +1,4 @@
-import { Button, Checkbox, Divider } from "antd";
+import { Button, Checkbox, Divider, Modal, message } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { useAppSelector } from "../../state/hooks";
@@ -7,8 +7,11 @@ import { useEffect, useState } from "react";
 import { ISeatmap } from "../../Interfaces/seatmap.interface";
 import axios from "axios";
 import { BASE_URL } from "../../env";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "../../state/reducers/authReducer/authReducer";
 
 const OrderConfirmation = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const userInfo = useAppSelector((state) => state.auth.userInfo);
@@ -17,6 +20,22 @@ const OrderConfirmation = () => {
   const [finalPrice, setFinalPrice] = useState<number>();
   const [rewardPointsSelected, setRewardPointsSelected] =
     useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPremiumMember, setIsPremiumMember] = useState<boolean>(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsPremiumMember(true);
+    message.success("Payment successful");
+    UpdateMembershipStatus();
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     if (userInfo.membership_type === "premium")
@@ -47,6 +66,20 @@ const OrderConfirmation = () => {
       })
       .catch((e) => {
         console.log(e);
+      });
+  };
+
+  const UpdateMembershipStatus = () => {
+    axios
+      .patch(BASE_URL + "account/user/" + userInfo.id, {
+        membership_type: "premium",
+      })
+      .then((res) => {
+        dispatch(setUserInfo(res.data));
+        setIsModalOpen(false);
+      })
+      .catch((e) => {
+        message.success(e.message);
       });
   };
 
@@ -129,6 +162,16 @@ const OrderConfirmation = () => {
               <span>reward points</span>
             </Checkbox>
           </div>
+          <div className="my-2">
+            <span
+              className="text-blue-500 cursor-pointer"
+              onClick={() => {
+                showModal();
+              }}
+            >
+              Join premium membership?
+            </span>
+          </div>
         </div>
         <Divider />
         <div className="flex gap-x-20">
@@ -148,6 +191,15 @@ const OrderConfirmation = () => {
           </Button>
         </div>
       </div>
+      <Modal
+        title="Premium membership"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText={"Pay"}
+      >
+        Premium membership costs 15$ per year
+      </Modal>
     </div>
   );
 };
