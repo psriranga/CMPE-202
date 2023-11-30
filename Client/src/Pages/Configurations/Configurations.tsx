@@ -22,7 +22,7 @@ import axios from "axios";
 import { ITheater } from "../../Interfaces/theater.interface";
 import { IMovie } from "../../Interfaces/movie.interface";
 import dayjs from "dayjs";
-import Shows, { IShowInterface } from "./Shows/Shows";
+import Shows from "./Shows/Shows";
 import { IShow } from "../../Interfaces/show.interface";
 import Analytics from "./Analytics/Analytics";
 
@@ -45,6 +45,7 @@ const Configurations = () => {
   const [shows, setShows] = useState<Array<IShow>>();
   const [selectedMovie, setSelectedMovie] = useState<IMovie>();
   const [selectedTheater, setSelectedTheater] = useState<ITheater>();
+  const [selectedShow, setSelectedShow] = useState<IShow>();
   const [moviesOptions, setMoviesOptions] =
     useState<Array<{ label: string; value: number }>>();
   const [theaterOptions, setTheaterOptions] =
@@ -114,7 +115,7 @@ const Configurations = () => {
     axios
       .get(BASE_URL + "shows/shows")
       .then((res) => {
-        console.log("shows", res.data);
+        setShows(res.data.shows);
       })
       .catch((e) => {
         message.error(e.message);
@@ -192,7 +193,15 @@ const Configurations = () => {
     {
       key: "3",
       label: "Shows",
-      children: <Shows />,
+      children: (
+        <Shows
+          shows={shows!}
+          getShows={getShows}
+          setSelectedShow={setSelectedShow}
+          showModal={showModal}
+          form={form}
+        />
+      ),
       style: panelStyle,
       extra: (
         <PlusCircleOutlined

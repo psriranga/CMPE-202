@@ -43,15 +43,6 @@ const Header = () => {
       ),
       key: "0",
     },
-    {
-      label: (
-        <span className="text-blue-600">
-          <CrownTwoTone className="mr-1" />
-          Get Premium
-        </span>
-      ),
-      key: "1",
-    },
     userInfo?.is_admin === true
       ? {
           label: (

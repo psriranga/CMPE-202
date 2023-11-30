@@ -126,6 +126,8 @@ const MovieSeatmap = () => {
             selectedSeats={selectedSeats}
             setSelectedSeats={setSelectedSeats}
             preBookedSeats={seatmapData?.seat_matrix || []}
+            rows_m={seatmapData?.no_of_rows!}
+            columns_n={seatmapData?.no_of_cols!}
           />
         </div>
         <div className="rounded-md shadow-lg w-[30%] p-3">
