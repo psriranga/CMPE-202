@@ -69,11 +69,11 @@ const Movies = () => {
   return (
     <div>
       <div className="py-4 flex  items-center justify-between">
-        <div className="font-semibold text-[24px]">Featured Movies</div>
+        <div className="font-semibold text-[24px]">Movies</div>
 
         <div className="font-semibold flex items-center">
           <span
-            className={`mx-[6px] cursor-pointer hover:text-blue-400 ${
+            className={`mx-[50px] cursor-pointer hover:text-blue-400 ${
               tab === "featured" ? "text-blue-400" : ""
             }`}
             onClick={() => {
@@ -83,7 +83,7 @@ const Movies = () => {
             Featured
           </span>
           <span
-            className={`mx-[6px] cursor-pointer hover:text-blue-400 ${
+            className={`mx-[50px] cursor-pointer hover:text-blue-400 ${
               tab === "now-playing" ? "text-blue-400" : ""
             }`}
             onClick={() => {
@@ -93,7 +93,7 @@ const Movies = () => {
             Now Playing
           </span>
           <span
-            className={`mx-[6px] cursor-pointer hover:text-blue-400 ${
+            className={`mx-[50px] cursor-pointer hover:text-blue-400 ${
               tab === "coming-soon" ? "text-blue-400" : ""
             }`}
             onClick={() => {
@@ -113,31 +113,8 @@ const Movies = () => {
           />
         </div>
       </div>
-      <div className="flex">
-        <div className="w-[70%] pr-2 mr-2 grid grid-cols-2 gap-4">
-          {tempMovies?.map((movie: IMovie) => (
-            <Card
-              hoverable
-              style={{ width: 240 }}
-              cover={<img alt="example" src={movie.image_url} />}
-              onClick={() => {
-                navigate(`${movie.id}`);
-              }}
-            >
-              <Meta
-                title={movie.name}
-                description={
-                  <div className="flex justify-between">
-                    <div>{movie.genre}</div>
-                    <div>{movie.rating}/10</div>
-                  </div>
-                }
-              />
-            </Card>
-          ))}
-        </div>
-
-        <div className="w-[30%]  pl-2 ml-2 ">
+      <div className="my-8 flex">
+      <div className="w-[20%]  pr-2 mr-5 ">
           <div className="font-semibold text-[18px]">Sort By</div>
           <Select
             className="w-full my-2"
@@ -183,6 +160,30 @@ const Movies = () => {
             ]}
           /> */}
         </div>
+        <div className="w-[70%] pl-2 ml-2 grid grid-cols-2 gap-4">
+          {tempMovies?.map((movie: IMovie) => (
+           <Card
+           hoverable
+           cover={<img alt="example" src={movie.image_url} style={{height: '30vh' }} />}
+           onClick={() => {
+             navigate(`${movie.id}`);
+           }}
+         >
+           <Meta
+             title={movie.name}
+             description={
+               <div className="flex justify-between">
+                 <div>{movie.genre}</div>
+                 <div>{movie.rating}/10</div>
+               </div>
+             }
+           />
+         </Card>
+         
+          ))}
+        </div>
+
+       
       </div>
     </div>
   );

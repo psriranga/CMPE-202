@@ -45,7 +45,7 @@ function App() {
   return (
     <div>
       <Header />
-      <div className="w-[60%] m-auto p-4">
+      <div className="w-[90%] m-auto p-4">
         <Routes>
           <Route path="/" element={<Navigate to="/movies" />}></Route>
           {/* <Route

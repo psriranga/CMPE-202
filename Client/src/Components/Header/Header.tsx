@@ -18,6 +18,7 @@ import {
 } from "../../state/reducers/authReducer/authReducer";
 import { useAppSelector } from "../../state/hooks";
 import { ISignUp } from "../../Interfaces/signUp.interface";
+import logo from "../../assets/images/logo.jpg";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -109,16 +110,18 @@ const Header = () => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
   return (
-    <div className="py-4 bg-[#6BE9FA] flex justify-between items-center px-60 z-40 sticky top-0 shadow-lg">
-      <div className="flex items-center">
+    <div className="py-4 bg-[#3597c4] flex justify-between items-center px-10 z-40 sticky top-0 shadow-lg">
+      <div className="flex items-center justify-between w-[100%]">
         <div
           className="text-[32px] font-semibold cursor-pointer"
           onClick={() => {
             navigate("/movies");
           }}
         >
-          CineSquare
+        <img width={40} height={40} src={logo} alt={"logo"} className="mr-2"/>
+          MovieFlix
         </div>{" "}
+    <div className="flex items-center">
         <div
           className="ml-14 mr-4 font-semibold hover:text-white cursor-pointer"
           onClick={() => {
@@ -135,34 +138,32 @@ const Header = () => {
         >
           Theatres
         </div>
-      </div>
-      <div className="flex items-center">
+      <div>
         {!isLoggedIn && (
           <div className="flex items-center">
-            <Button
-              className="mr-4"
+            <div
+              className="mr-4 font-semibold hover:text-white cursor-pointer"
               onClick={() => {
                 navigate("/signup");
               }}
             >
-              <UserAddOutlined /> Join Us
-            </Button>
+             Sign Up
+            </div>
 
-            <Button
-              className="mr-16"
+            <div
+              className="mr-4 font-semibold hover:text-white cursor-pointer"
               onClick={() => {
                 navigate("/login");
               }}
-            >
-              <LoginOutlined />
+            >        
               Sign In
-            </Button>
+            </div>
           </div>
         )}
         {isLoggedIn == true && (
           <Dropdown menu={{ items }} trigger={["click"]}>
-            <div className="flex items-center mr-2 font-semibold cursor-pointer">
-              <Avatar className="mr-2 uppercase">
+            <div className="flex items-center font-semibold cursor-pointer">
+              <Avatar className="mr-1 uppercase">
                 {userInfo?.username[0]}
               </Avatar>{" "}
               <span>
@@ -172,6 +173,8 @@ const Header = () => {
             </div>
           </Dropdown>
         )}
+      </div>
+      </div>
       </div>
     </div>
   );

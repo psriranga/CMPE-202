@@ -53,7 +53,7 @@ const Signup = () => {
   };
   return (
     <div className="flex items-center justify-center ">
-      <div className="rounded-md w-[80%] p-4 ">
+      <div className="rounded-md w-[30%] p-4 ">
         <div className="flex w-full justify-center items-center font-semibold text-[24px] mb-4 ">
           <span>Sign Up</span>
         </div>

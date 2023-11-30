@@ -17,7 +17,7 @@ class Movie(models.Model):
     start_date = models.DateField(default=timezone.now)
     rating = models.FloatField()
     description = models.TextField()
-    image_url = models.URLField(null=True, blank=True)
+    image_url = models.URLField(null=True, blank=True, max_length=500)
 
     def __str__(self):
         return self.name
