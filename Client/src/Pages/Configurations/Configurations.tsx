@@ -22,7 +22,9 @@ import axios from "axios";
 import { ITheater } from "../../Interfaces/theater.interface";
 import { IMovie } from "../../Interfaces/movie.interface";
 import dayjs from "dayjs";
-import Shows from "./Shows/Shows";
+import Shows, { IShowInterface } from "./Shows/Shows";
+import { IShow } from "../../Interfaces/show.interface";
+import Analytics from "./Analytics/Analytics";
 
 interface CreateTheater {
   name: string;
@@ -40,6 +42,7 @@ const Configurations = () => {
   const [isShowsModalOpen, setIsShowsModalOpen] = useState<boolean>(false);
   const [theaters, setTheaters] = useState<Array<ITheater>>();
   const [movies, setMovies] = useState<Array<IMovie>>();
+  const [shows, setShows] = useState<Array<IShow>>();
   const [selectedMovie, setSelectedMovie] = useState<IMovie>();
   const [selectedTheater, setSelectedTheater] = useState<ITheater>();
   const [moviesOptions, setMoviesOptions] =
@@ -106,6 +109,21 @@ const Configurations = () => {
 
   useEffect(() => {
     getTheatres();
+  }, []);
+  const getShows = () => {
+    axios
+      .get(BASE_URL + "shows/shows")
+      .then((res) => {
+        console.log("shows", res.data);
+      })
+      .catch((e) => {
+        message.error(e.message);
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    getShows();
   }, []);
 
   const showModal = (type: string) => {
@@ -184,6 +202,20 @@ const Configurations = () => {
           }}
         />
       ),
+    },
+    {
+      key: "4",
+      label: "Analytics",
+      children: <Analytics />,
+      style: panelStyle,
+      // extra: (
+      //   <PlusCircleOutlined
+      //     onClick={(e) => {
+      //       e.stopPropagation();
+      //       showModal("shows");
+      //     }}
+      //   />
+      // ),
     },
   ];
 
@@ -276,7 +308,7 @@ const Configurations = () => {
     <div>
       <Collapse
         bordered={false}
-        defaultActiveKey={["1", "2", "3"]}
+        defaultActiveKey={["1", "2", "3", "4"]}
         expandIcon={({ isActive }) => (
           <CaretRightOutlined rotate={isActive ? 90 : 0} />
         )}
