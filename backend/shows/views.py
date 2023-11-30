@@ -179,9 +179,13 @@ class MoviesGetByTheaterAPI(APIView):
 class ShowsListAPI(APIView):
     def get(self, request):
         try:
-            shows = Show.objects.all()
+            shows = Show.objects.all().order_by('-show_timing')
             response_datas = []
+            count = 0
             for show in shows:
+                if count>=10:
+                    break
+                count+=1
                 movie_serializer = MovieSerializer(show.movie)
                 theater_serializer = TheaterOutputSerializer(show.theater)
                 print("day: ",show.show_timing.weekday())
