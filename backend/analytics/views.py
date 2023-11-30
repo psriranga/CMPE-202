@@ -4,6 +4,8 @@ from rest_framework import status
 from datetime import datetime, timedelta, time
 from theater.models import Theater
 from shows.models import Show
+from movie.models import Movie
+from movie.serializers import MovieSerializer
 from booking.models import Ticket
 from theater.serializers import TheaterSerializer
 from django.utils import timezone
@@ -58,8 +60,6 @@ class TheaterOccupancyView(APIView):
                     movies_90_days[ticket.show.movie.id] += len(ticket.seats)
                 else:
                     movies_90_days[ticket.show.movie.id] = len(ticket.seats)
-        locations = {}
-        movies = {}
         # for key in locations_30_days.keys():
         #     if key in locations:
         #         locations[key]+=locations_30_days[key]
@@ -76,20 +76,38 @@ class TheaterOccupancyView(APIView):
         #     else:
         #         locations[key]=locations_90_days[key]
 
-        # for key in movies_30_days.keys():
-        #     if key in movies:
-        #         movies[key]+=movies_30_days[key]
-        #     else:
-        #         movies[key]=movies_30_days[key]
-        # for key in movies_60_days.keys():
-        #     if key in movies:
-        #         movies[key]+=movies_60_days[key]
-        #     else:
-        #         movies[key]=movies_60_days[key]
-        # for key in movies_90_days.keys():
-        #     if key in movies:
-        #         movies[key]+=movies_90_days[key]
-        #     else:
-        #         movies[key]=movies_90_days[key]
+        for key in movies_30_days.keys():
+            movie = Movie.objects.get(id=int(key))
+            serializer = MovieSerializer(movie)
+            movie = serializer.data
+            start_date = datetime.strptime(movie["start_date"], "%Y-%m-%d").date()
+            if start_date>timezone.now().date():
+                movie["type"] = "Upcoming"
+            else:
+                movie["type"] = "Playing Now"
+            movie["occupancy"] = movies_30_days[key]
+            movies_30_days[key]=movie
+        for key in movies_60_days.keys():
+            movie = Movie.objects.get(id=int(key))
+            serializer = MovieSerializer(movie)
+            movie = serializer.data
+            start_date = datetime.strptime(movie["start_date"], "%Y-%m-%d").date()
+            if start_date>timezone.now().date():
+                movie["type"] = "Upcoming"
+            else:
+                movie["type"] = "Playing Now"
+            movie["occupancy"] = movies_60_days[key]
+            movies_60_days[key]=movie
+        for key in movies_90_days.keys():
+            movie = Movie.objects.get(id=int(key))
+            serializer = MovieSerializer(movie)
+            movie = serializer.data
+            start_date = datetime.strptime(movie["start_date"], "%Y-%m-%d").date()
+            if start_date>timezone.now().date():
+                movie["type"] = "Upcoming"
+            else:
+                movie["type"] = "Playing Now"
+            movie["occupancy"] = movies_90_days[key]
+            movies_90_days[key]=movie
 
         return Response({"locations_30_days": locations_30_days,"locations_60_days": locations_60_days,"locations_90_days": locations_90_days, "movies_30_days": movies_30_days, "movies_60_days": movies_60_days, "movies_90_days": movies_90_days}, status=status.HTTP_200_OK)
