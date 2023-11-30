@@ -175,3 +175,33 @@ class MoviesGetByTheaterAPI(APIView):
         # Convert the dictionary values to a list
         movie_with_shows_list = list(movie_with_shows.values())
         return Response({"theater": TheaterOutputSerializer(theater).data, "movies": movie_with_shows_list})
+
+class ShowsListAPI(APIView):
+    def get(self, request):
+        try:
+            shows = Show.objects.all()
+            response_datas = []
+            for show in shows:
+                movie_serializer = MovieSerializer(show.movie)
+                theater_serializer = TheaterOutputSerializer(show.theater)
+                print("day: ",show.show_timing.weekday())
+                if show.show_timing.weekday()==1 or show.show_timing.time()<time(18,00):
+                    discounted_price = show.discounted_price
+                else:
+                    discounted_price = show.price
+                response_data = {
+                    "id": show.id,
+                    "show_timing": show.show_timing,
+                    "no_of_rows": show.no_of_rows,
+                    "no_of_cols": show.no_of_cols,
+                    "price": show.price,
+                    "discounted_price": discounted_price,
+                    "movie": movie_serializer.data,
+                    "theater": theater_serializer.data,
+                    "seat_matrix": show.seat_matrix,
+                    "runtime": show.movie.runtime  # Assuming runtime is part of the Movie model
+                }
+                response_datas.append(response_data)
+            return Response({"shows":response_datas})
+        except Show.DoesNotExist:
+            return Response({'error': 'Show not found'}, status=status.HTTP_404_NOT_FOUND)
