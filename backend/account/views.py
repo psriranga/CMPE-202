@@ -75,7 +75,7 @@ class UserGetUpdateAPI(APIView):
         except User.DoesNotExist:
             return Response({'error': 'Invalid User ID'}, status=status.HTTP_404_NOT_FOUND)
         thirty_days_ago = timezone.now() - timezone.timedelta(days=30)
-        tickets = Ticket.objects.filter(user=user).filter(show__show_timing__gte=thirty_days_ago).filter(show__show_timing__lte=timezone.now()).select_related('show')
+        tickets = Ticket.objects.filter(user=user).filter(created_at__gte=thirty_days_ago).filter(created_at__lte=timezone.now()).select_related('show')
         tickets_data = TicketSerializer(tickets, many=True).data
         for i, ticket in enumerate(tickets):
             show_data = {
