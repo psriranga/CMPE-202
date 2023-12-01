@@ -120,37 +120,37 @@ const MovieSeatmap = () => {
           </div>
         </div>
       </div>
-      <div className="flex">
-        <div className="w-[70%]  mr-4">
+      <div className="flex flex-col">
+        <div className="w-[100%]  mr-4">
           <SeatMap
             selectedSeats={selectedSeats}
             setSelectedSeats={setSelectedSeats}
             preBookedSeats={seatmapData?.seat_matrix || []}
           />
         </div>
-        <div className="rounded-md shadow-lg w-[30%] p-3">
+        <div className="rounded-md shadow-lg w-[100%] p-3">
           <div className="flex justify-center mb-4 font-semibold">
             <span className="text-[24px]">
-              Selected {selectedSeats.length} tickets
+              Total number of seats selected : {selectedSeats.length}
             </span>
           </div>
           {selectedSeats.length > 0 && (
             <div className="h-full">
               <div className="mb-6 text-[16px]">
                 <div className="mb-4">
-                  <span className="font-semibold">Seats :</span>
+                  <span className="font-semibold">Seats selected :</span>
                   {selectedSeats.map((selectedSeat) => {
                     return selectedSeat + " ";
                   })}
                 </div>
                 <div>
-                  <span className="font-semibold">Price : </span>
+                  <span className="font-semibold"> Total price : </span>
                   {selectedSeats.length * seatmapData?.discounted_price!} $
                 </div>
               </div>
               <div className="w-full flex justify-center">
                 <Button
-                  type="primary"
+                  
                   onClick={() => {
                     NavigateFunc();
                   }}
@@ -165,7 +165,7 @@ const MovieSeatmap = () => {
         </div>
       </div>
       <Modal
-        title="User Info"
+        title="Basic user details"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}

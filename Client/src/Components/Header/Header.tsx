@@ -31,28 +31,7 @@ const Header = () => {
   }, [isLoggedIn, userInfo]);
 
   const items: MenuProps["items"] = [
-    {
-      label: (
-        <span
-          className="text-blue-600"
-          onClick={() => {
-            navigate("/contact");
-          }}
-        >
-          <MailTwoTone className="mr-1" /> Contact Us
-        </span>
-      ),
-      key: "0",
-    },
-    {
-      label: (
-        <span className="text-blue-600">
-          <CrownTwoTone className="mr-1" />
-          Get Premium
-        </span>
-      ),
-      key: "1",
-    },
+    
     userInfo?.is_admin === true
       ? {
           label: (

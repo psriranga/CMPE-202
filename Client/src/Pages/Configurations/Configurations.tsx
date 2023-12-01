@@ -8,7 +8,6 @@ import {
   Form,
   Input,
   InputNumber,
-  Modal,
   Select,
   message,
   theme,
@@ -20,11 +19,12 @@ import { useForm } from "antd/es/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import { BASE_URL } from "../../env";
 import axios from "axios";
-import { get } from "http";
 import { ITheater } from "../../Interfaces/theater.interface";
 import { IMovie } from "../../Interfaces/movie.interface";
 import dayjs from "dayjs";
 import Shows from "./Shows/Shows";
+import { IShow } from "../../Interfaces/show.interface";
+// import Analytics from "./Analytics/Analytics";
 
 interface CreateTheater {
   name: string;
@@ -36,11 +36,16 @@ interface CreateTheater {
 
 const Configurations = () => {
   const { token } = theme.useToken();
-  const [isMoviesModalOpen, setIsMoviesModalOpen] = useState(false);
-  const [isTheatersModalOpen, setIsTheatersModalOpen] = useState(false);
-  const [isShowsModalOpen, setIsShowsModalOpen] = useState(false);
+  const [isMoviesModalOpen, setIsMoviesModalOpen] = useState<boolean>(false);
+  const [isTheatersModalOpen, setIsTheatersModalOpen] =
+    useState<boolean>(false);
+  const [isShowsModalOpen, setIsShowsModalOpen] = useState<boolean>(false);
   const [theaters, setTheaters] = useState<Array<ITheater>>();
   const [movies, setMovies] = useState<Array<IMovie>>();
+  const [shows, setShows] = useState<Array<IShow>>();
+  const [selectedMovie, setSelectedMovie] = useState<IMovie>();
+  const [selectedTheater, setSelectedTheater] = useState<any>();
+  const [selectedShow, setSelectedShow] = useState<IShow>();
   const [moviesOptions, setMoviesOptions] =
     useState<Array<{ label: string; value: number }>>();
   const [theaterOptions, setTheaterOptions] =
@@ -93,7 +98,6 @@ const Configurations = () => {
     axios
       .get(BASE_URL + "/theater/theater")
       .then((res) => {
-        console.log("getting res", res.data);
         setTheaters(res.data.theaters);
         getTheaterOptions(res.data.theaters);
       })
@@ -105,6 +109,21 @@ const Configurations = () => {
 
   useEffect(() => {
     getTheatres();
+  }, []);
+  const getShows = () => {
+    axios
+      .get(BASE_URL + "shows/shows")
+      .then((res) => {
+        setShows(res.data.shows);
+      })
+      .catch((e) => {
+        message.error(e.message);
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    getShows();
   }, []);
 
   const showModal = (type: string) => {
@@ -130,7 +149,13 @@ const Configurations = () => {
       key: "1",
       label: "Movies",
       children: (
-        <Movies showModal={showModal} movies={movies!} getMovies={getMovies} />
+        <Movies
+          showModal={showModal}
+          movies={movies!}
+          getMovies={getMovies}
+          // form={form}
+          // setSelectedMovie={setSelectedMovie}
+        />
       ),
       style: panelStyle,
       extra: (
@@ -150,6 +175,8 @@ const Configurations = () => {
           showModal={showModal}
           theaters={theaters!}
           getTheaters={getTheatres}
+          // setSelectedTheater={setSelectedTheater}
+          // form={form}
         />
       ),
       style: panelStyle,
@@ -165,7 +192,15 @@ const Configurations = () => {
     {
       key: "3",
       label: "Shows",
-      children: <Shows />,
+      children: (
+        <Shows
+          shows={shows!}
+          getShows={getShows}
+          setSelectedShow={setSelectedShow}
+          showModal={showModal}
+          form={form}
+        />
+      ),
       style: panelStyle,
       extra: (
         <PlusCircleOutlined
@@ -176,36 +211,95 @@ const Configurations = () => {
         />
       ),
     },
+    // {
+    //   key: "4",
+    //   label: "Analytics",
+    //   children: <Analytics />,
+    //   style: panelStyle,
+    //   // extra: (
+    //   //   <PlusCircleOutlined
+    //   //     onClick={(e) => {
+    //   //       e.stopPropagation();
+    //   //       showModal("shows");
+    //   //     }}
+    //   //   />
+    //   // ),
+    // },
   ];
 
-  const CreateTheater = (data: CreateTheater) => {
-    axios
-      .post(BASE_URL + "theater/theater", data)
-      .then((res) => {
-        console.log(res);
-        handleCancel("theaters");
-        getTheatres();
-      })
-      .catch((e) => {
-        console.log(e);
-        handleCancel("theaters");
-      });
+  const CreateTheater = (data: any) => {
+    console.log(selectedTheater, "selected theater");
+    if (selectedTheater?.id === undefined) {
+      axios
+        .post(BASE_URL + "theater/theater", data)
+        .then((res) => {
+          console.log(res);
+          message.success("Theater added successfully");
+          handleCancel("theaters");
+
+          getTheatres();
+        })
+        .catch((e) => {
+          console.log(e);
+          message.error(e.message);
+          handleCancel("theaters");
+        });
+    } else {
+      axios
+        .patch(BASE_URL + "theater/theater/" + selectedTheater?.id, data)
+        .then((res) => {
+          console.log(res);
+          message.success("Theater edited successfully");
+          setSelectedTheater({} as ITheater);
+          handleCancel("theaters");
+          getTheatres();
+        })
+        .catch((e) => {
+          console.log(e);
+          message.error(e.message);
+          setSelectedTheater({} as ITheater);
+          handleCancel("theaters");
+        });
+    }
   };
   const CreateMovie = (data: any) => {
-    axios
-      .post(BASE_URL + "movie/movie", {
-        ...data,
-        start_date: dayjs(data?.start_date).format("YYYY-MM-DD"),
-      })
-      .then((res) => {
-        console.log(res);
-        handleCancel("movies");
-        getMovies();
-      })
-      .catch((e) => {
-        console.log(e);
-        handleCancel("movies");
-      });
+    console.log(data, "create movie");
+    if (selectedMovie?.id === undefined) {
+      axios
+        .post(BASE_URL + "movie/movie", {
+          ...data,
+          start_date: dayjs(data?.start_date).format("YYYY-MM-DD"),
+        })
+        .then((res) => {
+          message.success("Movie added successfully");
+          console.log(res);
+          handleCancel("movies");
+          getMovies();
+        })
+        .catch((e) => {
+          console.log(e);
+          message.error(e.message);
+          handleCancel("movies");
+        });
+    } else {
+      axios
+        .patch(BASE_URL + "movie/movie/" + selectedMovie.id, {
+          ...data,
+          start_date: dayjs(data?.start_date).format("YYYY-MM-DD"),
+        })
+        .then((res) => {
+          console.log(res);
+          message.success("Movie edited successfully");
+          handleCancel("movies");
+          setSelectedMovie({} as IMovie);
+          getMovies();
+        })
+        .catch((e) => {
+          console.log(e);
+          message.error(e.message);
+          handleCancel("movies");
+        });
+    }
   };
 
   const CreateShow = (data: any) => {
@@ -233,7 +327,7 @@ const Configurations = () => {
     <div>
       <Collapse
         bordered={false}
-        defaultActiveKey={["1", "2"]}
+        defaultActiveKey={["1", "2", "4"]}
         expandIcon={({ isActive }) => (
           <CaretRightOutlined rotate={isActive ? 90 : 0} />
         )}
@@ -277,12 +371,25 @@ const Configurations = () => {
             name="genre"
             rules={[{ required: true, message: "Please input movie genre!" }]}
           >
-            <Input placeholder="Movie genre" />
+            <Select
+              allowClear
+              className="w-full my-2"
+              placeholder="Select Genre"
+              options={[
+                { value: "action", label: "Action" },
+                { value: "thriller", label: "Thriller" },
+                { value: "rom_com", label: "Rom Com" },
+                { value: "horror", label: "Horror" },
+                { value: "feel_good", label: "Feel Good" },
+              ]}
+            />
           </Form.Item>
           <Form.Item
             label="Release date"
             name="start_date"
-            rules={[{ required: true, message: "Please input movie genre!" }]}
+            rules={[
+              { required: true, message: "Please input movie release date!" },
+            ]}
           >
             <DatePicker
               placeholder="Select date"
@@ -531,7 +638,7 @@ const Configurations = () => {
             <DatePicker
               placeholder="Select date"
               className="w-full"
-              format={"YYYY/MM/DD"}
+              format={"YYYY-MM-DD"}
             />
           </Form.Item>
           <Form.Item

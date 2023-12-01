@@ -129,7 +129,8 @@ const TheatreDetails = () => {
   return (
     <div>
       <div className="font-semibold text-[24px] mt-4">{theater?.name}</div>
-      <Tabs items={items} />
+      {/* <Tabs items={items} /> */}
+      <div className="flex w-full justify-center items-center">{theater?.name}</div>
       <div className="font-semibold text-[24px] mt-4">Showtimes</div>
       <Tabs
         items={dateItems}

@@ -107,13 +107,6 @@ const MovieDetail = () => {
     <>
       <div>
         <div className="flex flex-col items-center">
-          <figure className="max-w-lg">
-            <img
-              className="h-auto max-w-xl min-w-full max-h-80 rounded-lg"
-              src="https://www.cinemark.com/media/76008938/lg-kotfm-still.jpg"
-              alt="image description"
-            />
-          </figure>
           <div className="flex flex-col items-center">
             <span className="text-center text-3xl font-bold mx-2 p-2">
               {movieData?.movie?.name}

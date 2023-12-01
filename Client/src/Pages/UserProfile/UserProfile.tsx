@@ -4,7 +4,7 @@ import { BASE_URL } from "../../env";
 import axios from "axios";
 import { IUserData } from "../../Interfaces/userInfo.interface";
 import dayjs from "dayjs";
-import { DeleteOutlined } from "@ant-design/icons";
+import { CrownOutlined, DeleteOutlined } from "@ant-design/icons";
 import { message } from "antd";
 
 const UserProfile = () => {
@@ -42,8 +42,8 @@ const UserProfile = () => {
   return (
     <div className="w-full flex flex-col">
       <div className="font-semibold mb-4">User Profile</div>
-      <div className="m-auto">
-        <div>{userInfo.username}</div>
+      <div className="mb-5">
+        <div>{userInfo.username}{userInfo.membership_type=='premium' && <CrownOutlined className="ml-2" />}</div>
         <div>{userInfo.email}</div>
         <div>{userInfo.phoneNumber}</div>
       </div>

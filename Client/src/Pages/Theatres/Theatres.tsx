@@ -136,7 +136,7 @@ const Theaters = () => {
       </div>
       <div className="flex">
       <div className="w-[30%]  pr-2 mr-2">
-          <div className="font-semibold text-[18px]">Narrow Your Selection</div>
+          <div className="font-semibold text-[18px]">Filters</div>
           <div className="mt-2">
             {filters.map((filter: TheaterFilter) => {
               return (
@@ -156,11 +156,11 @@ const Theaters = () => {
             })}
           </div>
         </div>
-        <div className="w-[70%] pl-2 ml-2 grid grid-cols-2 gap-x-2">
+        <div className="w-[70%] pl-2 ml-2">
           {tempTheaters?.map((theater: ITheater) => {
             return (
               <div
-                className="mb-2 mr-2  h-fit rounded-md border-[1px] border-l-[4px] border-l-[#6BE9FA] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
+                className="mb-2 mr-2  h-fit rounded-md border-[1px]  border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
                 onClick={() => {
                   navigate(`/theaters/${theater.id}`, { state: theater });
                 }}

@@ -50,7 +50,7 @@ const OrderConfirmation = () => {
         data?.selectedSeats?.length * data?.seatmapData.discounted_price! + 1.5
       );
     console.log(data, "page data");
-  }, [data]);
+  }, [data,userInfo]);
 
   const BookTicket = () => {
     axios
@@ -111,10 +111,7 @@ const OrderConfirmation = () => {
   };
   return (
     <div className="flex pt-10 justify-between">
-      <div className="w-[50%] flex flex-col gap-5 p-3">
-        <span className="font-bold text-2xl">Order Confirmation</span>
-      </div>
-      <div className="w-[50%] flex flex-col p-3">
+      <div className="w-[40%] flex flex-col p-3">
         <div>
           <div className="font-semibold text-[24px]">
             {data?.seatmapData?.movie.name}
@@ -195,7 +192,7 @@ const OrderConfirmation = () => {
             onClick={() => {
               BookTicket();
             }}
-            className="w-full"
+            className="w-[40%]"
           >
             Pay now
           </Button>

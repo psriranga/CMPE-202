@@ -30,12 +30,12 @@ const SeatMap = ({
 
   return (
     <div>
-      <div className="flex justify-center items-center p-3 bg-[#e0e0e0] mb-10">
+      <div className="flex justify-center items-center p-3 bg-[#FFFF99] mb-10">
         <span>Screen</span>
       </div>
       {rows.map((row: string) => {
         return (
-          <div className="flex justify-center items-center w-full mb-2">
+          <div className="flex justify-center items-center w-full mb-2 rounded-md">
             {columns.map((column: string) => {
               let tempSeat = row + column;
               return (
@@ -47,7 +47,7 @@ const SeatMap = ({
                   } ${
                     selectedSeats.includes(tempSeat)
                       ? "bg-green-600 text-white"
-                      : "bg-blue-400"
+                      : "bg-[#FFFF99]"
                   } p-2 px-3 rounded-t-md m-auto text-sm cursor-pointer hover:text-[white]`}
                   onClick={() => {
                     if (preBookedSeats.includes(tempSeat) === false) {

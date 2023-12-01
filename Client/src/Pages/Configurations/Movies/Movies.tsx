@@ -75,7 +75,7 @@ const Movies = ({ showModal, movies, getMovies }: MovieConfigurations) => {
                   </span>
                 </div>
               }
-              className="bg-white p-3 rounded-md border-l-[4px] border-l-[#6BE9FA] border-solid border-[#e0e0e0] border-[1px] cursor-pointer hover:shadow-md"
+              className="bg-white p-3 rounded-md  border-solid border-[#e0e0e0] border-[1px] cursor-pointer hover:shadow-md"
             />
             // </Card>
           );

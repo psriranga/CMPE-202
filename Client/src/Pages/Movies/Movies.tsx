@@ -115,7 +115,7 @@ const Movies = () => {
       </div>
       <div className="my-8 flex">
       <div className="w-[20%]  pr-2 mr-5 ">
-          <div className="font-semibold text-[18px]">Sort By</div>
+          {/* <div className="font-semibold text-[18px]">Sort By</div>
           <Select
             className="w-full my-2"
             placeholder="Sort By"
@@ -124,9 +124,9 @@ const Movies = () => {
               { value: "popular", label: "Most Popular" },
               { value: "alphabetical", label: "Alphabetical Order" },
             ]}
-          />
+          /> */}
           <div className="font-semibold text-[18px] mt-4">
-            Narrow Your Selection
+           Filters
           </div>
           <Divider className="my-2" />
           <div>Genre</div>
