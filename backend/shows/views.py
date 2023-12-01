@@ -35,6 +35,7 @@ from .models import Show, Movie, Theater
 from movie.serializers import MovieSerializer
 from theater.serializers import TheaterSerializer, TheaterOutputSerializer
 from django.forms.models import model_to_dict
+import pytz
 
 class CreateShowsView(APIView):
     def post(self, request, format=None):
@@ -60,7 +61,9 @@ class CreateShowsView(APIView):
                         time_parts = show_time.split(' ')
                         show_time_12hr = datetime.strptime(time_parts[0] + ' ' + time_parts[1], '%I:%M %p').strftime('%I:%M %p')
 
-                        show_datetime = datetime.combine(show_date, datetime.strptime(show_time_12hr, '%I:%M %p').time())
+                        show_datetime_naive = datetime.combine(show_date, datetime.strptime(show_time_12hr, '%I:%M %p').time())
+                        pst = pytz.timezone('America/Los_Angeles')
+                        show_datetime = pst.localize(show_datetime_naive)
                         seat_matrix = []
                         print(theater, movie)
                         shows.append(model_to_dict(Show.objects.create(movie=movie, theater=theater, show_timing=show_datetime, seat_matrix=seat_matrix, no_of_rows=theater.no_of_rows, no_of_cols=theater.no_of_cols, price=price, discounted_price=discounted_price)))
