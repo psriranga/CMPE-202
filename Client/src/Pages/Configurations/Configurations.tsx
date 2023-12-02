@@ -24,7 +24,7 @@ import { IMovie } from "../../Interfaces/movie.interface";
 import dayjs from "dayjs";
 import Shows from "./Shows/Shows";
 import { IShow } from "../../Interfaces/show.interface";
-// import Analytics from "./Analytics/Analytics";
+import Analytics from "./Analytics/Analytics";
 
 interface CreateTheater {
   name: string;
@@ -96,7 +96,7 @@ const Configurations = () => {
   }, []);
   const getTheatres = () => {
     axios
-      .get(BASE_URL + "/theater/theater")
+      .get(BASE_URL + "theater/theater")
       .then((res) => {
         setTheaters(res.data.theaters);
         getTheaterOptions(res.data.theaters);
@@ -153,8 +153,8 @@ const Configurations = () => {
           showModal={showModal}
           movies={movies!}
           getMovies={getMovies}
-          // form={form}
-          // setSelectedMovie={setSelectedMovie}
+          form={form}
+          setSelectedMovie={setSelectedMovie}
         />
       ),
       style: panelStyle,
@@ -175,8 +175,8 @@ const Configurations = () => {
           showModal={showModal}
           theaters={theaters!}
           getTheaters={getTheatres}
-          // setSelectedTheater={setSelectedTheater}
-          // form={form}
+          setSelectedTheater={setSelectedTheater}
+          form={form}
         />
       ),
       style: panelStyle,
@@ -211,20 +211,20 @@ const Configurations = () => {
         />
       ),
     },
-    // {
-    //   key: "4",
-    //   label: "Analytics",
-    //   children: <Analytics />,
-    //   style: panelStyle,
-    //   // extra: (
-    //   //   <PlusCircleOutlined
-    //   //     onClick={(e) => {
-    //   //       e.stopPropagation();
-    //   //       showModal("shows");
-    //   //     }}
-    //   //   />
-    //   // ),
-    // },
+    {
+      key: "4",
+      label: "Analytics",
+      children: <Analytics />,
+      style: panelStyle,
+      // extra: (
+      //   <PlusCircleOutlined
+      //     onClick={(e) => {
+      //       e.stopPropagation();
+      //       showModal("shows");
+      //     }}
+      //   />
+      // ),
+    },
   ];
 
   const CreateTheater = (data: any) => {
@@ -319,7 +319,7 @@ const Configurations = () => {
         handleCancel("shows");
       })
       .catch((e) => {
-        message.error(e.message);
+        // message.error(e.message);
       });
   };
 
@@ -547,25 +547,29 @@ const Configurations = () => {
               placeholder="Please select"
               options={[
                 {
-                  label: "10:00 AM",
-                  value: "10:00 AM",
+                  label: "9:00 AM",
+                  value: "9:00 AM",
                 },
                 {
-                  label: "12:30 PM",
-                  value: "12:30 PM",
+                  label: "12:00 PM",
+                  value: "12:00 PM",
                 },
                 {
-                  label: "4:30 PM",
-                  value: "4:30 PM",
+                  label: "2:30 PM",
+                  value: "2:30 PM",
                 },
                 {
-                  label: "7:00 PM",
-                  value: "7:00 PM",
+                  label: "6:00 PM",
+                  value: "6:00 PM",
                 },
                 {
-                  label: "10:30 PM",
-                  value: "10:30 PM",
+                  label: "9:00 PM",
+                  value: "9:00 PM",
                 },
+                {
+                  label: "11:00 PM",
+                  value: "11:00 PM",
+                }
               ]}
             />
           </Form.Item>

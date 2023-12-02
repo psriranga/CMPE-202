@@ -6,6 +6,7 @@ export interface IMovie {
   type: string;
   genre: string;
   rating: number;
+  start_date: string;
   show_timings: Array<string>;
   description: string;
 }

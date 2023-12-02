@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     "theater",
     "movie",
     "shows",
-    "booking"
+    "booking",
+    "analytics"
 ]
 
 MIDDLEWARE = [
@@ -91,7 +92,7 @@ DATABASES = {
         "NAME": "postgres",
         "USER": "postgres",
         "PASSWORD": "postgres",
-        "HOST": "postgres.cjfntnza4sht.us-east-1.rds.amazonaws.com",
+        "HOST": "db",
         "PORT": 5432,
     }
 }

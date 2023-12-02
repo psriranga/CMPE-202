@@ -17,13 +17,14 @@ const Movies = () => {
   const location = useLocation();
   const movies = useAppSelector((state: any) => state.movies);
   const [tab, setTab] = useState<string>("");
-  const [filters, setFilters] = useState<any>();
+  const [filters, setFilters] = useState<any>({});
 
   const [tempMovies, setTempMovies] = useState<Array<IMovie>>();
 
   const getMovies = (params: any) => {
+    let tmpParams = removeUndefined(params);
     axios
-      .get(BASE_URL + "movie/movie", { params: params })
+      .get(BASE_URL + "movie/movie", { params: tmpParams })
       .then((res) => {
         dispatch(allMovies(res.data.movies));
       })
@@ -33,8 +34,8 @@ const Movies = () => {
   };
 
   useEffect(() => {
-    getMovies({});
-  }, []);
+    getMovies(filters);
+  }, [filters]);
 
   useEffect(() => {
     console.log(movies, "movies");
@@ -65,6 +66,15 @@ const Movies = () => {
     console.log(data.filter((movie) => regex.test(movie.name)));
     setTempMovies(data.filter((movie) => regex.test(movie.name)));
   };
+
+  function removeUndefined(obj: any) {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key) && obj[key] === undefined) {
+        delete obj[key];
+      }
+    }
+    return obj;
+  }
 
   return (
     <div>
@@ -113,34 +123,45 @@ const Movies = () => {
           />
         </div>
       </div>
-      <div className="my-8 flex">
-      <div className="w-[20%]  pr-2 mr-5 ">
+      <div className="my-8 flex flex-col">
+      <div className="w-[100%]   ">
           {/* <div className="font-semibold text-[18px]">Sort By</div>
           <Select
+            allowClear
             className="w-full my-2"
             placeholder="Sort By"
+            onChange={(e) => {
+              setFilters({ ...filters, sort_by: e });
+            }}
             options={[
               { value: "recent", label: "Most Recent" },
               { value: "popular", label: "Most Popular" },
               { value: "alphabetical", label: "Alphabetical Order" },
             ]}
           /> */}
-          <div className="font-semibold text-[18px] mt-4">
-           Filters
-          </div>
-          <Divider className="my-2" />
+          
+          <div className="w-full flex justify-center items-center mb-4"> <div className="mr-3" >
           <div>Genre</div>
           <Select
+            allowClear
             className="w-full my-2"
             placeholder="Select Genre"
             options={[
-              { value: "recent", label: "Most Recent" },
-              { value: "popular", label: "Most Popular" },
-              { value: "alphabetical", label: "Alphabetical Order" },
+              { value: "action", label: "Action" },
+              { value: "thriller", label: "Thriller" },
+              { value: "rom_com", label: "Rom Com" },
+              { value: "horror", label: "Horror" },
+              { value: "feel_good", label: "Feel Good" },
             ]}
+            onChange={(e) => {
+              setFilters({ ...filters, genre: e });
+            }}
           />
+          </div>
+          <div>
           <div>Rating</div>
           <Select
+            allowClear
             className="w-full my-2"
             placeholder="Select Rating"
             options={[
@@ -148,19 +169,14 @@ const Movies = () => {
               { value: "popular", label: "Most Popular" },
               { value: "alphabetical", label: "Alphabetical Order" },
             ]}
+            onChange={(e) => {
+              setFilters({ ...filters, rating: e });
+            }}
           />
-          {/* <div>Release Month</div>
-          <Select
-            className="w-full my-2"
-            placeholder="Select Release Month"
-            options={[
-              { value: "recent", label: "Most Recent" },
-              { value: "popular", label: "Most Popular" },
-              { value: "alphabetical", label: "Alphabetical Order" },
-            ]}
-          /> */}
+          </div></div>
+         
         </div>
-        <div className="w-[70%] pl-2 ml-2 grid grid-cols-2 gap-4">
+        <div className="w-[100%] grid grid-cols-4 gap-4">
           {tempMovies?.map((movie: IMovie) => (
            <Card
            hoverable

@@ -50,3 +50,8 @@ class TheaterUpdateSerializer(TheaterSerializer):
         instance.no_of_cols = validated_data["no_of_cols"]
         instance.save()
         return instance
+
+
+class TheaterFilterSerializer(serializers.Serializer):
+        technologies = serializers.ListField(child=serializers.ChoiceField(choices=['xd', 'imax', 'screenx']), required=False)
+        food = serializers.ListField(child=serializers.ChoiceField(choices=['restaurant', 'bar']), required=False)

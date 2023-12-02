@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../../state/hooks";
 import { DeleteTwoTone, StarTwoTone } from "@ant-design/icons";
-import { Card } from "antd";
+import { Card, FormInstance } from "antd";
 import Meta from "antd/es/card/Meta";
 import { IMovie } from "../../../Interfaces/movie.interface";
 import axios from "axios";
 import { BASE_URL } from "../../../env";
 import { allMovies } from "../../../state/reducers/moviesReducer/moviesReducer";
+import moment from "moment";
 
 interface MovieConfigurations {
   showModal: (type: string) => void;
   movies: Array<IMovie>;
   getMovies: () => void;
+  form: any;
+  setSelectedMovie: any;
 }
 
-const Movies = ({ showModal, movies, getMovies }: MovieConfigurations) => {
+const Movies = ({
+  showModal,
+  movies,
+  getMovies,
+  form,
+  setSelectedMovie,
+}: MovieConfigurations) => {
   useEffect(() => {
     console.log(movies, "movies");
   }, [movies]);
@@ -42,6 +51,12 @@ const Movies = ({ showModal, movies, getMovies }: MovieConfigurations) => {
                 <div
                   className="flex justify-between items-center"
                   onClick={() => {
+                    console.log(movie);
+                    setSelectedMovie(movie);
+                    form.setFieldsValue({
+                      ...movie,
+                      start_date: moment(movie.start_date, "YYYY-MM-DD"),
+                    });
                     showModal("movies");
                   }}
                 >

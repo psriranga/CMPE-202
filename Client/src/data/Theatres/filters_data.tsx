@@ -1,14 +1,17 @@
 export const filters = [
   {
-    title: "Technologies",
-    options: ["Cinemark XD", "ScreenX", "IMAX"],
+    title: { label: "Technologies", value: "technologies" },
+    options: [
+      { label: "Cinemark XD", value: "xd" },
+      { label: "ScreenX", value: "screenx" },
+      { label: "IMAX", value: "imax" },
+    ],
   },
   {
-    title: "Seats",
-    options: ["Luxury Loungers", "Stadium Seating", "D-Box"],
-  },
-  {
-    title: "Food & Drink",
-    options: ["Expanded Menu", "Bar / Alcohol", "Default"],
+    title: { label: "Food & Drink", value: "food" },
+    options: [
+      { label: "Expanded Menu", value: "restuarant" },
+      { label: "Bar", value: "bar" },
+    ],
   },
 ];

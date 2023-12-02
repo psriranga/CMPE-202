@@ -43,7 +43,7 @@ const MoviesListByDate = (props: MoviesListByDateInterface) => {
               <div>{movie?.movie.description}</div>
               <div className="flex w-full justify-between my-2">
                 <div>{movie?.movie.genre}</div>
-                <div>{movie.movie.runtime} min</div>
+                <div>{movie.movie.runtime} hrs</div>
                 <div>{movie.movie.rating}/10</div>
               </div>
 

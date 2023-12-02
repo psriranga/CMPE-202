@@ -6,15 +6,31 @@ interface ISeatMap {
   selectedSeats: Array<string>;
   setSelectedSeats: (selectedSeats: Array<string>) => void;
   preBookedSeats: Array<string>;
+  rows_m: number;
+  columns_n: number;
 }
 
 const SeatMap = ({
   selectedSeats,
   setSelectedSeats,
   preBookedSeats,
+  rows_m,
+  columns_n,
 }: ISeatMap) => {
-  const rows: Array<string> = ["A", "B", "C", "D", "E", "F", "G", "H"];
-  const columns: Array<string> = ["1", "2", "3", "4", "5", "6", "7", "8"];
+  function generateArrays(
+    m: number,
+    n: number
+  ): { rows: Array<string>; columns: Array<string> } {
+    const rows: Array<string> = Array.from({ length: m }, (_, index) =>
+      String.fromCharCode(65 + index)
+    );
+    const columns: Array<string> = Array.from({ length: n }, (_, index) =>
+      (index + 1).toString()
+    );
+
+    return { rows, columns };
+  }
+  const { rows, columns } = generateArrays(rows_m, columns_n);
   const handleSelectSeats = (seat: string) => {
     let tempSelectedSeats: Array<string> = [...selectedSeats];
     if (tempSelectedSeats.includes(seat)) {

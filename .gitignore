@@ -5,3 +5,4 @@ db.sqlite3
 __pycache__
 pgdata
 readme.md
+node_modules

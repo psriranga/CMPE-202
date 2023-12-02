@@ -17,6 +17,6 @@ export interface ITheater {
 }
 
 export interface TheaterFilter {
-  title: string;
-  options: Array<string>;
+  title: { label: string; value: string };
+  options: Array<{ label: string; value: string }>;
 }

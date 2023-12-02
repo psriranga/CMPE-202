@@ -1,4 +1,4 @@
-from theater.serializers import TheaterSerializer, TheaterOutputSerializer, TheaterUpdateSerializer
+from theater.serializers import TheaterSerializer, TheaterOutputSerializer, TheaterUpdateSerializer, TheaterFilterSerializer
 from rest_framework import serializers
 from rest_framework import status
 from rest_framework.response import Response
@@ -58,8 +58,15 @@ class TheaterListCreateAPI(APIView):
         longitude = query_params.get("longitude", "")
         zip_code = query_params.get("zip_code", "")
         theaters = Theater.objects.all()
-        if zip_code:
-            theaters = theaters.filter()
+        serializer = TheaterFilterSerializer(data=query_params)
+        serializer.is_valid(raise_exception=True)
+        filters = serializer.data
+        if "technologies" in filters:
+            theaters = theaters.filter(technologies__contains=filters["technologies"])
+        if "food" in filters:
+            theaters = theaters.filter(cuisines__contains=filters["food"])
+        # if zip_code:
+        #     theaters = theaters.filter(zip_code=zip_code)
         theaters = TheaterOutputSerializer(theaters, many=True).data
         for theater in theaters:
             if latitude and longitude:
@@ -93,6 +100,23 @@ class TheaterGetUpdateDeleteAPI(APIView):
             return Response({'message': 'Theater not found'}, status=status.HTTP_404_NOT_FOUND)
     
     def patch(self, request, pk):
+        geolocator = Nominatim(user_agent=f"User agent: {random.randint(1,10000)}")
+        data = request.data
+        location = geolocator.geocode(data["address"])
+        data["location"] = {
+            "latitude": location.latitude,
+            "longitude": location.longitude
+        }
+        address = geolocator.reverse((location.latitude, location.longitude), language="en").raw["address"]
+        data["zip_code"] = address.get("postcode", location.raw['display_name'].split(",")[-2])
+        short_address_list = []
+        if address.get("suburb") or address.get("road"):
+            short_address_list.append(address.get("suburb") or address.get("road"))
+        if address.get("city"):
+            short_address_list.append(address.get("city"))
+        if address.get("state"):
+            short_address_list.append(address.get("state"))
+        data["short_address"] = ", ".join(short_address_list)
         try:
             theater = Theater.objects.get(id=pk)
         except Theater.DoesNotExist:

@@ -40,7 +40,7 @@ const Shows = ({
       {shows?.map((show: IShow) => {
         return (
           <div
-            className="w-[95%] border-[1px] border-solid border-[#e0e0e0] p-3 mb-2 rounded-md border-l-[4px] border-l-[#6BE9FA] flex items-between justify-between"
+            className="w-[95%] border-[1px] border-solid border-[#e0e0e0] p-3 mb-2 rounded-md  flex items-between justify-between"
             onClick={() => {
               console.log(show);
               setSelectedShow(show);

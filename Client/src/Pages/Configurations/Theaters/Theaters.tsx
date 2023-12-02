@@ -9,12 +9,16 @@ interface TheaterConfigurations {
   showModal: (type: string) => void;
   theaters: Array<ITheater>;
   getTheaters: () => void;
+  setSelectedTheater: any;
+  form: any;
 }
 
 const Theaters = ({
   showModal,
   theaters,
   getTheaters,
+  setSelectedTheater,
+  form,
 }: TheaterConfigurations) => {
   useEffect(() => {
     console.log(theaters, "movies");
@@ -39,6 +43,8 @@ const Theaters = ({
             <div
               className="rounded-md border-[1px]  border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
               onClick={() => {
+                form.setFieldsValue(theater);
+                setSelectedTheater(theater);
                 showModal("theaters");
               }}
             >

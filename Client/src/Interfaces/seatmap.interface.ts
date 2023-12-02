@@ -11,4 +11,6 @@ export interface ISeatmap {
   show_date: string;
   show_timing: string;
   seat_matrix: Array<string>;
+  no_of_rows: number;
+  no_of_cols: number;
 }
