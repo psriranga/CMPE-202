@@ -1,4 +1,4 @@
-import { Card, Button } from "antd";
+import { Card, Button, message } from "antd";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ITheater } from "../../../Interfaces/theater.interface";
@@ -15,6 +15,8 @@ const TheatreListByMovie = (props: TheatreListByMovie) => {
 
   useEffect(() => {
     console.log(props.theaters, "theaters data");
+    if (props.theaters.length == 0)
+      message.warning("Oops! Shows for this movie are not added yet!");
   }, [props]);
 
   return (

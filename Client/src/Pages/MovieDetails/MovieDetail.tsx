@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { Tabs, message } from "antd";
+import { Button, Tabs, message } from "antd";
 import TheatreListByMovie from "./Tabs/TheatreListByMovie";
 import dayjs from "dayjs";
 import axios from "axios";
@@ -106,11 +106,20 @@ const MovieDetail = () => {
   return (
     <>
       <div>
+        <div className="mb-2">
+          <Button
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            Back
+          </Button>
+        </div>
         <div className="flex flex-col items-center">
           <figure className="max-w-lg">
             <img
               className="h-auto max-w-xl min-w-full max-h-80 rounded-lg"
-              src="https://www.cinemark.com/media/76008938/lg-kotfm-still.jpg"
+              src={movieData?.movie?.image_url}
               alt="image description"
             />
           </figure>

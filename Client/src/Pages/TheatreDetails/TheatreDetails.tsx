@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ITheater } from "../../Interfaces/theater.interface";
-import { Tabs, TabsProps, message } from "antd";
+import { Button, Tabs, TabsProps, message } from "antd";
 import FeaturedMovies from "./Tabs/FeaturedMovies";
 import MoviesListByDate from "./Tabs/MoviesListByDate";
 import dayjs from "dayjs";
 import axios from "axios";
 import { BASE_URL } from "../../env";
+import TheatreInfo from "./Tabs/TheatreInfo";
 
 const TheatreDetails = () => {
   const location = useLocation();
@@ -65,12 +66,7 @@ const TheatreDetails = () => {
     {
       key: "1",
       label: "Theatre Info",
-      children: "Content of Tab Pane 1",
-    },
-    {
-      key: "2",
-      label: "Featured Movies",
-      children: <FeaturedMovies />,
+      children: <TheatreInfo theater={theatersData?.theater!} />,
     },
   ];
 
@@ -128,6 +124,15 @@ const TheatreDetails = () => {
 
   return (
     <div>
+      <div className="mb-2">
+        <Button
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          Back
+        </Button>
+      </div>
       <div className="font-semibold text-[24px] mt-4">{theater?.name}</div>
       <Tabs items={items} />
       <div className="font-semibold text-[24px] mt-4">Showtimes</div>

@@ -9,7 +9,6 @@ const theatreSlice = createSlice({
   initialState,
   reducers: {
     allTheaters: (state: theatresState, action: PayloadAction<any>) => {
-      console.log("calling!", action.payload);
       state.theaters = action.payload;
     },
   },

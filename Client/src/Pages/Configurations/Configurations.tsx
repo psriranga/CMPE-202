@@ -44,7 +44,7 @@ const Configurations = () => {
   const [movies, setMovies] = useState<Array<IMovie>>();
   const [shows, setShows] = useState<Array<IShow>>();
   const [selectedMovie, setSelectedMovie] = useState<IMovie>();
-  const [selectedTheater, setSelectedTheater] = useState<ITheater>();
+  const [selectedTheater, setSelectedTheater] = useState<any>();
   const [selectedShow, setSelectedShow] = useState<IShow>();
   const [moviesOptions, setMoviesOptions] =
     useState<Array<{ label: string; value: number }>>();
@@ -98,7 +98,6 @@ const Configurations = () => {
     axios
       .get(BASE_URL + "/theater/theater")
       .then((res) => {
-        console.log("getting res", res.data);
         setTheaters(res.data.theaters);
         getTheaterOptions(res.data.theaters);
       })
@@ -228,30 +227,37 @@ const Configurations = () => {
     },
   ];
 
-  const CreateTheater = (data: CreateTheater) => {
-    console.log(selectedTheater);
+  const CreateTheater = (data: any) => {
+    console.log(selectedTheater, "selected theater");
     if (selectedTheater?.id === undefined) {
       axios
         .post(BASE_URL + "theater/theater", data)
         .then((res) => {
           console.log(res);
+          message.success("Theater added successfully");
           handleCancel("theaters");
+
           getTheatres();
         })
         .catch((e) => {
           console.log(e);
+          message.error(e.message);
           handleCancel("theaters");
         });
     } else {
       axios
-        .patch(BASE_URL + "theater/theater/" + selectedTheater.id, data)
+        .patch(BASE_URL + "theater/theater/" + selectedTheater?.id, data)
         .then((res) => {
           console.log(res);
+          message.success("Theater edited successfully");
+          setSelectedTheater({} as ITheater);
           handleCancel("theaters");
           getTheatres();
         })
         .catch((e) => {
           console.log(e);
+          message.error(e.message);
+          setSelectedTheater({} as ITheater);
           handleCancel("theaters");
         });
     }
@@ -265,12 +271,14 @@ const Configurations = () => {
           start_date: dayjs(data?.start_date).format("YYYY-MM-DD"),
         })
         .then((res) => {
+          message.success("Movie added successfully");
           console.log(res);
           handleCancel("movies");
           getMovies();
         })
         .catch((e) => {
           console.log(e);
+          message.error(e.message);
           handleCancel("movies");
         });
     } else {
@@ -281,12 +289,14 @@ const Configurations = () => {
         })
         .then((res) => {
           console.log(res);
+          message.success("Movie edited successfully");
           handleCancel("movies");
           setSelectedMovie({} as IMovie);
           getMovies();
         })
         .catch((e) => {
           console.log(e);
+          message.error(e.message);
           handleCancel("movies");
         });
     }
@@ -305,6 +315,7 @@ const Configurations = () => {
         end_date: dayjs(data.end_date).format("YYYY-MM-DD"),
       })
       .then((res) => {
+        getShows();
         message.success("Show created successfully");
         handleCancel("shows");
       })
@@ -317,7 +328,7 @@ const Configurations = () => {
     <div>
       <Collapse
         bordered={false}
-        defaultActiveKey={["1", "2", "3", "4"]}
+        defaultActiveKey={["1", "2", "4"]}
         expandIcon={({ isActive }) => (
           <CaretRightOutlined rotate={isActive ? 90 : 0} />
         )}
@@ -471,6 +482,19 @@ const Configurations = () => {
               <InputNumber placeholder="No of columns" className="w-full" />
             </Form.Item>
           </div>
+          <Form.Item
+            label="Screen Number"
+            name="screen_number"
+            className="w-full"
+            rules={[
+              {
+                required: true,
+                message: "Please input theater screen number!",
+              },
+            ]}
+          >
+            <InputNumber placeholder="Screen Number" className="w-full" />
+          </Form.Item>
           <Form.Item
             label="Technologies"
             name="technologies"
@@ -632,14 +656,14 @@ const Configurations = () => {
             />
           </Form.Item>
           <Form.Item
-            label="Ticket Price"
+            label="Ticket Price ($)"
             name="price"
             rules={[{ required: true, message: "Please input end date!" }]}
           >
             <InputNumber placeholder="Ticket Price" className="w-full" />
           </Form.Item>
           <Form.Item
-            label="Discounted Ticket Price"
+            label="Discounted Ticket Price ($)"
             name="discounted_price"
             rules={[{ required: true, message: "Please input end date!" }]}
           >

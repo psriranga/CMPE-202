@@ -35,7 +35,6 @@ const Theaters = () => {
         params: tmpParams,
       })
       .then((res) => {
-        console.log("getting res", res.data);
         dispatch(allTheaters(res.data.theaters));
       })
       .catch((e) => {
@@ -120,11 +119,19 @@ const Theaters = () => {
             placeholder="Search by ZIP code"
             optionFilterProp="children"
             onChange={(e) => {
-              console.log(e, "event");
+              console.log(e, "change event");
               if (e === undefined) {
+                getZipCode();
                 getTheaters({ latitude: latitude, longitude: longitude });
               } else {
+                setZipcode(e);
                 getTheaters({ zip_code: e });
+              }
+            }}
+            onKeyDown={(e: any) => {
+              if (e.key === "Enter") {
+                setZipcode(e.target.value);
+                getTheaters({ zip_code: e.target.value });
               }
             }}
             bordered={false}
@@ -160,7 +167,7 @@ const Theaters = () => {
           {tempTheaters?.map((theater: ITheater) => {
             return (
               <div
-                className="mb-2 mr-2  h-fit rounded-md border-[1px] border-l-[4px] border-l-[#6BE9FA] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
+                className="hover:shadow-lg hover:shadow-[#a8e8fd] cursor-pointer transition-shadow duration-500 mb-2 mr-2  h-fit rounded-md border-[1px] border-l-[4px] border-l-[#6BE9FA] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
                 onClick={() => {
                   navigate(`/theaters/${theater.id}`, { state: theater });
                 }}

@@ -40,6 +40,20 @@ const Movies = ({
       });
   };
 
+  const getMovieGenre = (genre: string) => {
+    if (genre === "feel_good") {
+      return "Feel Good";
+    } else if (genre === "action") {
+      return "Action";
+    } else if (genre === "thriller") {
+      return "Thriller";
+    } else if (genre === "rom_com") {
+      return "Rom Com";
+    } else if (genre === "horror") {
+      return "Horror";
+    } else return genre;
+  };
+
   return (
     <div>
       {" "}
@@ -81,8 +95,8 @@ const Movies = ({
                 <div className="flex items-center justify-between">
                   <span>
                     {movie.genre.length > 15
-                      ? movie.genre.substring(0, 15) + "..."
-                      : movie.genre}
+                      ? getMovieGenre(movie.genre).substring(0, 15) + "..."
+                      : getMovieGenre(movie.genre)}
                   </span>
                   <span>
                     <StarTwoTone className="mr-1" />

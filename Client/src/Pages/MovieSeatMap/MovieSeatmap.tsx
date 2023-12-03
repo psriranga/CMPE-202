@@ -75,7 +75,7 @@ const MovieSeatmap = () => {
 
   const GuestSignUp = () => {
     axios
-      .post("http://127.0.0.1:8000/account/sign_up", {
+      .post(BASE_URL + "account/sign_up", {
         ...form.getFieldsValue(),
       })
       .then((res) => {
@@ -98,6 +98,15 @@ const MovieSeatmap = () => {
   };
   return (
     <div>
+      <div className="mb-2">
+        <Button
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          Back
+        </Button>
+      </div>
       <div className="mb-8">
         <div className="w-full flex mb-4">
           <span className="text-[32px] font-semibold m-auto">
@@ -112,7 +121,7 @@ const MovieSeatmap = () => {
         <div className="w-full flex mb-4">
           <div className="m-auto">
             <span className="text-[16px] font-semibold m-auto">
-              {dayjs(seatmapData?.show_date).format("MMMM D, YYYY")}
+              {dayjs(seatmapData?.show_date).format("MMMM D, YYYY,h:mm A")}
             </span>
             <span className="text-[16px] font-semibold m-auto ml-2">
               {seatmapData?.show_time}

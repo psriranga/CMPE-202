@@ -50,7 +50,7 @@ const OrderConfirmation = () => {
         data?.selectedSeats?.length * data?.seatmapData.discounted_price! + 1.5
       );
     console.log(data, "page data");
-  }, [data]);
+  }, [data, userInfo]);
 
   const BookTicket = () => {
     axios
@@ -69,6 +69,7 @@ const OrderConfirmation = () => {
           dispatch(setLogOut({}));
           // dispatch(setUserInfo(null));
         }
+        console.log(userInfo, "user info");
         dispatch(setUserInfo(res.data?.ticket?.user));
         navigate("/ticket", { state: data });
       })
@@ -84,6 +85,10 @@ const OrderConfirmation = () => {
       })
       .then((res) => {
         dispatch(setUserInfo(res.data));
+        localStorage.setItem("userInfo", JSON.stringify(res.data));
+        setFinalPrice(
+          data?.selectedSeats?.length * data?.seatmapData.discounted_price
+        );
         setIsModalOpen(false);
       })
       .catch((e) => {
@@ -110,107 +115,125 @@ const OrderConfirmation = () => {
     }
   };
   return (
-    <div className="flex pt-10 justify-between">
-      <div className="w-[50%] flex flex-col gap-5 p-3">
-        <span className="font-bold text-2xl">Order Confirmation</span>
+    <>
+      <div className="mb-2">
+        <Button
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          Back
+        </Button>
       </div>
-      <div className="w-[50%] flex flex-col p-3">
-        <div>
-          <div className="font-semibold text-[24px]">
-            {data?.seatmapData?.movie.name}
-          </div>
-          <div className="mt-2">{data?.seatmapData?.theater?.name}</div>
-          <div className="mt-2">
-            {dayjs(data?.seatmapData?.show_timing).format("MMMM D, YYYY")} at{" "}
-            {dayjs(data?.seatmapData?.show_timing).format("h:mm A")}
-          </div>
+      <div className="flex  justify-between">
+        <div className="w-[50%] flex flex-col gap-5 p-3">
+          <span className="font-bold text-2xl">Order Confirmation</span>
         </div>
-        <Divider />
-        <div className="flex flex-col">
-          <div className="mb-2">
-            <div className="w-full flex items-center">
-              {" "}
-              <div className="font-semibold mr-2 text-xl">Selected Seats </div>
-              <div>
-                {data.selectedSeats.map((seat: string) => {
-                  return seat + " ";
-                })}
+        <div className="w-[50%] flex flex-col p-3">
+          <div>
+            <div className="font-semibold text-[24px]">
+              {data?.seatmapData?.movie.name}
+            </div>
+            <div className="mt-2">{data?.seatmapData?.theater?.name}</div>
+            <div className="mt-2">
+              {dayjs(data?.seatmapData?.show_timing).format("MMMM D, YYYY")} at{" "}
+              {dayjs(data?.seatmapData?.show_timing).format("h:mm A")}
+            </div>
+          </div>
+          <Divider />
+          <div className="flex flex-col">
+            <div className="mb-2">
+              <div className="w-full flex items-center">
+                {" "}
+                <div className="font-semibold mr-2 text-xl">
+                  Selected Seats{" "}
+                </div>
+                <div>
+                  {data.selectedSeats.map((seat: string) => {
+                    return seat + " ";
+                  })}
+                </div>
               </div>
             </div>
-          </div>
-          <span className="font-bold text-xl">Summary</span>
-          <div className="flex pt-4 ">
-            <div className="w-[50%]">
-              Tickets({data?.selectedSeats?.length})
+            <span className="font-bold text-xl">Summary</span>
+            <div className="flex pt-4 ">
+              <div className="w-[50%]">
+                Tickets({data?.selectedSeats?.length})
+              </div>
+              <div className="w-[50%]">
+                $
+                {data?.selectedSeats?.length *
+                  data.seatmapData.discounted_price}
+              </div>
             </div>
-            <div className="w-[50%]">
-              ${data?.selectedSeats?.length * data.seatmapData.discounted_price}
+            <div className="flex pt-4 ">
+              <div className="w-[50%]">Service fee</div>
+              <div className="w-[50%]">
+                ${userInfo.membership_type === "premium" ? 0 : 1.5}
+              </div>
             </div>
-          </div>
-          <div className="flex pt-4 ">
-            <div className="w-[50%]">Service Tax</div>
-            <div className="w-[50%]">
-              ${userInfo.membership_type === "premium" ? 0 : 1.5}
+            <div className="flex pt-4 gap-x-20">
+              <div className="w-[50%] flex flex-col">
+                <span>Food & Drink</span>
+              </div>
+              <div className="w-[50%]">-</div>
             </div>
+            {userInfo.rewardPoints > 0 && (
+              <div className="mt-4 font-semibold">
+                <Checkbox
+                  onChange={(e: any) => {
+                    getFinalPrice(e.target.checked, userInfo.rewardPoints);
+                    console.log(e.target.checked);
+                  }}
+                >
+                  <span>Claim</span> {userInfo.rewardPoints}{" "}
+                  <span>reward points</span>
+                </Checkbox>
+              </div>
+            )}
+            {userInfo.role !== "guestUser" &&
+              userInfo.membership_type !== "premium" && (
+                <div className="my-2">
+                  <span
+                    className="text-blue-500 cursor-pointer"
+                    onClick={() => {
+                      showModal();
+                    }}
+                  >
+                    Join premium membership?
+                  </span>
+                </div>
+              )}
           </div>
-          <div className="flex pt-4 gap-x-20">
-            <div className="w-[50%] flex flex-col">
-              <span>Food & Drink</span>
-            </div>
-            <div className="w-[50%]">-</div>
+          <Divider />
+          <div className="flex gap-x-20">
+            <div className="w-[50%] font-bold text-xl">Total</div>${finalPrice}
           </div>
-          <div className="mt-4 font-semibold">
-            <Checkbox
-              onChange={(e: any) => {
-                getFinalPrice(e.target.checked, userInfo.rewardPoints);
-                console.log(e.target.checked);
+          <Divider />
+          <div>
+            <Button
+              type="primary"
+              size="large"
+              onClick={() => {
+                BookTicket();
               }}
+              className="w-full"
             >
-              <span>Claim</span> {userInfo.rewardPoints}{" "}
-              <span>reward points</span>
-            </Checkbox>
+              Pay now
+            </Button>
           </div>
-          {userInfo.role !== "guestUser" && (
-            <div className="my-2">
-              <span
-                className="text-blue-500 cursor-pointer"
-                onClick={() => {
-                  showModal();
-                }}
-              >
-                Join premium membership?
-              </span>
-            </div>
-          )}
         </div>
-        <Divider />
-        <div className="flex gap-x-20">
-          <div className="w-[50%] font-bold text-xl">Total</div>${finalPrice}
-        </div>
-        <Divider />
-        <div>
-          <Button
-            type="primary"
-            size="large"
-            onClick={() => {
-              BookTicket();
-            }}
-            className="w-full"
-          >
-            Pay now
-          </Button>
-        </div>
+        <Modal
+          title="Premium membership"
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          okText={"Pay"}
+        >
+          Premium membership costs 15$ per year
+        </Modal>
       </div>
-      <Modal
-        title="Premium membership"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        okText={"Pay"}
-      >
-        Premium membership costs 15$ per year
-      </Modal>
-    </div>
+    </>
   );
 };
 

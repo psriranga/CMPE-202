@@ -1,4 +1,5 @@
 import {
+  CrownOutlined,
   CrownTwoTone,
   LoginOutlined,
   LogoutOutlined,
@@ -7,9 +8,9 @@ import {
   SettingOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
-import { Avatar, Button, Dropdown, Space, message } from "antd";
+import { Avatar, Button, Dropdown, Modal, Space, message } from "antd";
 import type { MenuProps } from "antd";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -17,7 +18,8 @@ import {
   setUserInfo,
 } from "../../state/reducers/authReducer/authReducer";
 import { useAppSelector } from "../../state/hooks";
-import { ISignUp } from "../../Interfaces/signUp.interface";
+import axios from "axios";
+import { BASE_URL } from "../../env";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -53,7 +55,7 @@ const Header = () => {
               }}
             >
               <SettingOutlined className="mr-1" />
-              Configurations
+              Admin Settings
             </span>
           ),
           key: "2",
@@ -99,6 +101,39 @@ const Header = () => {
   function capitalizeFirstLetter(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPremiumMember, setIsPremiumMember] = useState<boolean>(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsPremiumMember(true);
+    message.success("Payment successful");
+    UpdateMembershipStatus();
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const UpdateMembershipStatus = () => {
+    axios
+      .patch(BASE_URL + "account/user/" + userInfo.id, {
+        membership_type: "premium",
+      })
+      .then((res) => {
+        dispatch(setUserInfo(res.data));
+        localStorage.setItem("userInfo", JSON.stringify(res.data));
+        setIsModalOpen(false);
+      })
+      .catch((e) => {
+        message.success(e.message);
+      });
+  };
+
   return (
     <div className="py-4 bg-[#6BE9FA] flex justify-between items-center px-60 z-40 sticky top-0 shadow-lg">
       <div className="flex items-center">
@@ -108,7 +143,8 @@ const Header = () => {
             navigate("/movies");
           }}
         >
-          CineSquare
+          <img src="https://svgsilh.com/svg/2027080.svg" className="w-[40px]" />
+          <span className="ml-2">CineSquare</span>
         </div>{" "}
         <div
           className="ml-14 mr-4 font-semibold hover:text-white cursor-pointer"
@@ -151,19 +187,48 @@ const Header = () => {
           </div>
         )}
         {isLoggedIn == true && (
-          <Dropdown menu={{ items }} trigger={["click"]}>
-            <div className="flex items-center mr-2 font-semibold cursor-pointer">
-              <Avatar className="mr-2 uppercase">
-                {userInfo?.username[0]}
-              </Avatar>{" "}
-              <span>
-                Hi,&nbsp;{" "}
-                <span> {capitalizeFirstLetter(userInfo.username)}</span>
+          <>
+            <Dropdown menu={{ items }} trigger={["click"]}>
+              <div>
+                <div className="flex items-center mr-2 font-semibold cursor-pointer">
+                  <Avatar className="mr-2 uppercase">
+                    {userInfo?.username[0]}
+                  </Avatar>{" "}
+                  <div>
+                    <span>
+                      Hi,&nbsp;{" "}
+                      <span> {capitalizeFirstLetter(userInfo?.username)}</span>
+                    </span>
+                    {userInfo.membership_type === "premium" && (
+                      <div className="font-md text-[12px] mt-1">
+                        Premium member
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Dropdown>
+            {userInfo.membership_type !== "premium" && (
+              <span
+                className="ml-3 text-[12px] cursor-pointer hover:text-blue-500"
+                onClick={showModal}
+              >
+                <CrownOutlined className="mr-1" />
+                Get Premium
               </span>
-            </div>
-          </Dropdown>
+            )}
+          </>
         )}
       </div>
+      <Modal
+        title="Premium membership"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText={"Pay"}
+      >
+        Premium membership costs 15$ per year
+      </Modal>
     </div>
   );
 };

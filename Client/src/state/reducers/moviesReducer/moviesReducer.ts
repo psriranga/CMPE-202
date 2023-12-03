@@ -9,7 +9,6 @@ const movieSlice = createSlice({
   initialState,
   reducers: {
     allMovies: (state: moviesState, action: PayloadAction<any>) => {
-      console.log("calling!",action.payload);
       state.movies = action.payload;
     },
   },

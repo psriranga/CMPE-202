@@ -21,6 +21,20 @@ const Movies = () => {
 
   const [tempMovies, setTempMovies] = useState<Array<IMovie>>();
 
+  const getMovieGenre = (genre: string) => {
+    if (genre === "feel_good") {
+      return "Feel Good";
+    } else if (genre === "action") {
+      return "Action";
+    } else if (genre === "thriller") {
+      return "Thriller";
+    } else if (genre === "rom_com") {
+      return "Rom Com";
+    } else if (genre === "horror") {
+      return "Horror";
+    } else return genre;
+  };
+
   const getMovies = (params: any) => {
     let tmpParams = removeUndefined(params);
     axios
@@ -129,17 +143,30 @@ const Movies = () => {
             <Card
               hoverable
               style={{ width: 240 }}
-              cover={<img alt="example" src={movie.image_url} />}
+              cover={
+                <img
+                  alt="example"
+                  src={movie.image_url}
+                  style={{ objectFit: "cover", height: "280px" }}
+                />
+              } // Adjust the height as needed
               onClick={() => {
                 navigate(`${movie.id}`);
               }}
+              className="hover:shadow-lg hover:shadow-[#a8e8fd] cursor-pointer transition-shadow duration-500 cursor-pointer"
             >
               <Meta
                 title={movie.name}
                 description={
-                  <div className="flex justify-between">
-                    <div>{movie.genre}</div>
-                    <div>{movie.rating}/10</div>
+                  <div>
+                    <div className="my-2">{movie.description}</div>
+                    <div className="flex justify-between">
+                      <div>{getMovieGenre(movie.genre)}</div>
+                      <div className="flex items-center">
+                        <StarTwoTone className="mr-1" />
+                        {movie.rating}/10
+                      </div>
+                    </div>
                   </div>
                 }
               />
@@ -188,9 +215,12 @@ const Movies = () => {
             className="w-full my-2"
             placeholder="Select Rating"
             options={[
-              { value: "recent", label: "Most Recent" },
-              { value: "popular", label: "Most Popular" },
-              { value: "alphabetical", label: "Alphabetical Order" },
+              { value: 5, label: "5" },
+              { value: 6, label: "6" },
+              { value: 7, label: "7" },
+              { value: 8, label: "8" },
+              { value: 9, label: "9" },
+              { value: 10, label: "10" },
             ]}
             onChange={(e) => {
               setFilters({ ...filters, rating: e });
