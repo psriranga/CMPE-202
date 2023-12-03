@@ -89,9 +89,9 @@ WSGI_APPLICATION = "backend.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
+        "NAME": "techtitans",
+        "USER": "techtitans",
+        "PASSWORD": "techtitans",
         "HOST": "db",
         "PORT": 5432,
     }
