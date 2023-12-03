@@ -43,9 +43,9 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="bg-[#f9f9f9] w-[100vw]">
       <Header />
-      <div className="w-[60%] m-auto p-4">
+      <div className="w-[90%] m-auto p-4 bg-[#f9f9f9] h-[90vh]">
         <Routes>
           <Route path="/" element={<Navigate to="/movies" />}></Route>
           {/* <Route

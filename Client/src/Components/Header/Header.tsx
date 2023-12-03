@@ -1,10 +1,8 @@
 import {
   CrownOutlined,
-  CrownTwoTone,
   LoginOutlined,
   LogoutOutlined,
   MailTwoTone,
-  MenuOutlined,
   SettingOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
@@ -135,17 +133,20 @@ const Header = () => {
   };
 
   return (
-    <div className="py-4 bg-[#6BE9FA] flex justify-between items-center px-60 z-40 sticky top-0 shadow-lg">
+    <div className="py-4 bg-[#FA8072] flex justify-between items-center px-60 z-40 sticky top-0 shadow-lg">
+      <div
+        className="text-[32px] font-semibold cursor-pointer flex items-center"
+        onClick={() => {
+          navigate("/movies");
+        }}
+      >
+        <img
+          src="https://www.svgrepo.com/show/107360/movie-tickets.svg"
+          className="w-[60px]"
+        />
+        <span className="ml-2">eaZyTicket</span>
+      </div>{" "}
       <div className="flex items-center">
-        <div
-          className="text-[32px] font-semibold cursor-pointer"
-          onClick={() => {
-            navigate("/movies");
-          }}
-        >
-          <img src="https://svgsilh.com/svg/2027080.svg" className="w-[40px]" />
-          <span className="ml-2">CineSquare</span>
-        </div>{" "}
         <div
           className="ml-14 mr-4 font-semibold hover:text-white cursor-pointer"
           onClick={() => {
@@ -166,24 +167,23 @@ const Header = () => {
       <div className="flex items-center">
         {!isLoggedIn && (
           <div className="flex items-center">
-            <Button
-              className="mr-4"
+            <div
+              className="mr-4 font-semibold text-white text-[18px] cursor-pointer hover:text-blue-200"
               onClick={() => {
                 navigate("/signup");
               }}
             >
-              <UserAddOutlined /> Join Us
-            </Button>
+              Sign Up
+            </div>
 
-            <Button
-              className="mr-16"
+            <div
+              className="mr-16 font-semibold text-white text-[18px] cursor-pointer hover:text-blue-200"
               onClick={() => {
                 navigate("/login");
               }}
             >
-              <LoginOutlined />
               Sign In
-            </Button>
+            </div>
           </div>
         )}
         {isLoggedIn == true && (

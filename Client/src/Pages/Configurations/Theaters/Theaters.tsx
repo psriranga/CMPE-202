@@ -41,7 +41,7 @@ const Theaters = ({
         {theaters?.map((theater: ITheater) => {
           return (
             <div
-              className="rounded-md border-[1px] border-l-[4px] border-l-[#6BE9FA] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
+              className="rounded-md border-[1px] border-l-[4px] border-l-[#FA8072] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
               onClick={() => {
                 form.setFieldsValue(theater);
                 setSelectedTheater(theater);

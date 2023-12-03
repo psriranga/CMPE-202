@@ -9,20 +9,20 @@ const ContactUs = () => {
         <span className="font-semibold text-[28px]">Team Tech Titans</span>
       </div>
       <div className="w-full ">
-        <div className="flex w-full justify-between my-4 font-semibold p-3 rounded-md border-l-[4px] border-l-[#6BE9FA] border-solid border-[#e0e0e0] border-[1px] cursor-pointer hover:shadow-md">
+        <div className="flex w-full justify-between my-4 font-semibold p-3 rounded-md border-l-[4px] border-l-[#FA8072] border-solid border-[#e0e0e0] border-[1px] cursor-pointer hover:shadow-md">
           <div>Nekkalapu Siva Sai Krishna {"(Frontend)"}</div>
 
           <div>sivasaikrishna.nekkalapu@sjsu.edu</div>
         </div>
-        <div className="flex w-full justify-between my-4 font-semibold p-3 rounded-md border-l-[4px] border-l-[#6BE9FA] border-solid border-[#e0e0e0] border-[1px] cursor-pointer hover:shadow-md">
+        <div className="flex w-full justify-between my-4 font-semibold p-3 rounded-md border-l-[4px] border-l-[#FA8072] border-solid border-[#e0e0e0] border-[1px] cursor-pointer hover:shadow-md">
           <div>Hrithik Puppala {"(Backend)"}</div>
           <div>hrithik.puppala@sjsu.edu</div>
         </div>
-        <div className="flex w-full justify-between my-4 font-semibold p-3 rounded-md border-l-[4px] border-l-[#6BE9FA] border-solid border-[#e0e0e0] border-[1px] cursor-pointer hover:shadow-md">
+        <div className="flex w-full justify-between my-4 font-semibold p-3 rounded-md border-l-[4px] border-l-[#FA8072] border-solid border-[#e0e0e0] border-[1px] cursor-pointer hover:shadow-md">
           <div>Vishruth Thippabathuni {"(Frontend)"}</div>
           <div>vishruth.thippabathuni@sjsu.edu</div>
         </div>
-        <div className="flex w-full justify-between my-4 font-semibold p-3 rounded-md border-l-[4px] border-l-[#6BE9FA] border-solid border-[#e0e0e0] border-[1px] cursor-pointer hover:shadow-md">
+        <div className="flex w-full justify-between my-4 font-semibold p-3 rounded-md border-l-[4px] border-l-[#FA8072] border-solid border-[#e0e0e0] border-[1px] cursor-pointer hover:shadow-md">
           <div>Raghavendra Dhinesh {"(Backend)"}</div>
           <div>raghavenradhinesh.gurram@sjsu.edu</div>
         </div>

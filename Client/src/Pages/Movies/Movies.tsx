@@ -64,14 +64,14 @@ const Movies = () => {
   useEffect(() => {
     console.log("hash", location.hash);
     if (location.hash === "") {
-      setTab("featured");
+      setTab("now-playing");
       setTempMovies(filterMoviesByType(movies.movies, ""));
     } else if (location.hash === "#now-playing") {
       setTab("now-playing");
       setTempMovies(filterMoviesByType(movies.movies, "Playing Now"));
-    } else if (location.hash === "#coming-soon") {
+    } else if (location.hash === "#upcoming") {
       setTempMovies(filterMoviesByType(movies.movies, "Upcoming"));
-      setTab("coming-soon");
+      setTab("upcoming");
     }
   }, [location]);
 
@@ -91,12 +91,20 @@ const Movies = () => {
   }
 
   return (
-    <div>
+    <div className="bg-[#f9f9f9]">
       <div className="py-4 flex  items-center justify-between">
-        <div className="font-semibold text-[24px]">Featured Movies</div>
-
-        <div className="font-semibold flex items-center">
-          <span
+        <div className="font-semibold text-[32px]">Movies</div>
+        <div className="w-[50%] px-8">
+          <Search
+            placeholder="Explore"
+            enterButton
+            onChange={(e: any) => {
+              getFilteredMovies(movies.movies, e.target.value);
+            }}
+          />
+        </div>
+        <div className="font-semibold flex items-center text-[18px]">
+          {/* <span
             className={`mx-[6px] cursor-pointer hover:text-blue-400 ${
               tab === "featured" ? "text-blue-400" : ""
             }`}
@@ -105,7 +113,7 @@ const Movies = () => {
             }}
           >
             Featured
-          </span>
+          </span> */}
           <span
             className={`mx-[6px] cursor-pointer hover:text-blue-400 ${
               tab === "now-playing" ? "text-blue-400" : ""
@@ -114,31 +122,77 @@ const Movies = () => {
               window.location.hash = "now-playing";
             }}
           >
-            Now Playing
+            Trending
           </span>
           <span
             className={`mx-[6px] cursor-pointer hover:text-blue-400 ${
-              tab === "coming-soon" ? "text-blue-400" : ""
+              tab === "upcoming" ? "text-blue-400" : ""
             }`}
             onClick={() => {
-              window.location.hash = "coming-soon";
+              window.location.hash = "upcoming";
             }}
           >
-            Coming Soon
+            Upcoming
           </span>
         </div>
-        <div>
-          <Search
-            placeholder="Search for movie"
-            enterButton
-            onChange={(e: any) => {
-              getFilteredMovies(movies.movies, e.target.value);
-            }}
-          />
-        </div>
       </div>
-      <div className="flex">
-        <div className="w-[70%] pr-2 mr-2 grid grid-cols-2 gap-4">
+      <div className="flex flex-col">
+        <div className="w-[100%] flex items-center mt-4 mb-8">
+          <div className="w-full">
+            <div className="font-semibold text-[18px]">Sort By</div>
+            <Select
+              allowClear
+              className="w-full my-2"
+              placeholder="Sort By"
+              onChange={(e) => {
+                setFilters({ ...filters, sort_by: e });
+              }}
+              options={[
+                { value: "recent", label: "Most Recent" },
+                { value: "popular", label: "Most Popular" },
+                { value: "alphabetical", label: "Alphabetical Order" },
+              ]}
+            />
+          </div>
+          <div className="w-full mx-2">
+            <div className="font-semibold text-[18px]">Genre</div>
+            <Select
+              allowClear
+              className="w-full my-2"
+              placeholder="Select Genre"
+              options={[
+                { value: "action", label: "Action" },
+                { value: "thriller", label: "Thriller" },
+                { value: "rom_com", label: "Rom Com" },
+                { value: "horror", label: "Horror" },
+                { value: "feel_good", label: "Feel Good" },
+              ]}
+              onChange={(e) => {
+                setFilters({ ...filters, genre: e });
+              }}
+            />
+          </div>
+          <div className="w-full">
+            <div className="font-semibold text-[18px]">Rating</div>
+            <Select
+              allowClear
+              className="w-full my-2"
+              placeholder="Select Rating"
+              options={[
+                { value: 5, label: "5" },
+                { value: 6, label: "6" },
+                { value: 7, label: "7" },
+                { value: 8, label: "8" },
+                { value: 9, label: "9" },
+                { value: 10, label: "10" },
+              ]}
+              onChange={(e) => {
+                setFilters({ ...filters, rating: e });
+              }}
+            />
+          </div>
+        </div>
+        <div className="w-[100%] grid grid-cols-5 gap-4">
           {tempMovies?.map((movie: IMovie) => (
             <Card
               hoverable
@@ -160,72 +214,13 @@ const Movies = () => {
                 description={
                   <div>
                     <div className="my-2">{movie.description}</div>
-                    <div className="flex justify-between">
-                      <div>{getMovieGenre(movie.genre)}</div>
-                      <div className="flex items-center">
-                        <StarTwoTone className="mr-1" />
-                        {movie.rating}/10
-                      </div>
-                    </div>
+
+                    <div>{getMovieGenre(movie.genre)}</div>
                   </div>
                 }
               />
             </Card>
           ))}
-        </div>
-
-        <div className="w-[30%]  pl-2 ml-2 ">
-          <div className="font-semibold text-[18px]">Sort By</div>
-          <Select
-            allowClear
-            className="w-full my-2"
-            placeholder="Sort By"
-            onChange={(e) => {
-              setFilters({ ...filters, sort_by: e });
-            }}
-            options={[
-              { value: "recent", label: "Most Recent" },
-              { value: "popular", label: "Most Popular" },
-              { value: "alphabetical", label: "Alphabetical Order" },
-            ]}
-          />
-          <div className="font-semibold text-[18px] mt-4">
-            Narrow Your Selection
-          </div>
-          <Divider className="my-2" />
-          <div>Genre</div>
-          <Select
-            allowClear
-            className="w-full my-2"
-            placeholder="Select Genre"
-            options={[
-              { value: "action", label: "Action" },
-              { value: "thriller", label: "Thriller" },
-              { value: "rom_com", label: "Rom Com" },
-              { value: "horror", label: "Horror" },
-              { value: "feel_good", label: "Feel Good" },
-            ]}
-            onChange={(e) => {
-              setFilters({ ...filters, genre: e });
-            }}
-          />
-          <div>Rating</div>
-          <Select
-            allowClear
-            className="w-full my-2"
-            placeholder="Select Rating"
-            options={[
-              { value: 5, label: "5" },
-              { value: 6, label: "6" },
-              { value: 7, label: "7" },
-              { value: 8, label: "8" },
-              { value: 9, label: "9" },
-              { value: 10, label: "10" },
-            ]}
-            onChange={(e) => {
-              setFilters({ ...filters, rating: e });
-            }}
-          />
         </div>
       </div>
     </div>

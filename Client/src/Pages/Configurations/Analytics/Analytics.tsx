@@ -32,7 +32,7 @@ const Analytics = () => {
             {analytics?.locations_30_days &&
               Object.entries(analytics?.locations_30_days!).map(
                 ([key, value]: any) => (
-                  <div className="w-[95%] border-l-[4px] border-l-[#6BE9FA] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
+                  <div className="w-[95%] border-l-[4px] border-l-[#FA8072] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
                     <div className="flex items-center">
                       <span className="text-[32px] font-semibold">{value}</span>{" "}
                       <span className="ml-3 text-[18px]">
@@ -51,7 +51,7 @@ const Analytics = () => {
             {analytics?.locations_60_days &&
               Object.entries(analytics?.locations_60_days!).map(
                 ([key, value]: any) => (
-                  <div className="w-[95%] border-l-[4px] border-l-[#6BE9FA] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
+                  <div className="w-[95%] border-l-[4px] border-l-[#FA8072] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
                     <div className="flex items-center">
                       <span className="text-[32px] font-semibold">{value}</span>{" "}
                       <span className="ml-3 text-[18px]">
@@ -70,7 +70,7 @@ const Analytics = () => {
             {analytics?.locations_90_days &&
               Object.entries(analytics?.locations_90_days!).map(
                 ([key, value]: any) => (
-                  <div className="w-[95%] border-l-[4px] border-l-[#6BE9FA] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
+                  <div className="w-[95%] border-l-[4px] border-l-[#FA8072] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
                     <div className="flex items-center">
                       <span className="text-[32px] font-semibold">{value}</span>{" "}
                       <span className="ml-3 text-[18px]">
@@ -94,7 +94,7 @@ const Analytics = () => {
             {analytics?.movies_30_days &&
               Object.entries(analytics?.movies_30_days!).map(
                 ([key, value]: any) => (
-                  <div className="w-[95%] border-l-[4px] border-l-[#6BE9FA] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
+                  <div className="w-[95%] border-l-[4px] border-l-[#FA8072] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
                     <div className="flex items-center">
                       <span className="text-[32px] font-semibold">
                         {value?.occupancy}
@@ -114,7 +114,7 @@ const Analytics = () => {
             {analytics?.movies_60_days &&
               Object.entries(analytics?.movies_60_days!).map(
                 ([key, value]: any) => (
-                  <div className="w-[95%] border-l-[4px] border-l-[#6BE9FA] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
+                  <div className="w-[95%] border-l-[4px] border-l-[#FA8072] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
                     <div className="flex items-center">
                       <span className="text-[32px] font-semibold">
                         {value?.occupancy}
@@ -134,7 +134,7 @@ const Analytics = () => {
             {analytics?.movies_90_days &&
               Object.entries(analytics?.movies_90_days!).map(
                 ([key, value]: any) => (
-                  <div className="w-[95%] border-l-[4px] border-l-[#6BE9FA] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
+                  <div className="w-[95%] border-l-[4px] border-l-[#FA8072] border-solid border-[#e0e0e0] border-[1px] p-3 rounded-md bg-white mb-2">
                     <div className="flex items-center">
                       <span className="text-[32px] font-semibold">
                         {value?.occupancy}

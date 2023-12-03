@@ -111,8 +111,8 @@ const Theaters = () => {
   return (
     <div>
       <div className="py-4 flex  items-center justify-between">
-        <div className="font-semibold text-[24px] flex items-center">
-          Theaters Near <span className="ml-2">{zipcode}</span>{" "}
+        <div className="font-semibold text-[24px] flex items-center w-full">
+          Theaters in <span className="ml-2">{zipcode}</span>{" "}
           <Select
             allowClear
             showSearch
@@ -152,7 +152,7 @@ const Theaters = () => {
             ]}
           />
         </div>
-        <div>
+        <div className="w-full">
           <Search
             placeholder="Search for theater"
             enterButton
@@ -163,31 +163,31 @@ const Theaters = () => {
         </div>
       </div>
       <div className="flex">
-        <div className="w-[70%] pr-2 mr-2 grid grid-cols-2 gap-x-2">
+        <div className="w-[100%] pr-2 mr-2 grid grid-cols-2 gap-4">
           {tempTheaters?.map((theater: ITheater) => {
             return (
               <div
-                className="hover:shadow-lg hover:shadow-[#a8e8fd] cursor-pointer transition-shadow duration-500 mb-2 mr-2  h-fit rounded-md border-[1px] border-l-[4px] border-l-[#6BE9FA] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
+                className="hover:shadow-lg hover:shadow-[#a8e8fd] cursor-pointer transition-shadow duration-500 mb-2 mr-2  h-fit rounded-md border-[1px] border-t-[4px] border-t-[#FA8072] border-[#e0e0e0] border-solid p-2 hover:shadow-md cursor-pointer"
                 onClick={() => {
                   navigate(`/theaters/${theater.id}`, { state: theater });
                 }}
               >
-                <div>
+                <div className="text-[20px] font-semibold">
                   {theater?.name.length > 30
                     ? theater.name.substring(0, 25) + "..."
                     : theater.name}
                 </div>
                 <div className="my-2 text-[gray]">
-                  {theater?.short_address.length > 34
-                    ? theater.short_address.substring(0, 30) + "..."
+                  {theater?.short_address.length > 50
+                    ? theater.short_address.substring(0, 50) + "..."
                     : theater.short_address}
                 </div>
-                <div className="flex items-center justify-between mt-1">
+                <div className="flex items-center justify-between mt-1 ">
                   {" "}
-                  <span className="text-gray-400 text-[12px]">
+                  <span className="text-gray-400 text-[16px]">
                     {theater.zip_code}
                   </span>
-                  <span className="text-gray-400 text-[12px]">
+                  <span className="text-gray-400 text-[16px]">
                     {theater.distance} miles
                   </span>
                 </div>
@@ -195,7 +195,7 @@ const Theaters = () => {
             );
           })}
         </div>
-        <div className="w-[30%]  pl-2 ml-2 ">
+        {/* <div className="w-[30%]  pl-2 ml-2 ">
           <div className="font-semibold text-[18px] mt-4">
             Narrow Your Selection
           </div>
@@ -227,7 +227,7 @@ const Theaters = () => {
               setFilters({ ...filters, food: e });
             }}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

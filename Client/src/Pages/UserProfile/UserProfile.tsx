@@ -7,8 +7,10 @@ import dayjs from "dayjs";
 import { Avatar, Modal, message } from "antd";
 import { useDispatch } from "react-redux";
 import { setUserInfo } from "../../state/reducers/authReducer/authReducer";
+import QRCode from "react-qr-code";
 
 const UserProfile = () => {
+  let val = Math.floor(1000 + Math.random() * 9000);
   const userInfo = useAppSelector((state) => state.auth.userInfo);
   const [userData, setUserData] = useState<IUserData>();
   const [cancelId, setCancelId] = useState<number>();
@@ -73,7 +75,7 @@ const UserProfile = () => {
       <div className="font-semibold mb-4 text-[28px]">User Profile</div>
       <div className="m-auto shadow-lg rounded-md flex w-full items-center p-3 mb-4">
         <div className="mr-4">
-          <Avatar className="bg-[#6BE9FA] uppercase" size={50}>
+          <Avatar className="bg-[#FA8072] uppercase" size={50}>
             {userInfo?.username[0]}
           </Avatar>
         </div>
@@ -110,40 +112,64 @@ const UserProfile = () => {
       <div className="w-full">
         {userData?.tickets.map((ticket) => {
           return (
-            <div className="p-3 border-[#e0e0e0] border-[1px] w-full border-solid rounded-md mb-2 border-l-[4px] border-l-[#6BE9FA]">
-              <div className="font-semibold mb-2 flex items-center justify-between">
+            <div className="flex w-full justify-between  items-center p-3 border-[#e0e0e0] border-[1px] w-full border-solid rounded-md mb-2 border-l-[4px] border-l-[#FA8072]">
+              <div className="flex items-center">
                 <div>
-                  <span>Movie : </span>
-                  {ticket.movie.name}
-                </div>
-                {ticket.status !== "cancelled" && (
-                  <div
-                    className="cursor-pointer"
-                    onClick={() => {
-                      setCancelId(ticket.id);
-                      showModal();
-                    }}
-                  >
-                    <span className="text-red-400">Cancel Booking</span>
+                  {" "}
+                  <div className="mr-4">
+                    <QRCode
+                      size={120}
+                      value={
+                        "Ticket ID :" +
+                        val +
+                        "Movie :" +
+                        ticket.movie.name +
+                        " at" +
+                        ticket.theater.name +
+                        " Timing:" +
+                        dayjs(ticket.show.show_timing).format(
+                          "YYYY-MM-DD, h:mm A"
+                        )
+                      }
+                    />
                   </div>
-                )}
+                </div>
+                <div>
+                  <div className="font-semibold mb-2 flex items-center justify-between w-full">
+                    <div>
+                      <span>Movie : </span>
+                      {ticket.movie.name}
+                    </div>
+                  </div>
+                  <div className="font-semibold mb-2">
+                    <span>Theater : </span>
+                    {ticket.theater.name}
+                  </div>
+                  <div className="mb-2">
+                    <span className="mr-2">Seats</span>
+                    {ticket.seats.map((seat: string) => {
+                      return seat + " ";
+                    })}
+                  </div>
+                  <div className="mb-2">
+                    Date:{" "}
+                    {" " + dayjs(ticket.show.show_timing).format("YYYY-MM-DD")},
+                    {/* {dayjs(ticket.show.show_timing).format("h:mm A")} */}
+                  </div>
+                  <div>Status : {ticket.status}</div>
+                </div>
               </div>
-              <div className="font-semibold mb-2">
-                <span>Theater : </span>
-                {ticket.theater.name}
-              </div>
-              <div className="mb-2">
-                <span className="mr-2">Seats</span>
-                {ticket.seats.map((seat: string) => {
-                  return seat + " ";
-                })}
-              </div>
-              <div className="mb-2">
-                Timing:{" "}
-                {" " + dayjs(ticket.show.show_timing).format("YYYY-MM-DD")},
-                {dayjs(ticket.show.show_timing).format("h:mm A")}
-              </div>
-              <div>Status : {ticket.status}</div>
+              {ticket.status !== "cancelled" && (
+                <div
+                  className="cursor-pointer ml-4"
+                  onClick={() => {
+                    setCancelId(ticket.id);
+                    showModal();
+                  }}
+                >
+                  <span className="text-red-400">Cancel</span>
+                </div>
+              )}
             </div>
           );
         })}

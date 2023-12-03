@@ -71,6 +71,7 @@ const OrderConfirmation = () => {
         }
         console.log(userInfo, "user info");
         dispatch(setUserInfo(res.data?.ticket?.user));
+        message.success("Ticket Booked Successfully");
         navigate("/ticket", { state: data });
       })
       .catch((e) => {
@@ -126,8 +127,13 @@ const OrderConfirmation = () => {
         </Button>
       </div>
       <div className="flex  justify-between">
-        <div className="w-[50%] flex flex-col gap-5 p-3">
-          <span className="font-bold text-2xl">Order Confirmation</span>
+        <div className="w-[50%] flex flex-col gap-5 p-3 items-center">
+          {/* <span className="font-bold text-2xl">Order Confirmation</span> */}
+          <img
+            src={data.seatmapData.movie.image_url}
+            width={400}
+            className="rounded-md"
+          />
         </div>
         <div className="w-[50%] flex flex-col p-3">
           <div>
