@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../../../env";
 import axios from "axios";
+import Chart from "react-apexcharts";
 
 const Analytics = () => {
   const [analytics, setAnalytics] = useState<any>();
@@ -19,10 +20,42 @@ const Analytics = () => {
   useEffect(() => {
     getAnalytics();
   }, []);
+  const data: any = {
+    options: {
+      chart: {
+        id: "basic-bar",
+      },
+      xaxis: {
+        categories: ["Cineplex", "Oakridge", "Greatmall"],
+      },
+    },
+    series: [
+      {
+        name: "series-1",
+        data: [3, 2, 6],
+      },
+    ],
+  };
+  const moviesData: any = {
+    options: {
+      chart: {
+        id: "basic-bar",
+      },
+      xaxis: {
+        categories: ["Animal", "Leo", "Avengers"],
+      },
+    },
+    series: [
+      {
+        name: "series-1",
+        data: [3, 8, 6],
+      },
+    ],
+  };
 
   return (
     <div>
-      <div>
+      {/* <div>
         <div className="mb-3 text-[28px] font-semibold">
           Location Wise analysis
         </div>
@@ -147,6 +180,70 @@ const Analytics = () => {
                 )
               )}
           </div>
+        </div>
+      </div> */}
+      <div className="w-full font-semibold text-[28px] mb-4">
+        Location Wise Analysis
+      </div>
+      <div className="flex items-centers justify-between">
+        <div>
+          <div className="font-semibold text-[24px]">Last 30 days</div>
+          <Chart
+            options={data.options}
+            series={data.series}
+            type="bar"
+            width="400"
+          />
+        </div>
+        <div>
+          <div className="font-semibold text-[24px]">Last 60 days</div>
+          <Chart
+            options={data.options}
+            series={data.series}
+            type="bar"
+            width="400"
+          />
+        </div>
+        <div>
+          <div className="font-semibold text-[24px]">Last 90 days</div>
+          <Chart
+            options={data.options}
+            series={data.series}
+            type="bar"
+            width="400"
+          />
+        </div>
+      </div>
+      <div className="w-full font-semibold text-[28px] mb-4">
+        Movie Wise Analysis
+      </div>
+      <div className="flex items-centers justify-between">
+        <div>
+          <div className="font-semibold text-[24px]">Last 30 days</div>
+          <Chart
+            options={moviesData.options}
+            series={moviesData.series}
+            type="bar"
+            width="400"
+          />
+        </div>
+        <div>
+          <div className="font-semibold text-[24px]">Last 60 days</div>
+          <Chart
+            options={moviesData.options}
+            series={moviesData.series}
+            type="bar"
+            width="400"
+          />
+        </div>
+        <div>
+          <div className="font-semibold text-[24px]">Last 90 days</div>
+          <Chart
+            options={moviesData.options}
+            series={moviesData.series}
+            type="bar"
+            width="400"
+          />
         </div>
       </div>
     </div>
