@@ -25,6 +25,7 @@ import dayjs from "dayjs";
 import Shows from "./Shows/Shows";
 import { IShow } from "../../Interfaces/show.interface";
 import Analytics from "./Analytics/Analytics";
+import { useNavigate } from "react-router-dom";
 
 interface CreateTheater {
   name: string;
@@ -36,6 +37,7 @@ interface CreateTheater {
 
 const Configurations = () => {
   const { token } = theme.useToken();
+  const navigate = useNavigate();
   const [isMoviesModalOpen, setIsMoviesModalOpen] = useState<boolean>(false);
   const [isTheatersModalOpen, setIsTheatersModalOpen] =
     useState<boolean>(false);
@@ -162,7 +164,8 @@ const Configurations = () => {
         <PlusCircleOutlined
           onClick={(e) => {
             e.stopPropagation();
-            showModal("movies");
+            // showModal("movies");
+            navigate("/add-movie");
           }}
         />
       ),
@@ -184,7 +187,8 @@ const Configurations = () => {
         <PlusCircleOutlined
           onClick={(e) => {
             e.stopPropagation();
-            showModal("theaters");
+            // showModal("theaters");
+            navigate("/add-theater");
           }}
         />
       ),

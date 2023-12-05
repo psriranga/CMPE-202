@@ -25,6 +25,8 @@ import { useDispatch } from "react-redux";
 import { setLogIn, setLogOut } from "./state/reducers/authReducer/authReducer";
 import TicketDisplay from "./Pages/TicketDisplay/TicketDisplay";
 import UserProfile from "./Pages/UserProfile/UserProfile";
+import AddMovies from "./Pages/AddMovies/AddMovies";
+import AddTheaters from "./Pages/AddTheaters/AddTheaters";
 
 function App() {
   const dispatch = useDispatch();
@@ -65,6 +67,8 @@ function App() {
           <Route path="/theaters/:id" element={<TheatreDetails />}></Route>
           <Route path="/configurations" element={<Configurations />}></Route>
           <Route path="/ticket" element={<TicketDisplay />}></Route>
+          <Route path="/add-movie" element={<AddMovies />}></Route>
+          <Route path="/add-theater" element={<AddTheaters />}></Route>
           <Route
             path="/order-confirmation"
             element={<OrderConfirmation />}

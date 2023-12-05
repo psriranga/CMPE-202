@@ -112,7 +112,19 @@ const Theaters = () => {
     <div>
       <div className="py-4 flex  items-center justify-between">
         <div className="font-semibold text-[24px] flex items-center w-full">
-          Theaters in <span className="ml-2">{zipcode}</span>{" "}
+          <div className="w-full">
+            {" "}
+            Theaters in <span className="mx-2">{zipcode}</span>{" "}
+          </div>
+          <div className="w-full">
+            <Search
+              placeholder="Search for theater"
+              enterButton
+              onChange={(e: any) => {
+                getFilteredtheaters(theaters.theaters, e.target.value);
+              }}
+            />
+          </div>
           <Select
             allowClear
             showSearch
@@ -135,7 +147,7 @@ const Theaters = () => {
               }
             }}
             bordered={false}
-            className="ml-2"
+            className="ml-2 w-full"
             options={[
               {
                 value: "95112",
@@ -152,18 +164,9 @@ const Theaters = () => {
             ]}
           />
         </div>
-        <div className="w-full">
-          <Search
-            placeholder="Search for theater"
-            enterButton
-            onChange={(e: any) => {
-              getFilteredtheaters(theaters.theaters, e.target.value);
-            }}
-          />
-        </div>
       </div>
       <div className="flex">
-        <div className="w-[100%] pr-2 mr-2 grid grid-cols-2 gap-4">
+        <div className="w-[100%] pr-2 mr-2 grid grid-cols-4 gap-4">
           {tempTheaters?.map((theater: ITheater) => {
             return (
               <div
