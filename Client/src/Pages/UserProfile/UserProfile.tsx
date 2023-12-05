@@ -72,10 +72,10 @@ const UserProfile = () => {
   };
   return (
     <div className="w-full flex flex-col">
-      <div className="font-semibold mb-4 text-[28px]">User Profile</div>
-      <div className="m-auto shadow-lg rounded-md flex w-full items-center p-3 mb-4">
+      <div className="font-semibold mb-4 text-[28px] m-auto">User Profile</div>
+      <div className="m-auto shadow-lg rounded-md flex  items-center p-3 mb-4 px-6">
         <div className="mr-4">
-          <Avatar className="bg-[#FA8072] uppercase" size={50}>
+          <Avatar className="bg-[#FA8072] uppercase" size={60}>
             {userInfo?.username[0]}
           </Avatar>
         </div>
@@ -98,18 +98,18 @@ const UserProfile = () => {
           </div> */}
           {userInfo.membership_type === "premium" && (
             <div
-              className="text-blue-500 cursor-pointer"
+              className="cursor-pointer w-full justify-end flex text-red-500"
               onClick={() => {
                 UpdateMembershipStatus();
               }}
             >
-              Cancel Premium Membership
+              Cancel Premium
             </div>
           )}
         </div>
       </div>
       <div className="font-semibold mb-4 text-[28px]">Bookings</div>
-      <div className="w-full">
+      <div>
         {userData?.tickets.map((ticket) => {
           return (
             <div className="flex w-full justify-between  items-center p-3 border-[#e0e0e0] border-[1px] w-full border-solid rounded-md mb-2 border-l-[4px] border-l-[#FA8072]">

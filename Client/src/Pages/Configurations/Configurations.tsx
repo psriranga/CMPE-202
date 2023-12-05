@@ -210,7 +210,8 @@ const Configurations = () => {
         <PlusCircleOutlined
           onClick={(e) => {
             e.stopPropagation();
-            showModal("shows");
+            // showModal("shows");
+            navigate("/add-show");
           }}
         />
       ),

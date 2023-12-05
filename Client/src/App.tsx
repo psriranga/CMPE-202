@@ -27,6 +27,7 @@ import TicketDisplay from "./Pages/TicketDisplay/TicketDisplay";
 import UserProfile from "./Pages/UserProfile/UserProfile";
 import AddMovies from "./Pages/AddMovies/AddMovies";
 import AddTheaters from "./Pages/AddTheaters/AddTheaters";
+import AddShows from "./Pages/AddShows/AddShows";
 
 function App() {
   const dispatch = useDispatch();
@@ -69,6 +70,7 @@ function App() {
           <Route path="/ticket" element={<TicketDisplay />}></Route>
           <Route path="/add-movie" element={<AddMovies />}></Route>
           <Route path="/add-theater" element={<AddTheaters />}></Route>
+          <Route path="/add-show" element={<AddShows />}></Route>
           <Route
             path="/order-confirmation"
             element={<OrderConfirmation />}
